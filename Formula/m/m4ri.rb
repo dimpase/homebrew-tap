@@ -9,12 +9,20 @@ class M4ri < Formula
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "libpng"
+  depends_on "libomp" if OS.mac?
 
+  patch :DATA
 
   def install
+    if OS.mac?
+      libomp = Formula["libomp"]
+      ENV["OPENMP_CFLAGS"] = "-Xpreprocessor -fopenmp -I#{libomp.opt_include} -L#{libomp.opt_lib} -lomp"
+    else
+      ENV["OPENMP_CFLAGS"] = "-fopenmp"
+    end
     # Remove unrecognized options if they cause configure to fail
     # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
-    system "./configure", "--disable-silent-rules", *std_configure_args
+    system "./configure", "--enable-openmp", "--disable-silent-rules", *std_configure_args
     system "make", "install" # if this fails, try separate make/make install steps
   end
 
@@ -289,3 +297,46 @@ int main() {
     system "./test"
   end
 end
+
+__END__
+
+
+diff --git a/ltmain.sh b/ltmain.sh
+index 977e523..3f3bc31 100755
+--- a/ltmain.sh
++++ b/ltmain.sh
+@@ -6856,6 +6856,16 @@ func_mode_link ()
+     # See if our shared archives depend on static archives.
+     test -n "$old_archive_from_new_cmds" && build_old_libs=yes
+ 
++    # make sure "-Xpreprocessor -fopenmp" is processed as one token
++    case "$@" in
++    *-Xpreprocessor\ -fopenmp*)
++      fopenmp_match="-Xpreprocessor -fopenmp"
++      ;;
++    *)
++      fopenmp_match="-fopenmp"
++      ;;
++    esac
++
+     # Go through the arguments, transforming them on the way.
+     while test "$#" -gt 0; do
+       arg=$1
+@@ -7339,7 +7349,7 @@ func_mode_link ()
+ 	continue
+ 	;;
+       -mt|-mthreads|-kthread|-Kthread|-pthreads|--thread-safe \
+-      |-threads|-fopenmp|-openmp|-mp|-xopenmp|-omp|-qsmp=*)
++      |-threads|$fopenmp_match|fopenmp=*|-openmp|-mp|-xopenmp|-omp|-qsmp=*)
+ 	func_append compiler_flags " $arg"
+ 	func_append compile_command " $arg"
+ 	func_append finalize_command " $arg"
+@@ -7888,7 +7898,7 @@ func_mode_link ()
+ 	found=false
+ 	case $deplib in
+ 	-mt|-mthreads|-kthread|-Kthread|-pthread|-pthreads|--thread-safe \
+-        |-threads|-fopenmp|-openmp|-mp|-xopenmp|-omp|-qsmp=*)
++        |-threads|$fopenmp_match|fopenmp=*|-openmp|-mp|-xopenmp|-omp|-qsmp=*)
+ 	  if test prog,link = "$linkmode,$pass"; then
+ 	    compile_deplibs="$deplib $compile_deplibs"
+ 	    finalize_deplibs="$deplib $finalize_deplibs"
