@@ -1,8 +1,8 @@
 class M4ri < Formula
   desc "M4RI is a library for fast arithmetic with dense matrices over GF(2)"
   homepage "https://github.com/malb/m4ri"
-  url "https://github.com/malb/m4ri/releases/download/20251207/m4ri-20251207.tar.gz"
-  sha256 "7b195a4d88fa827b9ec6d087c3cac739ab6e5100da05faaed3a1d2c20ca3a930"
+  url "https://github.com/malb/m4ri/releases/download/20260122/m4ri-20260122.tar.gz"
+  sha256 "7e033ca1fd36be8861e2f67d9d124c398fc0d830209bb0226462485876346404"
   license "GPL-2.0"
 
   depends_on "autoconf" => :build
@@ -27,6 +27,14 @@ class M4ri < Formula
   end
 
   test do
+    if OS.mac?
+      require "utils/linkage"
+      libgomp = Formula["gcc"].opt_lib/"gcc/current/libgomp.dylib"
+      libomp = Formula["libomp"].opt_lib/"libomp.dylib"
+      refute Utils.binary_linked_to_library?(lib/"libm4ri.dylib", libgomp), "Unwanted linkage to libgomp!"
+      assert Utils.binary_linked_to_library?(lib/"libm4ri.dylib", libomp), "Missing linkage to libomp!"
+    end
+
     (testpath/"test.c").write <<~EOS
 /* from https://gist.githubusercontent.com/malb/5afc443d6ca3e212eb28db5c17522ceb/raw/08c7191e71a11dee922126a0a20a4d4ab2dfe6a1/test.c */
 #include <m4ri/m4ri.h>
