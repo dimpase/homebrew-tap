@@ -30,7 +30,7 @@ jobs:
           key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
           restore-keys: ${{ matrix.os }}-rubygems-
 
-      - brew unbottled m4ri
+      - brew unbottled dimpase
 
       - run: brew test-bot --only-cleanup-before
 
