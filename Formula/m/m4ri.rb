@@ -1,5 +1,5 @@
 class M4ri < Formula
-  desc "M4RI is a library for fast arithmetic with dense matrices over GF(2)"
+  desc "Library for fast arithmetic with dense matrices over GF(2)"
   homepage "https://github.com/malb/m4ri"
   url "https://github.com/malb/m4ri/releases/download/20260122/m4ri-20260122.tar.gz"
   sha256 "7e033ca1fd36be8861e2f67d9d124c398fc0d830209bb0226462485876346404"
@@ -8,8 +8,8 @@ class M4ri < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
-  depends_on "libpng"
   depends_on "libomp" if OS.mac?
+  depends_on "libpng"
 
   patch :DATA
 
@@ -23,7 +23,7 @@ class M4ri < Formula
     # Remove unrecognized options if they cause configure to fail
     # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "./configure", "--enable-openmp", "--disable-silent-rules", *std_configure_args
-    system "make", "install" # if this fails, try separate make/make install steps
+    system "make", "install"
   end
 
   test do
@@ -36,62 +36,62 @@ class M4ri < Formula
     end
 
     (testpath/"test.c").write <<~EOS
-/* from https://gist.githubusercontent.com/malb/5afc443d6ca3e212eb28db5c17522ceb/raw/08c7191e71a11dee922126a0a20a4d4ab2dfe6a1/test.c */
-#include <m4ri/m4ri.h>
-/*
+      /*  from https://gist.githubusercontent.com/malb/5afc443d6ca3e212eb28db5c17522ceb/raw/08c7191e71a11dee922126a0a20a4d4ab2dfe6a1/test.c  */
+      #include <m4ri/m4ri.h>
+      /*
 
-  compile with:
+        compile with:
 
-  gcc test.c -lm4ri -lm -o test
+        gcc test.c -lm4ri -lm -o test
 
- */
+       */
 
-const size_t m = 1024;
-const size_t n = 1024;
-const size_t l = 1024;
+      const size_t m = 1024;
+      const size_t n = 1024;
+      const size_t l = 1024;
 
-int main(int argc, char *argv[]) {
-  mzd_t *A = mzd_init(m, n);
-  mzd_randomize(A);
-  mzd_t *B = mzd_init(m, n);
-  mzd_randomize(B);
-  mzd_t *C = mzd_init(n, l);
-  mzd_randomize(C);
+      int main(int argc, char *argv[]) {
+        mzd_t *A = mzd_init(m, n);
+        mzd_randomize(A);
+        mzd_t *B = mzd_init(m, n);
+        mzd_randomize(B);
+        mzd_t *C = mzd_init(n, l);
+        mzd_randomize(C);
 
-  // AC + BC = (A+B)C
-  mzd_t *R0 = mzd_mul(NULL, A, C, 0);
-  mzd_addmul(R0, B, C, 0);
+        // AC + BC = (A+B)C
+        mzd_t *R0 = mzd_mul(NULL, A, C, 0);
+        mzd_addmul(R0, B, C, 0);
 
-  mzd_t *T0 = mzd_add(NULL, A, B);
-  mzd_t *R1 = mzd_mul(NULL, T0, C, 0);
+        mzd_t *T0 = mzd_add(NULL, A, B);
+        mzd_t *R1 = mzd_mul(NULL, T0, C, 0);
 
-  int r = mzd_equal(R0, R1);
+        int r = mzd_equal(R0, R1);
 
-  FILE *fh = tmpfile();
-  mzd_to_png_fh(A, fh, 1, NULL, 0);
-  fflush(fh);
-  fseek(fh, 0, SEEK_SET);
-  mzd_t *AA = mzd_from_png_fh(fh, 0);
-  fclose(fh);
-  r &= mzd_equal(A, AA);
+        FILE *fh = tmpfile();
+        mzd_to_png_fh(A, fh, 1, NULL, 0);
+        fflush(fh);
+        fseek(fh, 0, SEEK_SET);
+        mzd_t *AA = mzd_from_png_fh(fh, 0);
+        fclose(fh);
+        r &= mzd_equal(A, AA);
 
-  mzd_free(AA);
-  mzd_free(T0);
-  mzd_free(R1);
-  mzd_free(R0);
+        mzd_free(AA);
+        mzd_free(T0);
+        mzd_free(R1);
+        mzd_free(R0);
 
-  mzd_free(C);
-  mzd_free(B);
-  mzd_free(A);
+        mzd_free(C);
+        mzd_free(B);
+        mzd_free(A);
 
-  if (r == TRUE) {
-    fprintf(stderr, "M4RI test passed.");
-    return 0;
-  } else {
-    fprintf(stderr, "M4RI test failed.");
-    return -1;
-  }
-}
+        if (r == TRUE) {
+          fprintf(stderr, "M4RI test passed.");
+          return 0;
+        } else {
+          fprintf(stderr, "M4RI test failed.");
+          return -1;
+        }
+      }
     EOS
     system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lm4ri", "-o", "test"
     system "./test"
