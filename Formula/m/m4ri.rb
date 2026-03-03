@@ -5,6 +5,12 @@ class M4ri < Formula
   sha256 "7e033ca1fd36be8861e2f67d9d124c398fc0d830209bb0226462485876346404"
   license "GPL-2.0"
 
+  bottle do
+    root_url "https://ghcr.io/v2/dimpase/tap"
+    rebuild 1
+    sha256 cellar: :any, sequoia: "85bf177aee9ab57d2c818cb0ba55ed70c30040261e1fdd8b3637f0eefdf5e450"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
