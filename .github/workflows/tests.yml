@@ -6,17 +6,16 @@ on:
       - main
   pull_request:
 
+env:
+  HOMEBREW_NO_INSTALL_FROM_API: 1
+  HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   test-bot:
     strategy:
       matrix:
-        os: [ ubuntu-22.04, macos-15-intel, macos-26 ]
+        os: [ ubuntu-latest, macos-15-intel, macos-26 ]
     runs-on: ${{ matrix.os }}
-    permissions:
-      actions: read
-      checks: read
-      contents: read
-      pull-requests: read
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -31,12 +30,14 @@ jobs:
           key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
           restore-keys: ${{ matrix.os }}-rubygems-
 
+      - brew unbottled m4ri
+
       - run: brew test-bot --only-cleanup-before
 
       - run: brew test-bot --only-setup
 
       - run: brew test-bot --only-tap-syntax
-      - run: brew test-bot --only-formulae
+      - run: brew test-bot --only-formulae  --verbose --root-url=https://ghcr.io/v2/dimpase/tap
         if: github.event_name == 'pull_request'
 
       - name: Upload bottles as artifact
