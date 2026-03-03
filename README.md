@@ -1,4 +1,4 @@
-# Dimpase Tap
+# Dimpase's Tap
 
 ## How do I install these formulae?
 
