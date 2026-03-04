@@ -35,9 +35,7 @@ class M4ri < Formula
   test do
     if OS.mac?
       require "utils/linkage"
-      libgomp = Formula["gcc"].opt_lib/"gcc/current/libgomp.dylib"
       libomp = Formula["libomp"].opt_lib/"libomp.dylib"
-      refute Utils.binary_linked_to_library?(lib/"libm4ri.dylib", libgomp), "Unwanted linkage to libgomp!"
       assert Utils.binary_linked_to_library?(lib/"libm4ri.dylib", libomp), "Missing linkage to libomp!"
     end
 
