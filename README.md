@@ -13,6 +13,13 @@ tap "dimpase/tap"
 brew "<formula>"
 ```
 
+
+Currently implemented taps
+
+* m4ri
+* m4rie
+
+
 ## Documentation
 
 `brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
