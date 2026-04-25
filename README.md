@@ -18,7 +18,7 @@ Currently implemented taps
 
 * m4ri
 * m4rie
-
+* symmetrica
 
 ## Documentation
 
