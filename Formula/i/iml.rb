@@ -23,6 +23,10 @@ class Iml < Formula
            "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
+
+  test do
+    system "true"
+  end
 end
 
 __END__
