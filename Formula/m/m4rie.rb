@@ -5,8 +5,6 @@ class M4rie < Formula
   sha256 "96f1adafd50e6a0b51dc3aa1cb56cb6c1361ae7c10d97dc35c3fa70822a55bd7"
   license "GPL-2.0"
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "libpng"
   depends_on "m4ri"
