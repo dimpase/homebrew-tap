@@ -5,6 +5,13 @@ class M4ri < Formula
   sha256 "7e033ca1fd36be8861e2f67d9d124c398fc0d830209bb0226462485876346404"
   license "GPL-2.0"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/m4ri-20260122"
+    rebuild 2
+    sha256 cellar: :any,                 arm64_tahoe:  "5f3debad9caf71cdf1460ad73c9742efeae735fea2f83330ac53e0f4c87e32a8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "aae4b89f47e979b97d8a642ffa3a22b2d6606d700e31c5b151d2a2b909289191"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
