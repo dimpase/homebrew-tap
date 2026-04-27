@@ -5,6 +5,13 @@ class M4rie < Formula
   sha256 "96f1adafd50e6a0b51dc3aa1cb56cb6c1361ae7c10d97dc35c3fa70822a55bd7"
   license "GPL-2.0"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/m4rie-20250128"
+    rebuild 1
+    sha256 cellar: :any,                 arm64_tahoe:  "04672412802f2bd0c3a43353aa79169bf9156e214daad9ffd41a51c9c0c6278d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "982e60f905dd45468ca9b1ba77519eb724aa3f1dc342ebccb3050b90da9eaf44"
+  end
+
   depends_on "libtool" => :build
   depends_on "libpng"
   depends_on "m4ri"
