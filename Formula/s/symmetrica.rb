@@ -4,9 +4,9 @@ class Symmetrica < Formula
   url "https://github.com/sagemath/sage-package/releases/download/tars/symmetrica-3.1.0.tar.xz"
   sha256 "2efc4b1d047c6fe036453882a20e906ca2bedecae888356c7626447db2b10fd3"
   license :public_domain
-  
+
   depends_on "libtool" => :build
-  
+
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install"
