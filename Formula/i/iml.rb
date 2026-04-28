@@ -45,10 +45,10 @@ class Iml < Formula
         for (i=0; i<D*D; i++) mpz_init_set_si(*(p++), 1+i+i*i);
         d = nullspaceMP(D, D, A, &B);
         free(A); free(B);
-        return d==2;
+        return d!=2;
       }
     EOS
-    system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lgmp", "-liml", "-o", "test"
+    system ENV.cc, "test.c", "-I#{include}", "-L#{Formula["gmp"].lib}", "-lgmp", "-L#{lib}", "-liml", "-o", "test"
     system "./test"
   end
 end
