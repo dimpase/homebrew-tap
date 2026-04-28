@@ -32,7 +32,24 @@ class Iml < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.c").write <<~EOS
+    #include <gmp.h>
+    #include <iml.h>
+    #include <stdlib.h>
+    #define D 5
+    int main(void) {
+      mpz_t *A, *B, *p;
+      long int d, i;
+      A = calloc(D*D, sizeof(mpz_t));
+      p = A;
+      for (i=0; i<D*D; i++) mpz_init_set_si(*(p++), 1+i+i*i);
+      d = nullspaceMP(D, D, A, &B);
+      free(A); free(B);
+      return d==2;
+  }
+  EOS
+  system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lgmp", "-liml", "-o", "test"
+  system "./test"
   end
 end
 
