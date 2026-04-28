@@ -7,9 +7,10 @@ class Iml < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/iml-1.0.5"
-    sha256 cellar: :any,                 arm64_tahoe:  "69d5702816e0a371ea4d4fb3b8d749b40217ae558c73263f4ffe5fc179955b2b"
-    sha256 cellar: :any,                 sequoia:      "9256dc4043ea434da41783ef84d0639091923877222dae3da058fa78d0b301cc"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "1024f70368a5bed23f06714caa638975685b39c20e385b2892a9c5a5dc4f8a50"
+    rebuild 1
+    sha256 cellar: :any,                 arm64_tahoe:  "ada1be6e75ac653ad3e5924efd96f971969e0c41010e7aeb2bb850ea4e2dae9b"
+    sha256 cellar: :any,                 sequoia:      "fcb16f757f0518dccc847978003929ba6cfb38dd1cdb83ca813a6aa5a3e9f6bb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "1d6717b311c299a200271d865b40865121227b37c3482a030bb4976c0f81c000"
   end
 
   depends_on "autoconf" => :build
