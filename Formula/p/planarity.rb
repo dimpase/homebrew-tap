@@ -16,6 +16,26 @@ class Planarity < Formula
   end
 
   test do
-    assert_match "planarity", shell_output("#{bin}/planarity -h 2>&1", 1)
+    # K4 (4-vertex complete graph) is planar; planarity returns 0 for planar
+    (testpath/"k4.txt").write <<~EOS
+      N=4
+      0: 1 2 3 -1
+      1: 0 2 3 -1
+      2: 0 1 3 -1
+      3: 0 1 2 -1
+    EOS
+    system bin/"planarity", "-s", "-q", "-p", testpath/"k4.txt", testpath/"k4.out"
+
+    # K3,3 (complete bipartite 3,3) is non-planar; planarity returns 1 for non-planar
+    (testpath/"k33.txt").write <<~EOS
+      N=6
+      0: 3 4 5 -1
+      1: 3 4 5 -1
+      2: 3 4 5 -1
+      3: 0 1 2 -1
+      4: 0 1 2 -1
+      5: 0 1 2 -1
+    EOS
+    shell_output("#{bin}/planarity -s -q -p #{testpath}/k33.txt #{testpath}/k33.out 2>&1", 1)
   end
 end
