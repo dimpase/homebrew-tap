@@ -1,7 +1,7 @@
 class Cliquer < Formula
   desc "Routines for clique searching in weighted graphs"
   homepage "https://github.com/dimpase/autocliquer"
-  url "https://github.com/dimpase/autocliquer/archive/refs/tags/v1.23.tar.gz"
+  url "https://github.com/dimpase/autocliquer/releases/download/v1.23/cliquer-1.23.tar.gz"
   sha256 "089b06d8898a6cf55db3ee100888d1c0099e083db93eba5d1440bfe85ad85b11"
   license "GPL-2.0-or-later"
 
