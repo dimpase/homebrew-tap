@@ -5,6 +5,13 @@ class Planarity < Formula
   sha256 "94a6738cf4e5aaa912f0dd47b0b9b6a8022eccb9d668bd1d7d3de2fc920ec129"
   license "BSD-3-Clause"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/planarity-4.0.1.0"
+    sha256 cellar: :any,                 arm64_tahoe:  "d006f90232db4b206f2c222670aae9c3c88beb4966090320d662ee50d49c6319"
+    sha256 cellar: :any,                 sequoia:      "966af94f3a86ba79256dddc533779eb2e721ceed4df4a0670d0746a4676e53fd"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "057eb8cf9dc89ea374415fb1a66759ae41804f60b57b27e5db3558e46d1a6105"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
