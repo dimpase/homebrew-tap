@@ -5,12 +5,9 @@ class Cliquer < Formula
   sha256 "089b06d8898a6cf55db3ee100888d1c0099e083db93eba5d1440bfe85ad85b11"
   license "GPL-2.0-or-later"
 
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
   depends_on "libtool" => :build
 
   def install
-    system "autoreconf", "-ivf"
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
