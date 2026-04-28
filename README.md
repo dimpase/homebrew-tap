@@ -16,8 +16,11 @@ brew "<formula>"
 
 Currently implemented taps
 
+* cliquer
+* iml
 * m4ri
 * m4rie
+* planarity
 * symmetrica
 
 ## Documentation
