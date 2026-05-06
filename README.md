@@ -17,6 +17,7 @@ brew "<formula>"
 Currently implemented taps
 
 * cliquer
+* gmp-ecm (for `ecm` the elliptic curve factorisation algorithm)
 * iml
 * m4ri
 * m4rie
