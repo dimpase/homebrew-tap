@@ -18,6 +18,7 @@ Currently implemented taps
 
 * brial
 * cliquer
+* ecl (version 26.5.5)
 * gmp-ecm (for `ecm` the elliptic curve factorisation algorithm)
 * iml
 * lcalc
