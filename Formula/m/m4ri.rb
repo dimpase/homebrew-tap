@@ -7,9 +7,9 @@ class M4ri < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/m4ri-20260122"
-    rebuild 2
-    sha256 cellar: :any,                 arm64_tahoe:  "5f3debad9caf71cdf1460ad73c9742efeae735fea2f83330ac53e0f4c87e32a8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "aae4b89f47e979b97d8a642ffa3a22b2d6606d700e31c5b151d2a2b909289191"
+    rebuild 3
+    sha256 cellar: :any,                 arm64_tahoe:  "3e13fd2144ff2d28e4a7c0b979ced5745bb120bbabd7fc14f2fb19fea5d0b003"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "25dd9b5efc6dbbc479648481f7bd51dd69ead21ec2860da9d35ac10b2d75af42"
   end
 
   depends_on "autoconf" => :build
