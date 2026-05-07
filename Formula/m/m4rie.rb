@@ -3,7 +3,7 @@ class M4rie < Formula
   homepage "https://bitbucket.org/malb/m4rie"
   url "https://github.com/malb/m4rie/releases/download/20250128/m4rie-20250128.tar.gz"
   sha256 "96f1adafd50e6a0b51dc3aa1cb56cb6c1361ae7c10d97dc35c3fa70822a55bd7"
-  license "GPL-2.0"
+  license "GPL-2.0-only"
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/m4rie-20250128"
