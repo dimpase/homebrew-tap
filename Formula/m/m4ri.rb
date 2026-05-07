@@ -3,7 +3,7 @@ class M4ri < Formula
   homepage "https://github.com/malb/m4ri"
   url "https://github.com/malb/m4ri/releases/download/20260122/m4ri-20260122.tar.gz"
   sha256 "7e033ca1fd36be8861e2f67d9d124c398fc0d830209bb0226462485876346404"
-  license "GPL-2.0"
+  license "GPL-2.0-only"
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/m4ri-20260122"
