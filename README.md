@@ -16,6 +16,7 @@ brew "<formula>"
 
 Currently implemented taps
 
+* brial
 * cliquer
 * gmp-ecm (for `ecm` the elliptic curve factorisation algorithm)
 * iml
@@ -23,6 +24,7 @@ Currently implemented taps
 * m4ri
 * m4rie
 * planarity
+* rw
 * symmetrica
 
 ## Documentation

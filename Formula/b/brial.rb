@@ -10,6 +10,7 @@ class Brial < Formula
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
   depends_on "m4ri"
+  depends_on "pkgconf"
 
   def install
     # Remove unrecognized options if they cause configure to fail
