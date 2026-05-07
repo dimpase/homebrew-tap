@@ -5,6 +5,13 @@ class Rw < Formula
   sha256 "89a8ed364893ac1b70ab70a152e3e7db3cf348bb69098aa6dbb969639df927db"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/rw-0.10"
+    sha256 cellar: :any,                 arm64_tahoe:  "51925dcc2373fbfebc68b916ed522a814cb32c70c022c3cc805a4a789125b886"
+    sha256 cellar: :any,                 sequoia:      "f2eb17bafcdfb9414c3ac6f26ab5893dbdc4642d45e50c1275a3c437fff9c385"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "9f4a593f9fa1e90ebbd725c531c5278684837faca1394ddeeda29b38d3b2a028"
+  end
+
   depends_on "libtool" => :build
 
   def install
