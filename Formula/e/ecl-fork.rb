@@ -1,4 +1,4 @@
-class Ecl < Formula
+class EclFork < Formula
   desc "Embeddable Common Lisp"
   homepage "https://ecl.common-lisp.dev"
   url "https://ecl.common-lisp.dev/static/files/release/ecl-26.5.5.tgz"

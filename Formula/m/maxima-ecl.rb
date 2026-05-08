@@ -4,7 +4,6 @@ class MaximaEcl < Formula
   url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.49.0-source/maxima-5.49.0.tar.gz"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
   license "GPL-2.0-only"
-  revision 5
 
   livecheck do
     url :stable
@@ -13,8 +12,10 @@ class MaximaEcl < Formula
 
   depends_on "gawk" => :build
   depends_on "texinfo" => :build
+  depends_on "bdw-gc"
   depends_on "ecl"
   depends_on "gettext"
+  depends_on "gmp"
   depends_on "gnuplot"
   depends_on "rlwrap"
 
@@ -35,10 +36,10 @@ class MaximaEcl < Formula
                           *std_configure_args
     system "make"
     require "fileutils"
-    faspath = `ecl -eval "(princ (SI:GET-LIBRARY-PATHNAME))" -eval "(quit)"`
-    ohai "Now installing the Maxima library maxima.fas into #{faspath}"
+    ohai "Now installing the Maxima library maxima.fas into #{lib}"
     chmod 0444, "src/binary-ecl/maxima.fas", verbose: true
-    cp "src/binary-ecl/maxima.fas", faspath
+    mkdir_p "#{lib}/bin"
+    cp "src/binary-ecl/maxima.fas", "#{lib}/bin"
     ohai "Now installing the rest of Maxima..."
     system "make", "install"
   end
