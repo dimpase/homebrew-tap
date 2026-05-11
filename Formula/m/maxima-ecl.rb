@@ -10,6 +10,12 @@ class MaximaEcl < Formula
     regex(%r{url=.*?/maxima[._-]v?(\d+(?:\.\d+)+)\.t}i)
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/maxima-ecl-5.49.0"
+    sha256 cellar: :any,                 arm64_tahoe:  "11c5f87df492a29ca8660de1d407aec6f0ab70b8d6729abcb3c0bb0bbae11ecb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "112cae8b98dec40f7d3c3fcb247226d13d6dd497acb2977eb795f653b29f53e5"
+  end
+
   depends_on "gawk" => :build
   depends_on "texinfo" => :build
   depends_on "bdw-gc"
