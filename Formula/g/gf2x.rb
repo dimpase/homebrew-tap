@@ -5,6 +5,13 @@ class Gf2x < Formula
   sha256 "9472cd651972a1de38e3c4c47697a86e0ecf19d7d33454d4bc2a62bc85841b59"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/gf2x-1.3.0"
+    sha256 cellar: :any,                 arm64_tahoe:  "696aad4c9c47bd19e8d5982a597fdd732e58e478ad3bf4a85f596ee177824fa7"
+    sha256 cellar: :any,                 sequoia:      "2eb39149190c319efc1d5f073aa70dffe51c797ef1fec0695a51c6171cc832e8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "ad0dbb6ededf80c191d0f38771dbb31b96297ac69248395eec7d15f816e8741a"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
