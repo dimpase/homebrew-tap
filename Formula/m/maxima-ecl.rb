@@ -42,10 +42,10 @@ class MaximaEcl < Formula
                           *std_configure_args
     system "make"
     require "fileutils"
-    ohai "Now installing the Maxima library maxima.fas into #{lib}"
+    ohai "Now installing the Maxima library maxima.fas into #{Formula["ecl"].opt_lib}/ecl-26.5.5"
     chmod 0444, "src/binary-ecl/maxima.fas", verbose: true
-    mkdir_p "#{lib}/bin"
-    cp "src/binary-ecl/maxima.fas", "#{lib}/bin"
+    # mkdir_p "#{lib}/bin"
+    cp "src/binary-ecl/maxima.fas", "#{Formula["ecl"].opt_lib}/ecl-26.5.5"
     ohai "Now installing the rest of Maxima..."
     system "make", "install"
   end
