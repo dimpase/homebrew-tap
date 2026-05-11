@@ -20,6 +20,7 @@ Currently implemented taps
 * brial
 * cliquer
 * ecl-fork  (version 26.5.5) - not needed, as Homebrew now has one
+* eclib     (a.k.a. mwrank/libec)
 * gf2x      (no tuning)
 * gmp-ecm   (for `ecm` the elliptic curve factorisation algorithm)
 * iml
