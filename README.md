@@ -22,11 +22,13 @@ Currently implemented taps
 * gmp-ecm (for `ecm` the elliptic curve factorisation algorithm)
 * iml
 * lcalc
-* maxima-ecl (installs maxima.fas into `$(brew --prefix)/lib/ecl/`)
 * m4ri
 * m4rie
+* maxima-ecl (installs maxima.fas into `$(brew --prefix)/lib/ecl/`)
+* meataxe
 * planarity
 * rw
+* sirocco
 * symmetrica
 
 ## Documentation
