@@ -25,6 +25,7 @@ Currently implemented taps
 * gmp-ecm   (for `ecm` the elliptic curve factorisation algorithm)
 * iml
 * lcalc
+* libbraiding
 * libhomfly 
 * m4ri
 * m4rie
