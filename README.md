@@ -16,6 +16,7 @@ brew "<formula>"
 
 Currently implemented taps
 
+* bliss
 * brial
 * cliquer
 * ecl-fork (version 26.5.5) - not needed, as Homebrew now has one
