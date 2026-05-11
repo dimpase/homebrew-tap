@@ -19,8 +19,9 @@ Currently implemented taps
 * bliss
 * brial
 * cliquer
-* ecl-fork (version 26.5.5) - not needed, as Homebrew now has one
-* gmp-ecm (for `ecm` the elliptic curve factorisation algorithm)
+* ecl-fork  (version 26.5.5) - not needed, as Homebrew now has one
+* gf2x      (no tuning)
+* gmp-ecm   (for `ecm` the elliptic curve factorisation algorithm)
 * iml
 * lcalc
 * libhomfly 
