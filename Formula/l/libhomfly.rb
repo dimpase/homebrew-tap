@@ -9,6 +9,7 @@ class Libhomfly < Formula
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "bdw-gc"
+  depends_on "pkgconf"
 
   def install
     system "autoreconf", "-ivf"

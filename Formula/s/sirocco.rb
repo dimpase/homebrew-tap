@@ -6,7 +6,9 @@ class Sirocco < Formula
   license "GPL-3.0-or-later"
 
   depends_on "libtool" => :build
+  depends_on "gmp"
   depends_on "mpfr"
+  depends_on "pkgconf"
 
   def install
     # Remove unrecognized options if they cause configure to fail
