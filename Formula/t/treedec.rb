@@ -5,11 +5,14 @@ class Treedec < Formula
   sha256 "d1730c98f41dcb23bbd0bd8de9dbec51df015304f28a38935848925901594ae8"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only"]
 
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
   depends_on "libtool" => :build
 
   patch :DATA
 
   def install
+    system "autoreconf", "-ivf"
     system "./configure", "--with-python=no", "--disable-silent-rules", *std_configure_args
     system "make"
     system "make", "install"
