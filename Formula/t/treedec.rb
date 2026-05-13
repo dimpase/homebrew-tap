@@ -2,8 +2,8 @@ class Treedec < Formula
   desc "Algorithms concerning tree decompositions"
   homepage "https://github.com/freetdi/tdlib"
   url "https://github.com/freetdi/tdlib/archive/refs/tags/0.9.3.tar.gz"
-  sha256 "16f9683af4c33e3e79fe36439cb4bb4b63216ad88d59f5dc00dd3fb9256aa4ae"
-  license all_of: ["GPL-2.0-only", "GPL-3.0-only"]
+  sha256 "d1730c98f41dcb23bbd0bd8de9dbec51df015304f28a38935848925901594ae8"
+  license any_of: ["GPL-2.0-only", "GPL-3.0-only"]
 
   depends_on "libtool" => :build
 
