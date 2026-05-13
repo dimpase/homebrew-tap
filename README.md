@@ -35,6 +35,7 @@ Currently implemented taps
 * rw
 * sirocco
 * symmetrica
+* treedec    (Sage spkg tdlib, differently named due to a name clash with a Homebrew package)
 
 ## Documentation
 
