@@ -5,6 +5,12 @@ class Treedec < Formula
   sha256 "d1730c98f41dcb23bbd0bd8de9dbec51df015304f28a38935848925901594ae8"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only"]
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/treedec-0.9.3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "acd6a726efb5fab5c29c1b3c311b4c4a6f63a704cbbc53929640ecffce6e65f6"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "6b67daa8e877a2df4775bc1dc27404a15ec1288d0f879b478639aed1efccf938"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
