@@ -4,13 +4,6 @@ class Brial < Formula
   url "https://github.com/BRiAl/BRiAl/releases/download/1.2.15/brial-1.2.15.tar.bz2"
   sha256 "1d0e7de01b1b60ad892dee6c02503f5932e2ed211f3f8dbdf1a3216c696ef201"
   license all_of: ["0BSD", "GPL-2.0-only"]
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/brial-1.2.15_1"
-    sha256 cellar: :any,                 arm64_tahoe:  "5e3499d91c81cc1221d1e4372858bf45e6b29afb1360ce7fd96d4511f64826bf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "ca5a28a81985332e55ee69534b6506232785adf37704dba264c79cc6ceb7a847"
-  end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
