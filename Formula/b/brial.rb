@@ -4,7 +4,7 @@ class Brial < Formula
   url "https://github.com/BRiAl/BRiAl/releases/download/1.2.15/brial-1.2.15.tar.bz2"
   sha256 "1d0e7de01b1b60ad892dee6c02503f5932e2ed211f3f8dbdf1a3216c696ef201"
   license all_of: ["0BSD", "GPL-2.0-only"]
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/brial-1.2.15_1"
