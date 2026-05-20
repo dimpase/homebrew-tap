@@ -23,7 +23,7 @@ class Brial < Formula
     # Remove unrecognized options if they cause configure to fail
     # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "./configure", "--with-boost=#{HOMEBREW_PREFIX}", "--with-boost-libdir=#{HOMEBREW_PREFIX}/lib",
-      "--disable-static", "--disable-silent-rules", *std_configure_args, "--disable-debug"
+      "--disable-static", "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
 
