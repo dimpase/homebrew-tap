@@ -27,7 +27,7 @@ Currently implemented taps
 * lcalc
 * libbraiding
 * libhomfly 
-* m4ri
+* ~m4ri~ upstreamed to mainline homebrew, only use this one if you need OpenMP support
 * m4rie
 * maxima-ecl (installs maxima.fas into `$(brew --prefix)/lib/ecl/`)
 * meataxe
