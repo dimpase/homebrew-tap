@@ -7,9 +7,9 @@ class GmpEcm < Formula
   head "https://gitlab.inria.fr/zimmerma/ecm.git", branch: "master"
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/gmp-ecm-7.0.6"
-    sha256 cellar: :any,                 arm64_tahoe:  "25e26bf4e8cbf156d28c244f5a3d5d2a99d2a93de01c6d9817ec0268210c3f19"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "eb88e1950a245b0d86d017d569d203caf79d930793843a4f5edcf14128723442"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/gmp-ecm-7.0.7"
+    sha256 cellar: :any, arm64_tahoe:  "d99c1306d016e614d720cef8c3230c330d86d2e0b2b5d707d39819191543d164"
+    sha256 cellar: :any, x86_64_linux: "a349ebba2fdbea6403137b1889fbfe4b3a2490e913d9a0b2ea8fd1804aa12630"
   end
 
   depends_on "autoconf" => :build
