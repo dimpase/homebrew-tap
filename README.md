@@ -22,7 +22,7 @@ Currently implemented taps
 * ~ecl-fork~  (version 26.5.5) - not needed, as Homebrew now has one
 * eclib     (a.k.a. mwrank/libec)
 * gf2x      (no tuning)
-* gmp-ecm   (for `ecm` the elliptic curve factorisation algorithm) (mainline homebrew got one too - TODO a revision)
+* ~gmp-ecm~   (for `ecm` the elliptic curve factorisation algorithm) - now in mainline homebrew
 * iml
 * lcalc
 * libbraiding
