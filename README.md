@@ -19,6 +19,7 @@ Currently implemented taps
 * bliss
 * brial
 * cliquer
+* coxeter3
 * ~ecl-fork~  (version 26.5.5) - not needed, as Homebrew now has one
 * eclib     (a.k.a. mwrank/libec)
 * gf2x      (no tuning)
