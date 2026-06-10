@@ -5,6 +5,13 @@ class Coxeter3 < Formula
   sha256 "46bc9ae200bd0eb81e50f5e20fbd6a1ba6c17e04d3046d541f2e50b5b9ca5c32"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/coxeter3-3.1"
+    sha256 cellar: :any, arm64_tahoe:  "d931993425ce84da769b42dd8d3cdda44ea73982b627805339c261fd24f07739"
+    sha256 cellar: :any, sequoia:      "b1af0bd962c4ca799b63b4dc884fef0cbd3fe33f14254fb3e9589d3429534bde"
+    sha256 cellar: :any, x86_64_linux: "7835ff8d16c4cba233bbbe2c3a8acc9323301129580c33b4f7769aa548c4b3ab"
+  end
+
   depends_on "libtool" => :build
 
   def install
