@@ -7,8 +7,9 @@ class Lcalc < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/lcalc-2.2.1"
-    sha256 cellar: :any,                 arm64_tahoe:  "82badd179d30feb4c8a0860de9c391caeaf267cceb790e5bb112143f2f1d8361"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "0268af540619f9719fc5382f7dc27473f5202061dbbf0d420af5e48b2b7d0616"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "3b53d0adb281c2bbd52eaf1d1ec4e0fb63b478eea3c5594fb07da14e4edb1e9e"
+    sha256 cellar: :any, x86_64_linux: "504feba4d5e8305460144f168a40f475fb9a4ebc18fabaff7c88577471327913"
   end
 
   depends_on "gengetopt" => :build
