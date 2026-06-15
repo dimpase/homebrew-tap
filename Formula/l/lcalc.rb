@@ -19,7 +19,8 @@ class Lcalc < Formula
   def install
     # Remove unrecognized options if they cause configure to fail
     # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
-    system "./configure", "--enable-openmp", "--disable-silent-rules", *std_configure_args
+    system "./configure", "--enable-openmp", "--enable-precision=double",
+      "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
 
