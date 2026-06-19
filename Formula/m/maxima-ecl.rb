@@ -4,6 +4,7 @@ class MaximaEcl < Formula
   url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.49.0-source/maxima-5.49.0.tar.gz"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
   license "GPL-2.0-only"
+  revision 1
 
   livecheck do
     url :stable
@@ -42,10 +43,9 @@ class MaximaEcl < Formula
                           *std_configure_args
     system "make"
     require "fileutils"
-    ohai "Now installing the Maxima library maxima.fas into #{lib}"
+    ohai "Now installing the Maxima library maxima.fas into #{lib}/ecl-#{Formula["ecl"].version}"
     chmod 0444, "src/binary-ecl/maxima.fas", verbose: true
-    mkdir_p "#{lib}/bin"
-    cp "src/binary-ecl/maxima.fas", "#{lib}/bin"
+    (lib/"ecl-#{Formula["ecl"].version}").install "src/binary-ecl/maxima.fas"
     ohai "Now installing the rest of Maxima..."
     system "make", "install"
   end
