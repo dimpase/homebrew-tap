@@ -31,8 +31,13 @@ Currently implemented taps
 * lrcalc
 * ~m4ri~ upstreamed to mainline homebrew, only use this one if you need OpenMP support
 * ~m4rie~ upstreamed to mainline homebrew
-* maxima-ecl (installs maxima.fas into `$(brew --prefix)/lib/ecl/`)
-* mcqd
+* maxima-ecl (installs maxima.fas into `$(brew --prefix)/lib/ecl-<version>/`)
+  TODO: currently `ecl` does not see it, so one has to manually link it:
+  ```bash
+  evers=ecl-$(ecl -v | sed 's/ECL\ //')
+  ln -s $(brew --prefix maxima-ecl)/lib/$evers/maxima.fas $(brew --prefix ecl)/lib/$evers/
+  ```
+* mcqd (which can be found by `cmake` now)
 * meataxe
 * planarity
 * rw
