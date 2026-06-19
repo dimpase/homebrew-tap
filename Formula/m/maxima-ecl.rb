@@ -12,9 +12,9 @@ class MaximaEcl < Formula
   end
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/maxima-ecl-5.49.0"
-    sha256 cellar: :any,                 arm64_tahoe:  "11c5f87df492a29ca8660de1d407aec6f0ab70b8d6729abcb3c0bb0bbae11ecb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "112cae8b98dec40f7d3c3fcb247226d13d6dd497acb2977eb795f653b29f53e5"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/maxima-ecl-5.49.0_1"
+    sha256 cellar: :any, arm64_tahoe:  "1b93b20e17e58a8deaacaa2a0c17763535835f5f0a317873a1ee21188e29d044"
+    sha256 cellar: :any, x86_64_linux: "54d48b81b789e8f7bc51ef8e758e75dced877ad98206cad4f9b9433a99bcc5eb"
   end
 
   depends_on "gawk" => :build
