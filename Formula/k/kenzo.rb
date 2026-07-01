@@ -9,7 +9,6 @@ class Kenzo < Formula
   depends_on "ecl"
   depends_on "gmp"
 
-
   def install
     ohai "Compiling kenzo"
     system "ecl < compile.lisp"

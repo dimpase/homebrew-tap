@@ -22,6 +22,8 @@ class EclFork < Formula
   depends_on "gmp"
   uses_from_macos "libffi"
 
+  conflicts_with "ecl", because: "mainline ecl is installed by default"
+
   def install
     ENV.deparallelize
 
