@@ -12,7 +12,7 @@ class Kenzo < Formula
     system "ecl < compile.lisp"
     require "fileutils"
     ohai "Installing kenzo.fas into #{lib}/ecl-#{Formula["ecl"].version}"
-    File.rename "kenzo--all-systems.fasb", "kenzo.fas" 
+    File.rename "kenzo--all-systems.fasb", "kenzo.fas"
     chmod 0444, "kenzo.fas", verbose: true
     (lib/"ecl-#{Formula["ecl"].version}").install "kenzo.fas"
   end

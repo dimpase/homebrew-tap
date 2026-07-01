@@ -28,7 +28,7 @@ class Lcalc < Formula
   test do
     if OS.mac?
       require "utils/linkage"
-      libomp = Formula["libomp"].opt_lib/"libomp.dylib"
+      libomp = formula_opt_lib("libomp")/"libomp.dylib"
       assert Utils.binary_linked_to_library?(lib/"libLfunction.dylib", libomp), "Missing linkage to libomp!"
     end
 

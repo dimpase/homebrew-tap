@@ -39,7 +39,7 @@ class MaximaEcl < Formula
     system "./configure", "--enable-gettext",
                           "--enable-ecl",
                           "--with-emacs-prefix=#{elisp}",
-                          "--with-ecl=#{Formula["ecl"].opt_bin}/ecl",
+                          "--with-ecl=#{formula_opt_bin("ecl")}/ecl",
                           *std_configure_args
     system "make"
     require "fileutils"

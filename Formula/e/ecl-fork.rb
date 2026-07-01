@@ -28,15 +28,15 @@ class EclFork < Formula
     libffi_prefix = if OS.mac?
       MacOS.sdk_path
     else
-      Formula["libffi"].opt_prefix
+      formula_opt_prefix("libffi")
     end
     system "./configure", "--prefix=#{prefix}",
                           "--enable-threads=yes",
                           "--enable-boehm=system",
                           "--enable-gmp=system",
-                          "--with-gmp-prefix=#{Formula["gmp"].opt_prefix}",
+                          "--with-gmp-prefix=#{formula_opt_prefix("gmp")}",
                           "--with-libffi-prefix=#{libffi_prefix}",
-                          "--with-libgc-prefix=#{Formula["bdw-gc"].opt_prefix}"
+                          "--with-libgc-prefix=#{formula_opt_prefix("bdw-gc")}"
     system "make"
     system "make", "install"
   end
