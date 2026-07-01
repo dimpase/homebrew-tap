@@ -17,6 +17,8 @@ class EclFork < Formula
     sha256 x86_64_linux: "72dd7a6a87ad2ed15086e5f2fd7fbd743fa2b67795e127eb5b52d9302c47a1ee"
   end
 
+  disable! date: "2026-07-01", because: "mainline ecl is good now"
+
   depends_on "texinfo" => :build # Apple's is too old
   depends_on "bdw-gc"
   depends_on "gmp"
