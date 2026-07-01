@@ -20,11 +20,17 @@ Currently implemented taps
 * brial
 * cliquer
 * coxeter3
-* ~ecl-fork~  (version 26.5.5) - not needed, as Homebrew now has one
+* ~ecl-fork~  (version 26.5.5) - not needed, as Homebrew now has one. Disabled 2026-07-01.
 * eclib     (a.k.a. mwrank/libec)
 * gf2x      (no tuning)
 * ~gmp-ecm~   (for `ecm` the elliptic curve factorisation algorithm) - now in mainline homebrew
 * iml
+* kenzo (installs kenzo.fas into `$(brew --prefix)/lib/ecl-<version>/`)
+  TODO: currently `ecl` does not see it, so one has to manually link it:
+  ```bash
+  evers=ecl-$(ecl -v | sed 's/ECL\ //')
+  ln -s $(brew --prefix kenzo)/lib/$evers/kenzo.fas $(brew --prefix ecl)/lib/$evers/
+  ```
 * lcalc
 * libbraiding
 * libhomfly
