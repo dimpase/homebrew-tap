@@ -5,7 +5,10 @@ class Kenzo < Formula
   sha256 "2a23697611a37714433a9e273098d0b2dfe4fdcd83d98b9fc8d7a055c064ed6b"
   license "GPL-2.0-or-later"
 
+  depends_on "bdw-gc"
   depends_on "ecl"
+  depends_on "gmp"
+
 
   def install
     ohai "Compiling kenzo"
