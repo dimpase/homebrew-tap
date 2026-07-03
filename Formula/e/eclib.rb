@@ -7,9 +7,9 @@ class Eclib < Formula
   revision 1
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/eclib-20250627"
-    sha256 cellar: :any,                 arm64_tahoe:  "ba21d5cc54c5b792fafbdb685f54fd90f1780714773c55c472f5ede85ab8c39e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "311051becdaf11017d075488123f70fea89f711ae94b59671c480100144dbaf4"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/eclib-20250627_1"
+    sha256 cellar: :any, arm64_tahoe:  "d6bd75b5d81882eff5bf855b4c621a6173c2685c762aa5eb8ef54011785adc31"
+    sha256 cellar: :any, x86_64_linux: "419b11f1cbac9f5e436e49ff81e0d95271c68877e431160e50981694ea3fb99d"
   end
 
   depends_on "libtool" => :build
