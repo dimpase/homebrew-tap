@@ -4,6 +4,7 @@ class Eclib < Formula
   url "https://github.com/JohnCremona/eclib/releases/download/20250627/eclib-20250627.tar.bz2"
   sha256 "b88d4b52612e491c5415946d9e35f2062ca1015ee7fbbe0b61f158fa74cb4bc9"
   license "GPL-2.0-or-later"
+  revision 1
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/eclib-20250627"
