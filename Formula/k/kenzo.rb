@@ -27,9 +27,13 @@ class Kenzo < Formula
 
   test do
     (testpath/"tst.lsp").write <<~LSP
-      (require :kenzo)
-      (quit)
+      (progn  (with-open-file (*standard-output* "/dev/null" :direction :output
+                                  :if-exists :supersede)
+        (require :kenzo)) (values))
+      (in-package :cat)
+      (setf *HOMOLOGY-VERBOSE* nil)
+      (write-line (write-to-string (homotopy-list (sphere 2) 4)))
     LSP
-    system "ecl < tst.lsp"
+    assert_equal "(2)", shell_output("ecl --shell #{testpath}/tst.lsp").chomp
   end
 end
