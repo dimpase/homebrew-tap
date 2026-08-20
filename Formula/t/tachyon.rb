@@ -5,6 +5,12 @@ class Tachyon < Formula
   sha256 "09203c102311149f5df5cc367409f96c725742666d19c24db5ba994d5a81a6f5"
   license "BSD-3-clause"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/tachyon-0.99.5"
+    sha256 cellar: :any, arm64_tahoe:  "9eff4585ad6481004dc31ad59c4af43a2f37e10806437dabb70db9a42248ebac"
+    sha256 cellar: :any, x86_64_linux: "e1a9325fb4ed3fefd2f0fb887f4e6e9cc6205675e78d5697b2c04807377146ab"
+  end
+
   depends_on "libpng"
 
   def install
