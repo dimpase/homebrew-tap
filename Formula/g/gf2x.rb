@@ -20,6 +20,8 @@ class Gf2x < Formula
 
   def install
     system "autoreconf", "-ivf"
+    # Remove unrecognized options if they cause configure to fail
+    # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make"
     system "make", "install"

@@ -22,6 +22,8 @@ class Eclib < Formula
   depends_on "pkgconf"
 
   def install
+    # Remove unrecognized options if they cause configure to fail
+    # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "./configure", "--with-ntl", "--with-pari", "--with-flint",
       "--with-boost=no", "--disable-silent-rules", *std_configure_args
     system "make"
