@@ -17,6 +17,8 @@ class Bliss < Formula
   patch :DATA
 
   def install
+    # Remove unrecognized options if they cause configure to fail
+    # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "cmake", ".", *std_cmake_args
     system "make", "install"
   end

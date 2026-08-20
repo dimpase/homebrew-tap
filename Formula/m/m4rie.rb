@@ -17,6 +17,8 @@ class M4rie < Formula
   depends_on "m4ri"
 
   def install
+    # Remove unrecognized options if they cause configure to fail
+    # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
