@@ -5,6 +5,12 @@ class Sympow < Formula
   sha256 "47990ce571ab4f6dabf4b64344bc7df77cf39a3c94f2d36323e43b79800f90b5"
   license "BSD-3-clause"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sympow-2.023.7"
+    sha256 arm64_tahoe:  "15be94b35d3a18a8fac1eb409a385b3fbfd25473a6c5d6ef84673f93725b794a"
+    sha256 x86_64_linux: "2657b7820de633fdf039ea633dc6c3287d57e81607727f9794e3309000bffffb"
+  end
+
   depends_on "help2man" => :build
   depends_on "pari"
 
