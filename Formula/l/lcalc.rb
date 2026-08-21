@@ -16,9 +16,10 @@ class Lcalc < Formula
   depends_on "libtool" => :build
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
+  depends_on "pari"
 
   def install
-    system "./configure", "--enable-openmp", "--enable-precision=double",
+    system "./configure", "--enable-openmp", "--enable-precision=double", "--with-pari",
       "--disable-silent-rules", *std_configure_args
     system "make", "install"
   end
