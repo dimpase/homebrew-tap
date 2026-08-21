@@ -40,7 +40,7 @@ Currently implemented taps
   *no longer needed*.
    - Reinstall fixed `ecl` and `maxima-ecl` by doing `brew reinstall ecl` and `brew reinstall dimpase/tap/maxima-ecl`
 * mcqd (which can be found by `cmake` now)
-* meataxe
+* meataxe (beware of https://github.com/dimpase/homebrew-tap/issues/48 - as a temporary workaround do `export MTXLIB=/tmp` or something like this)
 * planarity
 * rw
 * sirocco
