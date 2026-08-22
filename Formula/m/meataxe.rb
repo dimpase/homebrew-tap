@@ -13,11 +13,23 @@ class Meataxe < Formula
   end
 
   depends_on "libtool" => :build
+  depends_on "pari" => :build
 
   def install
+    ENV.append "CFLAGS", "-DMTXLIB=\\\"#{lib}\\\" -DMTXBIN=\\\"#{bin}\\\""
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make"
     system "make", "install"
+    primes = `echo '[n | n <- [2..255], isprimepower(n)]' | gp -qf`
+    require "json"
+    JSON.parse(primes).each do |i|
+      (buildpath/"inp.txt").write <<~EOS
+        matrix field=#{i} rows=0 cols=0
+      EOS
+      system "#{bin}/zcv", "inp.txt", File::NULL
+      File.delete("inp.txt")
+    end
+    lib.install Dir["*.zzz"]
   end
 
   test do
