@@ -9,9 +9,9 @@ class Tachyon < Formula
   license "BSD-3-clause"
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/tachyon-0.99.5"
-    sha256 cellar: :any, arm64_tahoe:  "9eff4585ad6481004dc31ad59c4af43a2f37e10806437dabb70db9a42248ebac"
-    sha256 cellar: :any, x86_64_linux: "e1a9325fb4ed3fefd2f0fb887f4e6e9cc6205675e78d5697b2c04807377146ab"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/tachyon-0.99.5.upstream"
+    sha256 cellar: :any, arm64_tahoe:  "3d731bbbbaa0d44ce187413d22b028e4f5853af6f1d8b1d91b5abbaee547bf03"
+    sha256 cellar: :any, x86_64_linux: "5ca83cb3361f69310eeba93136cb8101cc72d540abf3147e4690a0c1e46f2cee"
   end
 
   depends_on "libpng"
