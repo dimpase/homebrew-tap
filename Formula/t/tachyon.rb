@@ -1,8 +1,9 @@
 class Tachyon < Formula
   desc "John Stone's ray tracer"
-  homepage "http://jedi.ks.uiuc.edu/~johns/raytracer/"
-  url "https://github.com/dimpase/homebrew-tap/archive/refs/tags/tachyon-0.99.5.tar.gz"
-  sha256 "b188791c044aa5b0a2ba2daafb74be590625607f2043dcb47194013618b338f7"
+  homepage "https://en.wikipedia.org/wiki/Tachyon_(software)"
+  url "https://github.com/dimpase/homebrew-tap/archive/refs/tags/tachyon-0.99.5.upstream.tar.gz"
+  sha256 "20743a6897895e359f5dcef23f8026bb10d507bbca78b7a7e54b4e027db93d94"
+  # homepage "http://jedi.ks.uiuc.edu/~johns/raytracer/"
   # url "http://jedi.ks.uiuc.edu/~johns/raytracer/files/0.99.5/tachyon-0.99.5.tar.gz"
   # sha256 "09203c102311149f5df5cc367409f96c725742666d19c24db5ba994d5a81a6f5"
   license "BSD-3-clause"
