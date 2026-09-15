@@ -17,8 +17,10 @@ class Bliss < Formula
   patch :DATA
 
   def install
-    system "cmake", ".", *std_cmake_args
-    system "make", "install"
+    build_path = "build"
+    system "cmake", "-S", ".", "-B", build_path, *std_cmake_args
+    system "cmake", "--build", build_path
+    system "cmake", "--install", build_path
   end
 
   test do
