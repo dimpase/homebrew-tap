@@ -1,7 +1,7 @@
 class Tachyon < Formula
   desc "John Stone's ray tracer"
   homepage "https://en.wikipedia.org/wiki/Tachyon_(software)"
-  url "https://github.com/dimpase/homebrew-tap/archive/refs/tags/tachyon-0.99.5.upstream.tar.gz"
+  url "https://github.com/dimpase/homebrew-tap/releases/download/tachyon-0.99.5/tachyon-0.99.5.upstream.tar.gz"
   sha256 "20743a6897895e359f5dcef23f8026bb10d507bbca78b7a7e54b4e027db93d94"
   # homepage "http://jedi.ks.uiuc.edu/~johns/raytracer/"
   # url "http://jedi.ks.uiuc.edu/~johns/raytracer/files/0.99.5/tachyon-0.99.5.tar.gz"
