@@ -22,13 +22,13 @@ class Tachyon < Formula
     else
       "linux-thr"
     end
-    chdir "unix" do
+    chdir "homebrew-tap-tachyon-0.99.5/unix" do
       system "make", os.to_s, "USEPNG=-DUSEPNG",
         "PNGINC=-I#{libpng.opt_include}",
         "PNGLIB=-L#{libpng.opt_lib} -lpng"
     end
     ohai "Now installing the tachyon binary into bin/"
-    bin.install "compile/#{os}/tachyon"
+    bin.install "homebrew-tap-tachyon-0.99.5/compile/#{os}/tachyon"
   end
 
   test do
