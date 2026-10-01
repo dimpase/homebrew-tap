@@ -1,8 +1,8 @@
 class Lcalc < Formula
   desc "Package for working with L-functions"
   homepage "https://gitlab.com/sagemath/lcalc"
-  url "https://gitlab.com/-/project/12934202/uploads/0bcf82cdd02412faf9ec0cf80e656610/lcalc-2.2.1.tar.xz"
-  sha256 "aa2c3979b12e12df2ecb681c1a25a0f5a3811c195f61a3baa7512fef1460c40f"
+  url "https://gitlab.com/-/project/12934202/uploads/79611ba9b2a4ca214df935f43978e2de/lcalc-2.2.2.tar.xz"
+  sha256 "27a58d6862ccc2bed3dd487dc7284f6a688bc37639980e085baf1675a1f83980"
   license "GPL-2.0-only"
 
   bottle do
