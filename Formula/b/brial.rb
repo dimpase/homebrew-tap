@@ -24,6 +24,7 @@ class Brial < Formula
   patch :DATA
 
   def install
+    ENV.append "CXXFLAGS", "-std=gnu++17" if OS.linux?
     system "autoreconf", "-ivf"
     system "./configure", "--with-boost=#{HOMEBREW_PREFIX}", "--with-boost-libdir=#{HOMEBREW_PREFIX}/lib",
       "--disable-static", "--disable-silent-rules", *std_configure_args
