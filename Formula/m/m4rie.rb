@@ -13,8 +13,8 @@ class M4rie < Formula
   end
 
   depends_on "libtool" => :build
+  depends_on "dimpase/tap/m4ri"
   depends_on "libpng"
-  depends_on "m4ri"
 
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args
