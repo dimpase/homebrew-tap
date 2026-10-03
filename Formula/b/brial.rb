@@ -18,9 +18,9 @@ class Brial < Formula
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "boost"
+  depends_on "dimpase/tap/m4ri"
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
-  depends_on "m4ri"
   depends_on "pkgconf"
 
   patch :DATA
