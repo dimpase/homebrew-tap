@@ -9,6 +9,7 @@ on:
 jobs:
   test-bot:
     strategy:
+      fail-fast: false
       matrix:
         os: [ macos-15-intel, macos-26 ]
         include:
@@ -40,6 +41,11 @@ jobs:
       - run: brew test-bot --only-cleanup-before
 
       - run: brew test-bot --only-setup
+
+      - name: Tap external dependencies
+        run: |
+          brew tap dimpase/gap
+          brew tap macaulay2/tap
 
       - run: brew test-bot --only-tap-syntax
       - run: brew test-bot --only-formulae
