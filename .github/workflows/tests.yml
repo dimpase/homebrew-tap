@@ -48,6 +48,9 @@ jobs:
           brew tap macaulay2/tap
           brew trust --tap dimpase/gap macaulay2/tap
 
+      - name: Install patched PARI
+        run: brew install dimpase/tap/pari
+
       - run: brew test-bot --only-tap-syntax
       - run: brew test-bot --only-formulae
         if: github.event_name == 'pull_request'
