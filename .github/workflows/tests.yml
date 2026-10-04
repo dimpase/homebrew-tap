@@ -8,13 +8,10 @@ on:
 
 jobs:
   test-bot:
-    # Homebrew no longer supports macOS Intel or builds bottles for it.
-    # Keep exercising it, but dependency build failures are non-blocking.
-    continue-on-error: ${{ matrix.os == 'macos-15-intel' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-15-intel, macos-26 ]
+        os: [ macos-26 ]
         include:
           - os: ubuntu-latest
             container: ghcr.io/homebrew/brew:main
