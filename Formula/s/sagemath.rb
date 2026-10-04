@@ -2,7 +2,6 @@ class Sagemath < Formula
   desc "Open source mathematics software"
   homepage "https://www.sagemath.org"
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
-  version "11.0.beta1"
   sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
   license "GPL-2.0-or-later"
 

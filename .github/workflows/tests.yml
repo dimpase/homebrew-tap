@@ -46,6 +46,7 @@ jobs:
         run: |
           brew tap dimpase/gap
           brew tap macaulay2/tap
+          brew trust --tap dimpase/gap macaulay2/tap
 
       - run: brew test-bot --only-tap-syntax
       - run: brew test-bot --only-formulae
