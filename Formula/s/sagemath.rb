@@ -281,6 +281,11 @@ class Sagemath < Formula
     sha256 "f1303ef2eec81262a4b708c3e858afe58d7c75ad91c1c05266eda7673369859a"
   end
 
+  resource "lrcalc" do
+    url "https://files.pythonhosted.org/packages/a9/65/612c8c5b91dd5c1c576009c0501fc49be4e65383d04bde6d44edb1522abd/lrcalc-2.1.tar.gz"
+    sha256 "e3a0509aeda487b412b391a52e817ca36b5c063a8305e09fd54d53259dd6aaa9"
+  end
+
   resource "markupsafe" do
     url "https://files.pythonhosted.org/packages/38/9b/e422a865e1d5d57d0e509b4e0bf1c1a70a7f6382c29a5aa428df994c8bc8/markupsafe-3.0.4.tar.gz"
     sha256 "2e9ad7dd851bf45fab9f75cbff4cb493fee9979e8d8c7c9c3ee119022518edd6"
@@ -553,7 +558,7 @@ class Sagemath < Formula
       resources.reject { |r| r.name == "cypari2" }.each do |r|
         r.stage do
           args = std_pip_args(prefix:          private_prefix,
-                              build_isolation: ["pplpy", "primecountpy"].exclude?(r.name))
+                              build_isolation: ["lrcalc", "pplpy", "primecountpy"].exclude?(r.name))
           if ["matplotlib", "pplpy", "primecountpy"].include?(r.name)
             args += ["--config-settings=setup-args=--wrap-mode=nofallback"]
           end
@@ -595,6 +600,9 @@ class Sagemath < Formula
       assert pari(2).isprime()
       assert maxima("2+2").sage() == 4
       assert BooleanPolynomialRing(3, "a").ngens() == 3
+      from sage.libs.lrcalc.lrcalc import lrcoef, mult
+      assert lrcoef([3, 2, 1], [2, 1], [2, 1]) == 2
+      assert mult([1], [1]) == {Partition([2]): 1, Partition([1, 1]): 1}
       from sage.features.databases import DatabaseCremona, DatabaseGraphs, DatabaseReflexivePolytopes
       assert DatabaseCremona("cremona_mini").is_present()
       assert DatabaseGraphs().is_present()
