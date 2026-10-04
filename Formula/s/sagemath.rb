@@ -48,6 +48,7 @@ class Sagemath < Formula
   depends_on "highs"
   depends_on "jpeg-turbo"
   depends_on "libmpc"
+  depends_on "libomp" if OS.mac?
   depends_on "libpng"
   depends_on "libraqm"
   depends_on "libtiff"
