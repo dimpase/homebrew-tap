@@ -78,12 +78,13 @@ class Sagemath < Formula
   depends_on "singular"
   depends_on "webp"
   depends_on "zeromq"
-  depends_on "zlib"
+  depends_on "zlib" if OS.mac?
 
   on_linux do
     depends_on "binutils" => :build
     depends_on "patchelf" => :build
     depends_on "openblas"
+    depends_on "zlib-ng-compat"
   end
 
   pypi_packages package_name:     "sagemath",
