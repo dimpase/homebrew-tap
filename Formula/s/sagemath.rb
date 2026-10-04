@@ -1,9 +1,9 @@
 class Sagemath < Formula
   desc "Open source mathematics software"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/ef38d9578c1bd45497d761d2ba38f160d795608a.tar.gz"
-  version "11.0.beta0"
-  sha256 "06001a94a35e04a0b51294eb17cfcf1914f389406a92f4f032c432aa182ac90d"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
+  version "11.0.beta1"
+  sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
   license "GPL-2.0-or-later"
 
   depends_on "cmake" => :build
@@ -498,12 +498,6 @@ class Sagemath < Formula
   resource "sagemath-data-elliptic-curves" do
     url "https://files.pythonhosted.org/packages/7d/ab/ef83f5504fbbe3e08ded3dfb91fec6c9e051219499fcbe511b18d9dac5b7/sagemath_data_elliptic_curves-0.8.2.tar.gz"
     sha256 "5540a8d91eb6b189d5a2960c2a2e3b3b671e5969be8c36ddb51b7ac4eed05596"
-  end
-
-  # Sage PR #42888: protect NTL calls from PARI 2.19's coeff macro.
-  patch do
-    url "https://github.com/sagemath/sage/commit/d8ce99e0bb2f1c0a9cacdffd1775e6a302467613.patch?full_index=1"
-    sha256 "2e36d68dc48193fbeb6e5f48a57b880175145d68aa3b44dcbbc3fa44aff3465a"
   end
 
   # Sage PR #42878: discover the renamed Python data distributions.
