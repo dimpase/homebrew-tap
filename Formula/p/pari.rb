@@ -4,6 +4,7 @@ class Pari < Formula
   url "https://pari.math.u-bordeaux.fr/pub/pari/unix/pari-2.19.0.tar.gz"
   sha256 "f317b9722eb5d9094a60303774f066f3a83e3ec1f170be8546c44d7583f30b6d"
   license "GPL-2.0-or-later"
+  revision 1
   compatibility_version 1
 
   livecheck do
@@ -21,6 +22,11 @@ class Pari < Formula
   depends_on "gmp"
   depends_on "readline"
 
+  # Backport upstream fixes for hyperellcharpoly and empty parallel coefficient vectors.
+  # https://pari.math.u-bordeaux.fr/cgi-bin/bugreport.cgi?bug=2703
+  # Upstream: 603d02feac84d67c92688cbd60e366ee19776492
+  # https://pari.math.u-bordeaux.fr/cgi-bin/bugreport.cgi?bug=2704
+  # Upstream: 6fcdb19f551b5695a13c2ea8ec05796629dcc546
   # Reject numerically noninvertible complex Gaussian pivots (candidate upstream fix).
   # https://pari.math.u-bordeaux.fr/cgi-bin/bugreport.cgi?bug=2708
   patch :DATA
@@ -83,8 +89,19 @@ class Pari < Formula
       };
       iferr(for(b=15,193,check(b)); check_pivot(), E, print(E); quit(1));
       print("complex pivot regression passed");
+      check_regressions() = {
+        my(z = ffgen(23^3, 'z), p = hyperellcharpoly(t^3 + z*t + 4));
+        if(p != x^2 - 11*x + 12167, error("hyperellcharpoly regression"));
+        my(e = ellinit([0,0,0,1,2]));
+        if(abs(lfun(e,1000) - 1) > 1e-8, error("lfun large argument regression"));
+        localbitprec(53);
+        if(exponent(lfun(e,100) - 1) >= -52, error("lfun empty vector regression"));
+      };
+      iferr(check_regressions(), E, print(E); quit(1));
+      print("hyperellcharpoly and lfun regressions passed");
     GP
-    assert_equal "2.236067977\ncomplex pivot regression passed\n", pipe_output("#{bin}/gp --quiet test.gp", "", 0)
+    expected = "2.236067977\ncomplex pivot regression passed\nhyperellcharpoly and lfun regressions passed\n"
+    assert_equal expected, pipe_output("#{bin}/gp --quiet test.gp", "", 0)
   end
 end
 
@@ -103,3 +120,74 @@ index f1ff13c7b0..9bddfaef65 100644
  }
  static long
  gauss_get_pivot_padic(GEN X, GEN p, long ix, GEN c)
+
+diff --git a/src/basemath/ZX.c b/src/basemath/ZX.c
+index c40c8b3cea..2899e195fa 100644
+--- a/src/basemath/ZX.c
++++ b/src/basemath/ZX.c
+@@ -1284,7 +1284,7 @@ RgXX_to_Kronecker_var(GEN P0, long n, long vx)
+   {
+     long j;
+     GEN c = gel(P,i);
+-    if (typ(c) != t_POL || varn(c) != vx)
++    if (typ(c) != t_POL || varncmp(varn(c), vx) > 0)
+     {
+       gel(y,k++) = c;
+       j = 3;
+
+diff --git a/src/basemath/alglin3.c b/src/basemath/alglin3.c
+index a7ab2fec84..69a47fa428 100644
+--- a/src/basemath/alglin3.c
++++ b/src/basemath/alglin3.c
+@@ -845,9 +845,13 @@ arithprogset(GEN B, GEN A, long r, long m)
+ GEN
+ gen_parapply_slice(GEN worker, GEN D, long mmin)
+ {
+-  long l, r, n = lg(D)-1, m = minss(mmin, n), pending = 0;
+-  GEN L = cgetg(n / m + 2, t_VEC), va = mkvec(L), V = cgetg_copy(D, &l);
++  long l, r, n, m, pending = 0;
++  GEN L, va, V = cgetg_copy(D, &l);
+   struct pari_mt pt;
++
++  n = l-1; if (!n) return V;
++  m = minss(mmin, n);
++  L = cgetg(n / m + 2, t_VEC); va = mkvec(L);
+   mt_queue_start_lim(&pt, worker, m);
+   for (r = 1; r <= m || pending; r++)
+   {
+@@ -868,12 +872,15 @@ gen_parapply_slice(GEN worker, GEN D, long mmin)
+ GEN
+ gen_parapply_slice_zv(GEN worker, GEN D, long mmin)
+ {
+-  long l, r, n = lg(D)-1, m = minss(mmin, n), pending = 0;
++  long l, r, n, m, pending = 0;
+   struct pari_mt pt;
+-  GEN L, va, V;
++  GEN L, va, V = cgetg_copy(D, &l);
++
++  n = l-1; if (!n) return V;
++  m = minss(mmin, n);
+   if (m == 1) return closure_callgen1(worker, D);
+   L = cgetg(n / m + 2, t_VECSMALL);
+-  va = mkvec(L); V = cgetg_copy(D, &l);
++  va = mkvec(L);
+   mt_queue_start_lim(&pt, worker, m);
+   for (r = 1; r <= m || pending; r++)
+   {
+@@ -894,13 +901,12 @@ gen_parapply_slice_zv(GEN worker, GEN D, long mmin)
+ GEN
+ gen_parapply_percent(GEN worker, GEN D, long percent)
+ {
+-  long l = lg(D), i, pending = 0, cnt = 0, lper = -1, lcnt = 0;
++  long l, i, pending = 0, cnt = 0, lper = -1, lcnt = 0;
+   long W[] = {evaltyp(t_VEC) | _evallg(2), 0};
+-  GEN V;
++  GEN V = cgetg_copy(D, &l);
+   struct pari_mt pt;
+
+-  if (l == 1) return cgetg(1, typ(D));
+-  V = cgetg(l, typ(D));
++  if (l == 1) return V;
+   mt_queue_start_lim(&pt, worker, l-1);
+   for (i = 1; i < l || pending; i++)
+   {
