@@ -11,6 +11,13 @@ class Pari < Formula
     regex(/href=.*?pari[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-2.19.0"
+    sha256 arm64_tahoe:  "4f64111fcb3a4cbdcc04d2afba206a0cb081c4e7bb28d73fddbd3818226cce99"
+    sha256 arm64_linux:  "2e698271ba1b44de0f2fd38d78e95a1f8adb7730ed47cae871303db406b478e9"
+    sha256 x86_64_linux: "e0db6a0cfcaf904635cac18b5783a8e565bc32fa97f55525ac2b2206fddbd388"
+  end
+
   depends_on "gmp"
   depends_on "readline"
 
