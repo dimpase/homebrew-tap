@@ -29,7 +29,7 @@ class Sagemath < Formula
   depends_on "dimpase/tap/maxima-ecl"
   depends_on "dimpase/tap/mcqd"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
+  depends_on "pari"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sirocco"
@@ -532,7 +532,7 @@ class Sagemath < Formula
     ENV["FREETYPE_DIR"] = formula_opt_prefix("freetype")
     ENV["QHULL_DIR"] = formula_opt_prefix("qhull")
     ENV["ZMQ_PREFIX"] = formula_opt_prefix("zeromq")
-    ENV["PARI_DIR"] = formula_opt_prefix("dimpase/tap/pari")
+    ENV["PARI_DIR"] = formula_opt_prefix("pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
     setup_args = ["-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]
