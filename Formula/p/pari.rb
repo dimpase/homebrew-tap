@@ -13,10 +13,10 @@ class Pari < Formula
   end
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-2.19.0"
-    sha256 arm64_tahoe:  "4f64111fcb3a4cbdcc04d2afba206a0cb081c4e7bb28d73fddbd3818226cce99"
-    sha256 arm64_linux:  "2e698271ba1b44de0f2fd38d78e95a1f8adb7730ed47cae871303db406b478e9"
-    sha256 x86_64_linux: "e0db6a0cfcaf904635cac18b5783a8e565bc32fa97f55525ac2b2206fddbd388"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-2.19.0_1"
+    sha256 arm64_tahoe:  "6eb74783700c645f5485e4fa9f70be5beb6527eb340cef40b9efa4504be1dd4d"
+    sha256 arm64_linux:  "dd5f64b32571060e76c15cae2999e3fba5f8d8353f85b8ff8ec4c4a767603891"
+    sha256 x86_64_linux: "fad0fb5fc0630c2787ff6c2d0a4259eccd70312335b2b0ad7fad87d5c816fd69"
   end
 
   depends_on "gmp"
