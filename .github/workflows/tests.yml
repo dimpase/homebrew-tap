@@ -67,6 +67,8 @@ jobs:
             exit 0
           fi
           brew install dimpase/tap/pari
+          # test-bot can leave Sage installed after removing its dependencies.
+          brew install --only-dependencies --include-test dimpase/tap/sagemath
           brew install --build-from-source dimpase/tap/sagemath
           brew test dimpase/tap/sagemath
 
