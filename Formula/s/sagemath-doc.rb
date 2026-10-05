@@ -10,43 +10,43 @@ class SagemathDoc < Formula
   depends_on "dimpase/tap/sagemath"
 
   resource "furo" do
-    url "https://files.pythonhosted.org/packages/ec/20/5f5ad4da6a5a27c80f2ed2ee9aee3f9e36c66e56e21c00fde467b2f8f88f/furo-2025.12.19.tar.gz"
-    sha256 "188d1f942037d8b37cd3985b955839fea62baa1730087dc29d157677c857e2a7"
+    url "https://files.pythonhosted.org/packages/f4/b2/50e9b292b5cac13e9e81272c7171301abc753a60460d21505b606e15cf21/furo-2025.12.19-py3-none-any.whl", using: :nounzip
+    sha256 "bb0ead5309f9500130665a26bee87693c41ce4dbdff864dbfb6b0dae4673d24f"
   end
 
   resource "sphinx-basic-ng" do
-    url "https://files.pythonhosted.org/packages/98/0b/a866924ded68efec7a1759587a4e478aec7559d8165fac8b2ad1c0e774d6/sphinx_basic_ng-1.0.0b2.tar.gz"
-    sha256 "9ec55a47c90c8c002b5960c57492ec3021f5193cb26cebc2dc4ea226848651c9"
+    url "https://files.pythonhosted.org/packages/3c/dd/018ce05c532a22007ac58d4f45232514cd9d6dd0ee1dc374e309db830983/sphinx_basic_ng-1.0.0b2-py3-none-any.whl", using: :nounzip
+    sha256 "eb09aedbabfb650607e9b4b68c9d240b90b1e1be221d6ad71d61c52e29f7932b"
   end
 
   resource "sphinx-copybutton" do
-    url "https://files.pythonhosted.org/packages/fc/2b/a964715e7f5295f77509e59309959f4125122d648f86b4fe7d70ca1d882c/sphinx-copybutton-0.5.2.tar.gz"
-    sha256 "4cf17c82fb9646d1bc9ca92ac280813a3b605d8c421225fd9913154103ee1fbd"
+    url "https://files.pythonhosted.org/packages/9e/48/1ea60e74949eecb12cdd6ac43987f9fd331156388dcc2319b45e2ebb81bf/sphinx_copybutton-0.5.2-py3-none-any.whl", using: :nounzip
+    sha256 "fb543fd386d917746c9a2c50360c7905b605726b9355cd26e9974857afeae06e"
   end
 
   resource "sphinx-inline-tabs" do
-    url "https://files.pythonhosted.org/packages/76/6a/f39bde46a79b80a9983233d99b773bd24b468bdd9c1e87acb46ff69af441/sphinx_inline_tabs-2025.12.21.14.tar.gz"
-    sha256 "c71a75800326e613fb4e410eed92a0934214741326aca9897c18018b9f968cb6"
+    url "https://files.pythonhosted.org/packages/02/2b/e64e7de34663cff1df029ba4f05a86124315bd9eba3d3b78e64904bea7e0/sphinx_inline_tabs-2025.12.21.14-py3-none-any.whl", using: :nounzip
+    sha256 "e685c782b58d4e01490bcc4e2367cf7135ec28e7283a05e89095394e4ca6e81a"
   end
 
   resource "accessible-pygments" do
-    url "https://files.pythonhosted.org/packages/bc/c1/bbac6a50d02774f91572938964c582fff4270eee73ab822a4aeea4d8b11b/accessible_pygments-0.0.5.tar.gz"
-    sha256 "40918d3e6a2b619ad424cb91e556bd3bd8865443d9f22f1dcdf79e33c8046872"
+    url "https://files.pythonhosted.org/packages/8d/3f/95338030883d8c8b91223b4e21744b04d11b161a3ef117295d8241f50ab4/accessible_pygments-0.0.5-py3-none-any.whl", using: :nounzip
+    sha256 "88ae3211e68a1d0b011504b2ffc1691feafce124b845bd072ab6f9f66f34d4b7"
   end
 
   resource "beautifulsoup4" do
-    url "https://files.pythonhosted.org/packages/43/65/318323f98dbee45d42dff61d8f047181bc6f2268a9068cfad035a46be5af/beautifulsoup4-4.15.0.tar.gz"
-    sha256 "288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7"
+    url "https://files.pythonhosted.org/packages/88/c6/92fcd42f1ba33e1184263f25bfabf3d27c383410470f169e4b8163bf9c17/beautifulsoup4-4.15.0-py3-none-any.whl", using: :nounzip
+    sha256 "d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9"
   end
 
   resource "soupsieve" do
-    url "https://files.pythonhosted.org/packages/69/99/a6ca3beb3ccacb41fb3321d8a60e5566f9e6467601ef8eba6a17e1b89778/soupsieve-2.9.2.tar.gz"
-    sha256 "4a55d8cf158a9c2e587fa4922f1bbb91d68ac829e2d6f25403a85747c71daf74"
+    url "https://files.pythonhosted.org/packages/eb/dc/ad025c1ee131eba60c69f4dd5779b18fcf1e6b21a343e2162a84d5d133c7/soupsieve-2.9.2-py3-none-any.whl", using: :nounzip
+    sha256 "8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823"
   end
 
   resource "typing-extensions" do
-    url "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz"
-    sha256 "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
+    url "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl", using: :nounzip
+    sha256 "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
   end
 
   def build_documents(python3, documents, format)
@@ -56,7 +56,7 @@ class SagemathDoc < Formula
   end
 
   def install
-    python3 = formula_opt_libexec("python@3.14")/"bin/python"
+    python3 = (formula_opt_libexec("python@3.14")/"bin/python").to_s
     site_packages = Language::Python.site_packages(python3)
     extensions = buildpath/"doc-extensions"
     ENV["PYTHONPATH"] = "#{extensions/site_packages}:#{formula_opt_libexec("sphinx-doc")/site_packages}"
@@ -74,7 +74,8 @@ class SagemathDoc < Formula
     resources.each do |r|
       r.stage do
         system python3, "-m", "pip", "install",
-               *std_pip_args(prefix: extensions, build_isolation: true), "."
+               "--no-deps", "--ignore-installed", "--no-compile",
+               "--prefix=#{extensions}", Dir["*.whl"].fetch(0)
       end
     end
     documents = Utils.safe_popen_read(python3, "src/build-docs.py", "--all-documents", "all")
