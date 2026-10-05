@@ -1,13 +1,9 @@
 class NumpyAccelerate < Formula
   desc "NumPy with Apple Accelerate for Python"
   homepage "https://numpy.org/"
-
   version "2.5.3"
+  license "BSD-3-Clause"
 
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-accelerate-2.5.3"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe: "689dba4d07e6f9f1ca2cfad43df2badc4b8b7289057635a1849083aec6032350"
-  end
   if Homebrew::SimulateSystem.current_arch == :arm
     url "https://files.pythonhosted.org/packages/94/75/4640d2d6e4b64a049e48425a82728a41ef4adb61332d2cba68055774878b/numpy-2.5.3-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
     sha256 "adc1ada2662f8a5f960b8a10d9986897e7499ef07e06d4cfe7197f8cce923c07"
@@ -15,9 +11,12 @@ class NumpyAccelerate < Formula
     url "https://files.pythonhosted.org/packages/96/cd/625b57ae33d4ca560f32cc0b47b4a5922146d9beb998ddf773900d440a73/numpy-2.5.3-cp314-cp314-macosx_14_0_x86_64.whl", using: :nounzip
     sha256 "54a115e5a73b8fc44f0cebef486365a1894b5c9760685d4558b72b7c3eb846e0"
   end
-  license "BSD-3-Clause"
 
-  depends_on "python@3.13" => [:build, :test]
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-accelerate-2.5.3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "689dba4d07e6f9f1ca2cfad43df2badc4b8b7289057635a1849083aec6032350"
+  end
+
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on :macos

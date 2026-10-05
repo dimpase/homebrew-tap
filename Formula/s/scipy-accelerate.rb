@@ -2,6 +2,8 @@ class ScipyAccelerate < Formula
   desc "SciPy with Apple Accelerate for Python"
   homepage "https://scipy.org/"
   version "1.18.1"
+  license "BSD-3-Clause"
+
   if Homebrew::SimulateSystem.current_arch == :arm
     url "https://files.pythonhosted.org/packages/70/e8/6b0c288c50942d78193696c9f15f9a0874f5178aa0ddf40f83d9924b3e8d/scipy-1.18.1-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
     sha256 "011413b7426b75012840e35649e00fe0a2c3bae89fed433876e3a99251572efc"
@@ -9,7 +11,6 @@ class ScipyAccelerate < Formula
     url "https://files.pythonhosted.org/packages/4b/e0/54fd3793c729e3b936782f181b59cbb1205bf250ab605a16cb1ba61cdd5e/scipy-1.18.1-cp314-cp314-macosx_14_0_x86_64.whl", using: :nounzip
     sha256 "88f0e784020649f88ea48c9f5ddfa403bf9205820667c0914740b392035afb82"
   end
-  license "BSD-3-Clause"
 
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
