@@ -4,17 +4,10 @@ class Meataxe < Formula
   url "https://github.com/simon-king-jena/SharedMeatAxe/releases/download/v1.0.2/shared_meataxe-1.0.2.tar.bz2"
   sha256 "c2e2ec85cdbcde5800d7b0577937afcc86f4a7610ae4d86614428445deb301e8"
   license "GPL-2.0-or-later"
+  revision 1
 
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/meataxe-1.0.2"
-    rebuild 1
-    sha256 arm64_tahoe:  "f328ebf53c77fad8da668c17beb7a29476932118d82ad92898c38643225ae589"
-    sha256 sequoia:      "6c92260cee82e09517d5c922fc22449529a5a6d082d43aa4cf2768027f99ef8f"
-    sha256 x86_64_linux: "e978ae2098f1fafa231c2a591955455310e190a2c9f0b90f3dfdf021294d8edc"
-  end
-
+  depends_on "dimpase/tap/pari" => :build
   depends_on "libtool" => :build
-  depends_on "pari" => :build
 
   def install
     ENV.append "CFLAGS", "-DMTXLIB=\\\"#{lib}\\\" -DMTXBIN=\\\"#{bin}\\\""
