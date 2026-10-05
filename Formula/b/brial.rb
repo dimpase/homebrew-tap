@@ -8,10 +8,9 @@ class Brial < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/brial-1.2.15_2"
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:  "a548e1345d58bf7658af6c4c3147fc17b3eabef7c7887ddad5c63f4b6d75f424"
-    sha256 cellar: :any, arm64_linux:  "696a243b1bd65f4a86df89bdd93671ac5dfafddf7af5c545bd6647144f3f3ea1"
-    sha256 cellar: :any, x86_64_linux: "af19ef82671ed8eefb2208da7531fc2cecf79b0abaab491d37adeee61f32c582"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:  "faf5c2edd9267f15e3a69ac48028836099d599e58dde57a95fb9c213ffb6584f"
+    sha256 cellar: :any, x86_64_linux: "0966fcaf84c78db6d03cc325f075d8c480aa4358847e7b84789be0be9fb83973"
   end
 
   depends_on "autoconf" => :build
