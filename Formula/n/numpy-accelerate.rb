@@ -14,7 +14,8 @@ class NumpyAccelerate < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-accelerate-2.5.3"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe: "689dba4d07e6f9f1ca2cfad43df2badc4b8b7289057635a1849083aec6032350"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "da6c5ca8ba32becf8433a917d7c9aaeb125f5239cb2bc95a9d01d2257bcae83e"
   end
 
   depends_on "python@3.13" => [:build, :test]
