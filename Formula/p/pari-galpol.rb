@@ -17,8 +17,6 @@ class PariGalpol < Formula
     end
   end
 
-  no_autobump! because: :incompatible_version_format
-
   depends_on "dimpase/tap/pari"
 
   def install
