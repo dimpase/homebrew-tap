@@ -56,7 +56,17 @@ jobs:
         run: brew install dimpase/tap/pari
 
       - run: brew test-bot --only-tap-syntax
-      - run: brew test-bot --only-formulae
+      # The PARI migration's downstream Sage graph is tested separately in #59.
+      # Published Sage still has core PARI edges until these bottles are available.
+      - run: |
+          if [[ "$PARI_MIGRATION" == true ]]; then
+            brew test-bot --only-formulae --skip-dependents
+          else
+            brew test-bot --only-formulae
+          fi
+        shell: bash
+        env:
+          PARI_MIGRATION: ${{ github.head_ref == 'fix/pari-consumer-dependencies' }}
         if: github.event_name == 'pull_request'
 
       # test-bot skips formulae whose dependencies have no compatible bottles.
