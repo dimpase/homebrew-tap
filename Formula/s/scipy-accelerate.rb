@@ -4,6 +4,11 @@ class ScipyAccelerate < Formula
   version "1.18.1"
   license "BSD-3-Clause"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/scipy-accelerate-1.18.1"
+    sha256 cellar: :any, arm64_tahoe: "b6c434d6eac13eb6296613ead070c8a4d8b03dacb668f6cd5663c7ac85e9498d"
+  end
+
   if Homebrew::SimulateSystem.current_arch == :arm
     url "https://files.pythonhosted.org/packages/70/e8/6b0c288c50942d78193696c9f15f9a0874f5178aa0ddf40f83d9924b3e8d/scipy-1.18.1-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
     sha256 "011413b7426b75012840e35649e00fe0a2c3bae89fed433876e3a99251572efc"
