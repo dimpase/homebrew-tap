@@ -5,6 +5,13 @@ class Cysignals < Formula
   sha256 "6444b86ddd1f31c7b15e4f0a3dafb973507759676a00f2cc599f0d75062d9eb0"
   license "LGPL-3.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cysignals-1.13.1"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "0a112a7ec6ad79bc5e866950b8999fec5892d4f92851a5cb85d976db10768b63"
+    sha256 cellar: :any,                 arm64_linux:  "ee5f054c85755bbb8b45bac89489b0076949ed63114af6f29fb3b6e43431d0e9"
+    sha256 cellar: :any,                 x86_64_linux: "71eae9f944f8f4982af186105936ea0f6cf9437a7170bac8562563f00a5f0304"
+  end
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
