@@ -1,31 +1,21 @@
-class Numpy < Formula
-  desc "Package for scientific computing with Python"
+class NumpyAccelerate < Formula
+  desc "NumPy with Apple Accelerate for Python"
   homepage "https://numpy.org/"
 
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-2.5.3"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a17a1ebea666c14f69760eef4da1026d4fdc6e6cb9bb5351ef5fb057adbed94c"
-    sha256 cellar: :any,                 arm64_linux:  "a43aa877c9ea60e61223877f49900b930d0e1e54f0902b6df91b8028cd4437eb"
-    sha256 cellar: :any,                 x86_64_linux: "ee6348183b79979aab3324d38b8823691d844c0d1460c1ecc4e80682d60a7454"
-  end
-  if OS.mac?
-    version "2.5.3"
-    if Homebrew::SimulateSystem.current_arch == :arm
-      url "https://files.pythonhosted.org/packages/94/75/4640d2d6e4b64a049e48425a82728a41ef4adb61332d2cba68055774878b/numpy-2.5.3-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
-      sha256 "adc1ada2662f8a5f960b8a10d9986897e7499ef07e06d4cfe7197f8cce923c07"
-    else
-      url "https://files.pythonhosted.org/packages/96/cd/625b57ae33d4ca560f32cc0b47b4a5922146d9beb998ddf773900d440a73/numpy-2.5.3-cp314-cp314-macosx_14_0_x86_64.whl", using: :nounzip
-      sha256 "54a115e5a73b8fc44f0cebef486365a1894b5c9760685d4558b72b7c3eb846e0"
-    end
+  version "2.5.3"
+  if Homebrew::SimulateSystem.current_arch == :arm
+    url "https://files.pythonhosted.org/packages/94/75/4640d2d6e4b64a049e48425a82728a41ef4adb61332d2cba68055774878b/numpy-2.5.3-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
+    sha256 "adc1ada2662f8a5f960b8a10d9986897e7499ef07e06d4cfe7197f8cce923c07"
   else
-    url "https://files.pythonhosted.org/packages/13/01/11703282db468b85f6f7b8c7f22d058de5970d5c7e60a3a8aaa313c3de36/numpy-2.5.3.tar.gz"
-    sha256 "df2d5874ff183595a4ba404edd04f6bd9b5505c1d7708573f6a6c17489a67563"
+    url "https://files.pythonhosted.org/packages/96/cd/625b57ae33d4ca560f32cc0b47b4a5922146d9beb998ddf773900d440a73/numpy-2.5.3-cp314-cp314-macosx_14_0_x86_64.whl", using: :nounzip
+    sha256 "54a115e5a73b8fc44f0cebef486365a1894b5c9760685d4558b72b7c3eb846e0"
   end
   license "BSD-3-Clause"
 
   depends_on "python@3.13" => [:build, :test]
+  depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
-
+  depends_on :macos
   on_macos do
     depends_on macos: :sonoma
 
@@ -43,14 +33,7 @@ class Numpy < Formula
     end
   end
 
-  on_linux do
-    depends_on "gcc" => :build # for gfortran
-    depends_on "meson" => :build
-    depends_on "ninja" => :build
-    depends_on "patchelf" => :build
-    depends_on "pkgconf" => :build
-    depends_on "openblas"
-  end
+  conflicts_with "numpy", because: "both install the same Python modules and executables"
 
   def pythons
     deps.map(&:to_formula)
@@ -67,15 +50,10 @@ class Numpy < Formula
     pythons.each do |python|
       python3 = python.opt_libexec/"bin/python"
       python_version = Language::Python.major_minor_version(python3)
-      if OS.mac?
-        if python_version == "3.13"
-          resource("NumPy").stage { install_wheel(python3) }
-        else
-          install_wheel(python3)
-        end
+      if python_version == "3.13"
+        resource("NumPy").stage { install_wheel(python3) }
       else
-        system python3, "-m", "pip", "install", *std_pip_args(build_isolation: true),
-               "-Csetup-args=-Dblas=openblas", "-Csetup-args=-Dlapack=openblas", "."
+        install_wheel(python3)
       end
     end
   end

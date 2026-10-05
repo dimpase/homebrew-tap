@@ -75,6 +75,10 @@ jobs:
             formula_name="${formula_path##*/}"
             formula_name="${formula_name%.rb}"
             formula="dimpase/tap/$formula_name"
+            # macOS-only formulae have no Linux bottles to build.
+            if [[ "$(uname -s)" != Darwin ]] && brew ruby -e 'exit(Formulary.factory(ARGV.fetch(0)).requirements.any? { |r| r.is_a?(MacOSRequirement) } ? 0 : 1)' "$formula"; then
+              continue
+            fi
             # test-bot can leave formulae installed after removing dependencies.
             brew install --only-dependencies --include-test "$formula"
             brew install --build-bottle "$formula"
