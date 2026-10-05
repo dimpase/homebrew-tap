@@ -11,6 +11,13 @@ class Cypari2 < Formula
     skip "Pinned unreleased snapshot for PARI 2.19 compatibility"
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cypari2-2.2.6"
+    sha256 cellar: :any, arm64_tahoe:  "7662bc67498aa0dc87b297f6bb5f6949b141d4def542aed29616d94184433946"
+    sha256 cellar: :any, arm64_linux:  "d1718d2715d53237cac32e5cfcb17f6decbedf4c3f3a7b1d7672b28941267976"
+    sha256 cellar: :any, x86_64_linux: "42119e30548b2f7a8eaf16ed0f35a6ce89f8af680dc9b258e4bd7de80daefc08"
+  end
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
