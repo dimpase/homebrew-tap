@@ -62,14 +62,16 @@ jobs:
       # test-bot skips formulae whose dependencies have no compatible bottles.
       # Build and test changed formulae anyway, and bottle any skipped ones.
       - name: Build and test changed formulae from source
+        shell: bash
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
-          git fetch origin "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
+          tap_path=$(brew --repo dimpase/tap)
+          git -C "$tap_path" fetch origin "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
           while IFS= read -r formula_path; do
-            [[ -f "$formula_path" ]] || continue
+            [[ -f "$tap_path/$formula_path" ]] || continue
             formula_name="${formula_path##*/}"
             formula_name="${formula_name%.rb}"
             formula="dimpase/tap/$formula_name"
@@ -81,7 +83,7 @@ jobs:
               pkg_version=$(brew ruby -e 'puts Formulary.factory(ARGV.fetch(0)).pkg_version' "$formula")
               brew bottle --json --root-url="https://github.com/dimpase/homebrew-tap/releases/download/$formula_name-$pkg_version" "$formula"
             fi
-          done < <(git diff --name-only "origin/$BASE_REF"...HEAD -- 'Formula/*.rb' 'Formula/**/*.rb')
+          done < <(git -C "$tap_path" diff --name-only "origin/$BASE_REF"...HEAD -- 'Formula/*.rb' 'Formula/**/*.rb')
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
