@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+concurrency:
+  group: brew-test-bot-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test-bot:
     strategy:
@@ -56,21 +60,28 @@ jobs:
         if: github.event_name == 'pull_request'
 
       # test-bot skips formulae whose dependencies have no compatible bottles.
-      # Sage uses several such tap dependencies; exercise its source build too.
-      - name: Build and test Sage from source
+      # Build and test changed formulae anyway, and bottle any skipped ones.
+      - name: Build and test changed formulae from source
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
-          if git diff --quiet "origin/$BASE_REF" HEAD -- Formula/s/sagemath.rb; then
-            exit 0
-          fi
-          brew install dimpase/tap/pari
-          # test-bot can leave Sage installed after removing its dependencies.
-          brew install --only-dependencies --include-test dimpase/tap/sagemath
-          brew install --build-from-source dimpase/tap/sagemath
-          brew test dimpase/tap/sagemath
+          git fetch origin "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
+          while IFS= read -r formula_path; do
+            [[ -f "$formula_path" ]] || continue
+            formula_name="${formula_path##*/}"
+            formula_name="${formula_name%.rb}"
+            formula="dimpase/tap/$formula_name"
+            # test-bot can leave formulae installed after removing dependencies.
+            brew install --only-dependencies --include-test "$formula"
+            brew install --build-bottle "$formula"
+            brew test "$formula"
+            if ! compgen -G "$formula_name*.bottle.json" > /dev/null; then
+              pkg_version=$(brew ruby -e 'puts Formulary.factory(ARGV.fetch(0)).pkg_version' "$formula")
+              brew bottle --json --root-url="https://github.com/dimpase/homebrew-tap/releases/download/$formula_name-$pkg_version" "$formula"
+            fi
+          done < <(git diff --name-only "origin/$BASE_REF"...HEAD -- 'Formula/*.rb' 'Formula/**/*.rb')
 
       - name: Upload bottles as artifact
         if: always() && github.event_name == 'pull_request'
