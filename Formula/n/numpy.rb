@@ -1,6 +1,13 @@
 class Numpy < Formula
   desc "Package for scientific computing with Python"
   homepage "https://numpy.org/"
+
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-2.5.3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a17a1ebea666c14f69760eef4da1026d4fdc6e6cb9bb5351ef5fb057adbed94c"
+    sha256 cellar: :any,                 arm64_linux:  "a43aa877c9ea60e61223877f49900b930d0e1e54f0902b6df91b8028cd4437eb"
+    sha256 cellar: :any,                 x86_64_linux: "ee6348183b79979aab3324d38b8823691d844c0d1460c1ecc4e80682d60a7454"
+  end
   if OS.mac?
     version "2.5.3"
     if Homebrew::SimulateSystem.current_arch == :arm
