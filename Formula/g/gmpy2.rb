@@ -5,6 +5,13 @@ class Gmpy2 < Formula
   sha256 "313f35e9fe6b9ddf72759b14dac25166fe5757c970403e4bbf87a70ab2be07df"
   license "LGPL-3.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/gmpy2-2.3.1"
+    sha256 cellar: :any, arm64_tahoe:  "78862ac08597d7c38a93eded13d2820df199307d4601990e84e94bfd92c4452b"
+    sha256               arm64_linux:  "f89752a64e8738228c30c67d40766bd95c819e91918114c5b5437aed5bae43e8"
+    sha256               x86_64_linux: "c06de45feebbac19bc66554368927a1c0773b8bea4b4c82acf5ef6c6483eca03"
+  end
+
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "gmp"
