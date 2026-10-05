@@ -3,6 +3,11 @@ class NumpyAccelerate < Formula
   homepage "https://numpy.org/"
 
   version "2.5.3"
+
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/numpy-accelerate-2.5.3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "689dba4d07e6f9f1ca2cfad43df2badc4b8b7289057635a1849083aec6032350"
+  end
   if Homebrew::SimulateSystem.current_arch == :arm
     url "https://files.pythonhosted.org/packages/94/75/4640d2d6e4b64a049e48425a82728a41ef4adb61332d2cba68055774878b/numpy-2.5.3-cp314-cp314-macosx_14_0_arm64.whl", using: :nounzip
     sha256 "adc1ada2662f8a5f960b8a10d9986897e7499ef07e06d4cfe7197f8cce923c07"
