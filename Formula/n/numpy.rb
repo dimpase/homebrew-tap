@@ -23,7 +23,7 @@ class Numpy < Formula
     depends_on macos: :sonoma
 
     # The main download is for Python 3.14; this resource supplies Python 3.13.
-    resource "numpy" do
+    resource "NumPy" do
       version "2.5.3"
       on_arm do
         url "https://files.pythonhosted.org/packages/ab/2a/98282aa5b8f58b1157d440bb6282eed47e3632a5de53a714fbab17e659fe/numpy-2.5.3-cp313-cp313-macosx_14_0_arm64.whl", using: :nounzip
@@ -62,7 +62,7 @@ class Numpy < Formula
       python_version = Language::Python.major_minor_version(python3)
       if OS.mac?
         if python_version == "3.13"
-          resource("numpy").stage { install_wheel(python3) }
+          resource("NumPy").stage { install_wheel(python3) }
         else
           install_wheel(python3)
         end
@@ -90,7 +90,8 @@ class Numpy < Formula
         b = np.array([9., 8.])
         assert np.allclose(a @ np.linalg.solve(a, b), b)
         root = pathlib.Path(np.__file__).parent
-        assert "#{prefix}" in str(root.resolve()), root
+        installed = pathlib.Path("#{lib}") / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages/numpy/__init__.py"
+        assert installed.samefile(np.__file__), root
         if sys.platform == "darwin":
             libraries = list(root.rglob("*.so")) + list(root.rglob("*.dylib"))
             linkage = "\\n".join(subprocess.check_output(["otool", "-L", str(p)], text=True)
