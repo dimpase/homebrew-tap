@@ -6,6 +6,13 @@ class Meataxe < Formula
   license "GPL-2.0-or-later"
   revision 1
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/meataxe-1.0.2_1"
+    sha256 arm64_tahoe:  "60bcee02cad34f0f3500365c4319476950146759c6fc72bfe3826fcd46157401"
+    sha256 arm64_linux:  "e7d05a36d7fc1f436130d29d1437cace03c38a4639f411dc16468a5ba5262b65"
+    sha256 x86_64_linux: "afda5e900dd8459e7c811c2c5d2f9a9e5281ee437930a173a8e61874f6452ae8"
+  end
+
   depends_on "dimpase/tap/pari" => :build
   depends_on "libtool" => :build
 
