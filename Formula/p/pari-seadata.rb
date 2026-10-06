@@ -17,6 +17,13 @@ class PariSeadata < Formula
     end
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-seadata-20090618"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "c200692e9e44267659a059380c00dbafe2b31fa1e3da0eb43a589b2eec7cc1f9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "cb979f5111f5e163559e77a2a14b7035ba8f9aaadd37f39411927dd0b33e7548"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "dac9486b3c4bae5211c5fb9d5f4d83a128d8a1e1b51caad2bba66952de56384a"
+  end
+
   depends_on "dimpase/tap/pari"
 
   def install
