@@ -17,6 +17,13 @@ class PariGalpol < Formula
     end
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-galpol-20180625"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "c9cbb0aa241e08ddff82eae987581554cb2b8521aa2a691f3c6bb6537e200c63"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "855db35fff4b7c1d888d68b57f9629be28720fbd08ea1e6f9a348fc9ff241950"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "c1fc16555343ff12627289f2e146a900fc44e26055e3a5a4916f6731c851e172"
+  end
+
   depends_on "dimpase/tap/pari"
 
   def install
