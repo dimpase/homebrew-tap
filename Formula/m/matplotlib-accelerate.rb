@@ -1,9 +1,10 @@
 class MatplotlibAccelerate < Formula
-  desc "Matplotlib using Apple Accelerate-backed NumPy"
+  desc "Matplotlib using Accelerate on macOS and OpenBLAS on Linux"
   homepage "https://matplotlib.org/"
   url "https://files.pythonhosted.org/packages/e7/c8/9aa712a0afb882649424dd8de8ad9aa6235e796e84c6052e8f6dc1598d0d/matplotlib-3.11.2.tar.gz"
   sha256 "cec596316640f2b394b8f0daa0ea61a8eae82d017b620b9f202befb972a59ea4"
   license "PSF-2.0"
+  revision 1
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/matplotlib-accelerate-3.11.2"
@@ -17,7 +18,6 @@ class MatplotlibAccelerate < Formula
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "freetype"
-  depends_on :macos
   depends_on "pillow" => :no_linkage
   depends_on "python-packaging"
   depends_on "qhull"
@@ -25,6 +25,11 @@ class MatplotlibAccelerate < Formula
   on_macos do
     depends_on "dimpase/tap/numpy-accelerate"
     depends_on macos: :sonoma
+  end
+
+  on_linux do
+    depends_on "patchelf" => :build
+    depends_on "numpy"
   end
 
   conflicts_with "python-matplotlib", because: "both expose the matplotlib Python module"
