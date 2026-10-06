@@ -4,6 +4,7 @@ class Sagemath < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
   sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
   license "GPL-2.0-or-later"
+  revision 1
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1"
@@ -15,6 +16,7 @@ class Sagemath < Formula
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
+  depends_on "pybind11" => :build
   depends_on "bdw-gc"
   depends_on "boost"
   depends_on "cddlib"
@@ -23,8 +25,11 @@ class Sagemath < Formula
   depends_on "dimpase/tap/brial"
   depends_on "dimpase/tap/cliquer"
   depends_on "dimpase/tap/coxeter3"
+  depends_on "dimpase/tap/cypari2"
+  depends_on "dimpase/tap/cysignals"
   depends_on "dimpase/tap/eclib"
   depends_on "dimpase/tap/gmp-ecm"
+  depends_on "dimpase/tap/gmpy2"
   depends_on "dimpase/tap/iml"
   depends_on "dimpase/tap/lcalc"
   depends_on "dimpase/tap/libbraiding"
@@ -32,9 +37,15 @@ class Sagemath < Formula
   depends_on "dimpase/tap/lrcalc"
   depends_on "dimpase/tap/m4ri"
   depends_on "dimpase/tap/m4rie"
+  depends_on "dimpase/tap/matplotlib-accelerate"
   depends_on "dimpase/tap/maxima-ecl"
   depends_on "dimpase/tap/mcqd"
   depends_on "dimpase/tap/meataxe"
+  depends_on "dimpase/tap/pari"
+  depends_on "dimpase/tap/pari-elldata"
+  depends_on "dimpase/tap/pari-galdata"
+  depends_on "dimpase/tap/pari-galpol"
+  depends_on "dimpase/tap/pari-seadata"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sirocco"
@@ -69,48 +80,44 @@ class Sagemath < Formula
   depends_on "mpfr"
   depends_on "nauty"
   depends_on "ntl"
-  depends_on "numpy"
-  depends_on "pari"
-  depends_on "pari-elldata"
-  depends_on "pari-galdata"
-  depends_on "pari-galpol"
-  depends_on "pari-seadata"
+  depends_on "pillow" => :no_linkage
   depends_on "ppl"
   depends_on "primecount"
   depends_on "python@3.13"
   depends_on "python@3.14"
   depends_on "qhull"
-  depends_on "scipy"
   depends_on "singular"
   depends_on "webp"
+  # Kernel messaging dependencies are required; JupyterLab/Notebook run separately.
   depends_on "zeromq"
-  depends_on "zlib" if OS.mac?
+
+  on_macos do
+    depends_on "dimpase/tap/numpy-accelerate"
+    depends_on "dimpase/tap/scipy-accelerate"
+    depends_on macos: :sonoma
+
+    resource "appnope" do
+      url "https://files.pythonhosted.org/packages/11/f7/a82489c2b6ebe32d3e2831895ae19c77861f0eadf3bb16034484d965dbb2/appnope-1.0.0.tar.gz"
+      sha256 "685db59cb6043c3c2e528adc0b3bce3a5f8d09bcf7492c6ea650d1b7421f3c49"
+    end
+  end
 
   on_linux do
     depends_on "binutils" => :build
     depends_on "patchelf" => :build
+    depends_on "numpy"
     depends_on "openblas"
+    depends_on "scipy"
     depends_on "zlib-ng-compat"
   end
 
   pypi_packages package_name:     "sagemath",
                 extra_packages:   %w[
-                  cysignals cython gmpy2 jinja2 memory-allocator meson-python packaging
-                  pybind11 pyproject-metadata sagemath-data-elliptic-curves sagemath-data-graphs
+                  cython jinja2 memory-allocator meson-python packaging
+                  pyproject-metadata sagemath-data-elliptic-curves sagemath-data-graphs
                   sagemath-data-polytopes setuptools wheel
                 ],
-                exclude_packages: %w[cypari2 meson numpy scipy]
-
-  # This Git version supports the PARI 2.19 supplied by Homebrew.
-  resource "cypari2" do
-    url "https://github.com/sagemath/cypari2/archive/b1efda3cb92810222c71bf62b51e59a9f57b80a7.tar.gz"
-    version "2.2.6"
-    sha256 "d520440948b62d963127df1dcef0118de294d70668604a38931f08b0702ba8df"
-
-    livecheck do
-      skip "Pinned Git version for PARI 2.19 compatibility"
-    end
-  end
+                exclude_packages: %w[cypari2 cysignals gmpy2 matplotlib meson numpy pillow pybind11 scipy sphinx]
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz"
@@ -142,34 +149,14 @@ class Sagemath < Formula
     sha256 "eed0d93fbca7087f143b42c34b05a825849bdf17f101572c2105acfa49aa88b8"
   end
 
-  resource "gmpy2" do
-    url "https://files.pythonhosted.org/packages/03/47/5c59682cd4d94291382f447dbe1f6229c8b8a144aa85d32d38ecaf8cfb73/gmpy2-2.3.1.tar.gz"
-    sha256 "313f35e9fe6b9ddf72759b14dac25166fe5757c970403e4bbf87a70ab2be07df"
-  end
-
   resource "memory-allocator" do
     url "https://files.pythonhosted.org/packages/09/a9/2a966afb82df71f759e0c46cef0dc46d1f535897c6b341fafb2bd5e08b29/memory_allocator-0.2.0.tar.gz"
     sha256 "675d3c91019db98c97441de73d5c648821e5ae813f3f54cd09863d474b48fe26"
   end
 
-  resource "cysignals" do
-    url "https://files.pythonhosted.org/packages/98/dd/9157e0e6138e395405c7ef56a55b0edcc292e2a9e7f8c90e8b2d912e9a1d/cysignals-1.13.1.tar.gz"
-    sha256 "6444b86ddd1f31c7b15e4f0a3dafb973507759676a00f2cc599f0d75062d9eb0"
-  end
-
-  resource "alabaster" do
-    url "https://files.pythonhosted.org/packages/a6/f8/d9c74d0daf3f742840fd818d69cfae176fa332022fd44e3469487d5a9420/alabaster-1.0.0.tar.gz"
-    sha256 "c00dca57bca26fa62a6d7d0a9fcce65f3e026e9bfe33e9c538fd3fbb2144fd9e"
-  end
-
   resource "asttokens" do
     url "https://files.pythonhosted.org/packages/25/1e/faf0f247f6f881b98fc4d6d07e14085cb89d13665084e6d6ac1dc2c03d0b/asttokens-3.0.2.tar.gz"
     sha256 "3ecdbd8f2cc195f53ccada3a613538bb5f9ef6f6869129f13e03c30a677b8fe2"
-  end
-
-  resource "babel" do
-    url "https://files.pythonhosted.org/packages/7d/b2/51899539b6ceeeb420d40ed3cd4b7a40519404f9baf3d4ac99dc413a834b/babel-2.18.0.tar.gz"
-    sha256 "b80b99a14bd085fcacfa15c9165f651fbb3406e66cc603abf11c5750937c992d"
   end
 
   resource "certifi" do
@@ -187,19 +174,9 @@ class Sagemath < Formula
     sha256 "2dc8048c10962d55d7ad693be1e7045d891b7ce8d999c97963a5e3e99c055971"
   end
 
-  resource "contourpy" do
-    url "https://files.pythonhosted.org/packages/83/5a/a55177dd22553a277388e8a1b3220e92de91bacb28356cdc73caa240121d/contourpy-1.4.0.tar.gz"
-    sha256 "20156f5a1ac4f8ce02656e39a61e82164a3d359796dc8026f75b062783d500e1"
-  end
-
   resource "conway-polynomials" do
     url "https://files.pythonhosted.org/packages/a4/73/2601b755e76fa1d90f19541d80d43b97bfa1d5c9bc284e79c8f8180ba317/conway_polynomials-0.10.tar.gz"
     sha256 "4f619f64f81a3eb16c4e26c5a284feeec27a6f4aad647643e79af289801ae0f3"
-  end
-
-  resource "cycler" do
-    url "https://files.pythonhosted.org/packages/a9/95/a3dbbb5028f35eafb79008e7522a75244477d2838f38cbb722248dabc2a8/cycler-0.12.1.tar.gz"
-    sha256 "88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c"
   end
 
   resource "debugpy" do
@@ -207,19 +184,9 @@ class Sagemath < Formula
     sha256 "e489c7268e1c7b41e13b438d9c533d2a7af73fb59bf8cd30fead8286c1c39c4e"
   end
 
-  resource "docutils" do
-    url "https://files.pythonhosted.org/packages/ae/b6/03bb70946330e88ffec97aefd3ea75ba575cb2e762061e0e62a213befee8/docutils-0.22.4.tar.gz"
-    sha256 "4db53b1fde9abecbb74d91230d32ab626d94f6badfc575d6db9194a49df29968"
-  end
-
   resource "executing" do
     url "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz"
     sha256 "3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4"
-  end
-
-  resource "fonttools" do
-    url "https://files.pythonhosted.org/packages/87/b6/126c659ab7e0e03e01a5f5d223abf7b2c0691ae92718085a212a3924a2a3/fonttools-4.66.1.tar.gz"
-    sha256 "64967c6ddb0d4c610dfd8cb1485981b2d27972ddfb7d4bbbd9e199d2a089c450"
   end
 
   resource "fpylll" do
@@ -230,11 +197,6 @@ class Sagemath < Formula
   resource "idna" do
     url "https://files.pythonhosted.org/packages/f5/08/8eea9d4b8302028f3abb2c0813953f7aec26d33b7a8960ed760e65ff29fa/idna-3.20.tar.gz"
     sha256 "a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44"
-  end
-
-  resource "imagesize" do
-    url "https://files.pythonhosted.org/packages/fb/5e/513ff06670c84e7b9887c1fdf61b2d42b4f574a831f2f1d2222023049d8a/imagesize-2.0.1.tar.gz"
-    sha256 "b2ba6a4dea487a7ebcd53248d3476aca449d30db12a2dde5e0c5ca9624fd77e5"
   end
 
   resource "ipykernel" do
@@ -282,11 +244,6 @@ class Sagemath < Formula
     sha256 "6e61fe21ca8a66039180a5cc52a433e07279d2fee79c8be963e00d55193f17a8"
   end
 
-  resource "kiwisolver" do
-    url "https://files.pythonhosted.org/packages/ba/07/bd78e6a8fae171ea041ef5bba3ed21a003522fa088834b069b1909981f30/kiwisolver-1.5.1.tar.gz"
-    sha256 "f1303ef2eec81262a4b708c3e858afe58d7c75ad91c1c05266eda7673369859a"
-  end
-
   resource "lrcalc" do
     url "https://files.pythonhosted.org/packages/a9/65/612c8c5b91dd5c1c576009c0501fc49be4e65383d04bde6d44edb1522abd/lrcalc-2.1.tar.gz"
     sha256 "e3a0509aeda487b412b391a52e817ca36b5c063a8305e09fd54d53259dd6aaa9"
@@ -295,11 +252,6 @@ class Sagemath < Formula
   resource "markupsafe" do
     url "https://files.pythonhosted.org/packages/38/9b/e422a865e1d5d57d0e509b4e0bf1c1a70a7f6382c29a5aa428df994c8bc8/markupsafe-3.0.4.tar.gz"
     sha256 "2e9ad7dd851bf45fab9f75cbff4cb493fee9979e8d8c7c9c3ee119022518edd6"
-  end
-
-  resource "matplotlib" do
-    url "https://files.pythonhosted.org/packages/e7/c8/9aa712a0afb882649424dd8de8ad9aa6235e796e84c6052e8f6dc1598d0d/matplotlib-3.11.2.tar.gz"
-    sha256 "cec596316640f2b394b8f0daa0ea61a8eae82d017b620b9f202befb972a59ea4"
   end
 
   resource "matplotlib-inline" do
@@ -330,11 +282,6 @@ class Sagemath < Formula
   resource "pexpect" do
     url "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz"
     sha256 "ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f"
-  end
-
-  resource "pillow" do
-    url "https://files.pythonhosted.org/packages/1c/3d/bb7fca845737cf9d7dbde16ed1843984665ff2e0a518f5db43e77ec540b9/pillow-12.3.0.tar.gz"
-    sha256 "3b8182a766685eaa002637e28b4ec8d6b18819a0c71f579bf0dbaa5830297cce"
   end
 
   resource "pkgconfig" do
@@ -377,19 +324,9 @@ class Sagemath < Formula
     sha256 "260c2774686e651b79f8b8e7fc9d80b3599ea6a66334b47d5f4abb69fc2c0ea1"
   end
 
-  resource "pybind11" do
-    url "https://files.pythonhosted.org/packages/76/f3/95b0f40b31df41dbfe6bb0857419c9442c15839cbac4796f1c26ae0b6081/pybind11-3.1.0.tar.gz"
-    sha256 "a1cc06b524ab3edca51f8ad3895f9c4fa20b8b19283173dff4ae781449dc9639"
-  end
-
   resource "pygments" do
     url "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da6b31b0021b0f37d329e202d4169aeb164493778f25b/pygments-2.21.0.tar.gz"
     sha256 "610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c"
-  end
-
-  resource "pyparsing" do
-    url "https://files.pythonhosted.org/packages/e4/11/b213bebff182584360cb8d17c72c1677fec5c5c228de439e63bcf8ab1c8f/pyparsing-3.3.3.tar.gz"
-    sha256 "928ae7e20211f3b6f3915a72f06a0cfd29ab9d24279dd6346b6b1a7146397d36"
   end
 
   resource "python-dateutil" do
@@ -407,54 +344,9 @@ class Sagemath < Formula
     sha256 "f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed"
   end
 
-  resource "roman-numerals" do
-    url "https://files.pythonhosted.org/packages/ae/f9/41dc953bbeb056c17d5f7a519f50fdf010bd0553be2d630bc69d1e022703/roman_numerals-4.1.0.tar.gz"
-    sha256 "1af8b147eb1405d5839e78aeb93131690495fe9da5c91856cb33ad55a7f1e5b2"
-  end
-
   resource "six" do
     url "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz"
     sha256 "ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
-  end
-
-  resource "snowballstemmer" do
-    url "https://files.pythonhosted.org/packages/43/f8/0a71edf031f03c40db17503cb8ca78a69a171254e568e7db241b0ab57ea1/snowballstemmer-3.1.1.tar.gz"
-    sha256 "e07bbc54a0d798fe6010a12398422e62a8bfbba95c394fd0956ef58cb4d3e260"
-  end
-
-  resource "sphinx" do
-    url "https://files.pythonhosted.org/packages/cd/bd/f08eb0f4eed5c83f1ba2a3bd18f7745a2b1525fad70660a1c00224ec468a/sphinx-9.1.0.tar.gz"
-    sha256 "7741722357dd75f8190766926071fed3bdc211c74dd2d7d4df5404da95930ddb"
-  end
-
-  resource "sphinxcontrib-applehelp" do
-    url "https://files.pythonhosted.org/packages/ba/6e/b837e84a1a704953c62ef8776d45c3e8d759876b4a84fe14eba2859106fe/sphinxcontrib_applehelp-2.0.0.tar.gz"
-    sha256 "2f29ef331735ce958efa4734873f084941970894c6090408b079c61b2e1c06d1"
-  end
-
-  resource "sphinxcontrib-devhelp" do
-    url "https://files.pythonhosted.org/packages/f6/d2/5beee64d3e4e747f316bae86b55943f51e82bb86ecd325883ef65741e7da/sphinxcontrib_devhelp-2.0.0.tar.gz"
-    sha256 "411f5d96d445d1d73bb5d52133377b4248ec79db5c793ce7dbe59e074b4dd1ad"
-  end
-
-  resource "sphinxcontrib-htmlhelp" do
-    url "https://files.pythonhosted.org/packages/43/93/983afd9aa001e5201eab16b5a444ed5b9b0a7a010541e0ddfbbfd0b2470c/sphinxcontrib_htmlhelp-2.1.0.tar.gz"
-    sha256 "c9e2916ace8aad64cc13a0d233ee22317f2b9025b9cf3295249fa985cc7082e9"
-  end
-
-  resource "sphinxcontrib-jsmath" do
-    url "https://files.pythonhosted.org/packages/b2/e8/9ed3830aeed71f17c026a07a5097edcf44b692850ef215b161b8ad875729/sphinxcontrib-jsmath-1.0.1.tar.gz"
-    sha256 "a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"
-  end
-
-  resource "sphinxcontrib-qthelp" do
-    url "https://files.pythonhosted.org/packages/68/bc/9104308fc285eb3e0b31b67688235db556cd5b0ef31d96f30e45f2e51cae/sphinxcontrib_qthelp-2.0.0.tar.gz"
-    sha256 "4fe7d0ac8fc171045be623aba3e2a8f613f8682731f9153bb2e40ece16b9bbab"
-  end
-
-  resource "sphinxcontrib-serializinghtml" do
-    url "https://files.pythonhosted.org/packages/3b/44/6716b257b0aa6bfd51a1b31665d1c205fb12cb5ad56de752dfa15657de2f/sphinxcontrib_serializinghtml-2.0.0.tar.gz"
-    sha256 "e9d912827f872c029017a53f0ef2180b327c3f7fd23c87229f7a8e8b70031d4d"
   end
 
   resource "stack-data" do
@@ -523,6 +415,12 @@ class Sagemath < Formula
     sha256 "c8efcfa23d1a1b9db3fc7bb4bdab6acec474d0feed88223d5f06d1582d3fe7f8"
   end
 
+  # Sage PR #42920: Sphinx belongs to the optional documentation dependencies.
+  patch do
+    url "https://github.com/sagemath/sage/commit/6a1d13494fa89f9db30775879adc7ab24dabe1da.patch?full_index=1"
+    sha256 "72100f9cbb66486569d788d4e300b9acf82f8a3769f4819158353e16fe926998"
+  end
+
   def pythons
     deps.map(&:to_formula)
         .select { |f| f.name.start_with?("python@") }
@@ -535,7 +433,9 @@ class Sagemath < Formula
               'MTXLIB = var("MTXLIB", join(SAGE_SHARE, "meataxe"))',
               "MTXLIB = var(\"MTXLIB\", \"#{formula_opt_lib("dimpase/tap/meataxe")}\")"
 
-    if OS.linux?
+    if OS.mac?
+      inreplace "src/meson.build", "blas = dependency(blas_order)", "blas = dependency('accelerate')"
+    else
       inreplace "src/meson.build", "blas = dependency(blas_order)", "blas = dependency('openblas')"
 
       # Select the assembler that understands Homebrew GCC's ARM64 directives.
@@ -545,7 +445,7 @@ class Sagemath < Formula
     ENV["FREETYPE_DIR"] = formula_opt_prefix("freetype")
     ENV["QHULL_DIR"] = formula_opt_prefix("qhull")
     ENV["ZMQ_PREFIX"] = formula_opt_prefix("zeromq")
-    ENV["PARI_DIR"] = formula_opt_prefix("pari")
+    ENV["PARI_DIR"] = formula_opt_prefix("dimpase/tap/pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
     setup_args = ["-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]
@@ -561,24 +461,15 @@ class Sagemath < Formula
       ENV["PYTHONPATH"] = "#{private_prefix/site_packages}:#{prefix/site_packages}"
       ENV.prepend_path "PATH", private_prefix/"bin"
 
-      resources.reject { |r| r.name == "cypari2" }.each do |r|
+      resources.each do |r|
         r.stage do
           args = std_pip_args(prefix:          private_prefix,
                               build_isolation: ["lrcalc", "pplpy", "primecountpy"].exclude?(r.name))
-          if ["matplotlib", "pplpy", "primecountpy"].include?(r.name)
+          if ["pplpy", "primecountpy"].include?(r.name)
             args += ["--config-settings=setup-args=--wrap-mode=nofallback"]
-          end
-          if r.name == "matplotlib"
-            args += ["--config-settings=setup-args=-Dsystem-freetype=true",
-                     "--config-settings=setup-args=-Dsystem-qhull=true",
-                     "--config-settings=setup-args=-Dsystem-libraqm=true"]
           end
           system python3, "-m", "pip", "install", *args, "."
         end
-      end
-
-      resource("cypari2").stage do
-        system python3, "-m", "pip", "install", *std_pip_args(prefix: private_prefix), "."
       end
 
       system python3, "-m", "pip", "install", *std_pip_args,
@@ -587,16 +478,82 @@ class Sagemath < Formula
 
       # Expose the private dependencies to this Homebrew Python interpreter.
       (prefix/site_packages/"sagemath-dependencies.pth").write <<~EOS
-        import site; site.addsitedir('#{opt_libexec/"python#{python_version}"/site_packages}')
+        import site, sys; site.addsitedir('#{opt_libexec/"python#{python_version}"/site_packages}'); sys.path.insert(0, '#{opt_libexec/"python#{python_version}"/site_packages}')
       EOS
       mv bin/"sage", bin/"sage-#{python_version}"
     end
     bin.install_symlink "sage-3.14" => "sage"
+
+    # An external Jupyter server may have its own Python on PATH.
+    # Meson's kernel template uses bare "python"; pin the Homebrew interpreter.
+    kernel_spec = share/"jupyter/kernels/sagemath/kernel.json"
+    spec = JSON.parse(kernel_spec.read)
+    spec["argv"][0] = (formula_opt_libexec("python@3.14")/"bin/python").to_s
+    File.write(kernel_spec, JSON.pretty_generate(spec))
+  end
+
+  def caveats
+    <<~EOS
+      To use Sage's kernel with an external JupyterLab installation, include
+      Homebrew's kernel directory in its search path before starting JupyterLab:
+        export JUPYTER_PATH="#{HOMEBREW_PREFIX}/share/jupyter${JUPYTER_PATH:+:$JUPYTER_PATH}"
+    EOS
   end
 
   test do
     (testpath/"test.py").write <<~PYTHON
+      import json
+      import pathlib
+      import subprocess
+      import sys
+
+      import numpy as np
+      import matplotlib
+      matplotlib.use("Agg")
+      import scipy
+      from scipy import linalg
       from sage.all import *
+      kernel_spec = pathlib.Path("#{share}/jupyter/kernels/sagemath/kernel.json")
+      spec = json.loads(kernel_spec.read_text())
+      assert spec["argv"][0] == "#{formula_opt_libexec("python@3.14")}/bin/python"
+      from jupyter_client import KernelManager
+      manager = KernelManager(kernel_name="sagemath")
+      manager.kernel_spec_manager.kernel_dirs = [str(kernel_spec.parent.parent)]
+      client = None
+      try:
+          manager.start_kernel()
+          client = manager.blocking_client()
+          client.start_channels()
+          client.wait_for_ready(timeout=120)
+          reply = client.execute_interactive("assert factor(123456789).value() == 123456789; print(2^10)", timeout=120)
+          assert reply["content"]["status"] == "ok", reply
+      finally:
+          if client is not None:
+              client.stop_channels()
+          if manager.has_kernel:
+              manager.shutdown_kernel(now=True)
+      a = np.array([[3., 1.], [1., 2.]])
+      b = np.array([9., 8.])
+      assert np.allclose(a @ np.linalg.solve(a, b), b)
+      assert np.allclose(a @ linalg.solve(a, b), b)
+      assert np.allclose(matrix(RDF, a).solve_right(vector(RDF, b)), [2., 3.])
+      t = var("t")
+      plot(sin(t), (t, 0, 1)).save("plot.png")
+      assert pathlib.Path("plot.png").read_bytes()[:8] == bytes([137, 80, 78, 71, 13, 10, 26, 10])
+      installed_matplotlib = pathlib.Path("#{formula_opt_prefix("dimpase/tap/matplotlib-accelerate")}") / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages/matplotlib/__init__.py"
+      assert installed_matplotlib.samefile(matplotlib.__file__), matplotlib.__file__
+      if sys.platform == "darwin":
+          for package in (np, scipy):
+              root = pathlib.Path(package.__file__).parent
+              formula = {"numpy": "numpy-accelerate", "scipy": "scipy-accelerate"}[package.__name__]
+              installed = pathlib.Path("#{HOMEBREW_PREFIX}/opt") / formula / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages" / package.__name__ / "__init__.py"
+              assert installed.samefile(package.__file__), root
+              libraries = list(root.rglob("*.so")) + list(root.rglob("*.dylib"))
+              linkage = "\\n".join(subprocess.check_output(["otool", "-L", str(p)], text=True)
+                                  for p in libraries)
+              assert "Accelerate.framework" in linkage, package.__name__
+              assert "openblas" not in linkage.lower(), package.__name__
+              assert "libgomp" not in linkage.lower(), package.__name__
       assert factor(123456789).value() == 3**2 * 3607 * 3803
       R = PolynomialRing(QQ, "x")
       x = R.gen()
@@ -604,6 +561,8 @@ class Sagemath < Formula
       assert GF(16).multiplicative_generator().multiplicative_order() == 15
       assert gap.SmallGroup(24, 3).Size().sage() == 24
       assert pari(2).isprime()
+      eigenvalues = matrix(RealField(53), [[0, 1], [-2, 0]]).eigenvalues(algorithm="pari")
+      assert all(abs(abs(z.imag()) - sqrt(2.0)) < 1e-12 for z in eigenvalues)
       assert maxima("2+2").sage() == 4
       assert BooleanPolynomialRing(3, "a").ngens() == 3
       from sage.libs.lrcalc.lrcalc import lrcoef, mult
