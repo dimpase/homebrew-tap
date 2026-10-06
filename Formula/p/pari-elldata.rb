@@ -17,6 +17,13 @@ class PariElldata < Formula
     end
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-elldata-20210301"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "e24080d56bda00d8557c633ff8c5fdd5eb4f68c1dc7e36fc2346c7ffd8916603"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "d3fcea74c7695f263c0530d730ce42331e75c1a784e8c21d8b7bfac1a4b11117"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "1b3e8a5abb4c871eab3d513ec01204f7910e19594079913f49b0d0a0e6491aaf"
+  end
+
   depends_on "dimpase/tap/pari"
 
   def install
