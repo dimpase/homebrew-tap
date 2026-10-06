@@ -17,6 +17,13 @@ class PariGaldata < Formula
     end
   end
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-galdata-20080411"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "7a51cfa71949fd12253fbef873ef8ce3a16d94e771445dc123a79c3f336d5654"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "d5aa4b611376d426914ae1b50385379fbf082eb2f70490a9d3c56ecbfe0d313a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "58cd19f872b12ca6d8c6dcc6dd9ae0eefcb5fbc8f7b54794ab704f05e7818277"
+  end
+
   depends_on "dimpase/tap/pari"
 
   def install
