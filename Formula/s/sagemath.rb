@@ -7,9 +7,9 @@ class Sagemath < Formula
   revision 1
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1"
-    sha256 arm64_tahoe:  "72c801d7a9061bc19bf6de2a10c9a4be68924485b9ddea44654650547dd2a796"
-    sha256 x86_64_linux: "aec162be8b51cd07064da3dcefdef4a74e36958eabcc44aedc1bcfd261b65f9c"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1_1"
+    sha256 cellar: :any, arm64_tahoe:  "44f708920e6adff74f7dba2e938ad888cd51ec8b8bc9fcc1bdfa8e3cf64a7c8e"
+    sha256               x86_64_linux: "a740f98f5b03328310c17287a33b07c4a93e1f621bf56301d8bac7a871529677"
   end
 
   depends_on "cmake" => :build
