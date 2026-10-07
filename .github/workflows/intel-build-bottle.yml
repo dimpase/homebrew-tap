@@ -7,6 +7,11 @@ on:
         required: true
         default: cliquer
         type: string
+      keep_old:
+        description: Preserve existing bottle rebuild number when adding Intel
+        required: true
+        default: true
+        type: boolean
 permissions:
   contents: read
 concurrency:
@@ -26,9 +31,14 @@ jobs:
         shell: bash
         env:
           FORMULA: ${{ inputs.formula }}
+          KEEP_OLD: ${{ inputs.keep_old }}
         run: |
           set -euo pipefail
-          python3 scripts/intel-build-bottle.py --formula "$FORMULA" --source-sha "$GITHUB_SHA" --output "$RUNNER_TEMP/intel-bottles"
+          bottle_options=()
+          if [[ "$KEEP_OLD" == true ]]; then
+            bottle_options+=(--keep-old)
+          fi
+          python3 scripts/intel-build-bottle.py --formula "$FORMULA" --source-sha "$GITHUB_SHA" --output "$RUNNER_TEMP/intel-bottles" "${bottle_options[@]}"
       - name: Upload bottle and logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7

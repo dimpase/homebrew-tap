@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--formula", required=True)
 parser.add_argument("--source-sha", required=True)
 parser.add_argument("--output", required=True)
+parser.add_argument("--keep-old", action="store_true", help="Preserve existing bottle metadata when adding a platform")
 args = parser.parse_args()
 if not re.fullmatch(r"[a-z0-9][a-z0-9+@._-]*", args.formula):
     parser.error("Use a formula name from dimpase/tap, without a tap prefix")
@@ -86,7 +87,10 @@ with lock_path.open("a") as lock:
         run(["brew", "test", formula], "test.log")
         version = run(["brew", "ruby", "-e", "puts Formula[ARGV.fetch(0)].pkg_version", formula]).strip()
         url = "https://github.com/dimpase/homebrew-tap/releases/download/" + args.formula + "-" + version
-        run(["brew", "bottle", "--json", "--root-url=" + url, formula], "bottle.log", cwd=output)
+        bottle_command = ["brew", "bottle", "--json", "--root-url=" + url]
+        if args.keep_old:
+            bottle_command.append("--keep-old")
+        run(bottle_command + [formula], "bottle.log", cwd=output)
         bottles = list(output.glob("*.bottle*.tar.gz"))
         json_files = list(output.glob("*.bottle.json"))
         if len(bottles) != 1 or len(json_files) != 1:
