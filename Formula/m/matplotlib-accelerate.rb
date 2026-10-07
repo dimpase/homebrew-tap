@@ -7,8 +7,10 @@ class MatplotlibAccelerate < Formula
   revision 1
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/matplotlib-accelerate-3.11.2"
-    sha256 cellar: :any, arm64_tahoe: "243fbccb42f46a6b5a2ec10485eba7f10c561b55a9c34f647e64c327846144db"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/matplotlib-accelerate-3.11.2_1"
+    sha256 cellar: :any, arm64_tahoe:  "02a89bb0308e07981075253604357b910a6a7085790ae9faa38baf9dcf74e876"
+    sha256 cellar: :any, arm64_linux:  "5ed774370436a47290daf1b58be9d927b7b93abbff62c073f7b2d900cf80b6f3"
+    sha256 cellar: :any, x86_64_linux: "2a7b8342d88aa62fd62b43e523832870f57b4ba15c29de9ff0c33cf1c9c91844"
   end
 
   depends_on "cmake" => :build # for contourpy
