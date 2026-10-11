@@ -58,15 +58,16 @@ jobs:
       - run: brew test-bot --only-tap-syntax
       # The PARI migration's downstream Sage graph is tested separately in #59.
       # Published Sage still has core PARI edges until these bottles are available.
+      # Rebuild Sage after the Python dependency migration's bottles are published.
       - run: |
-          if [[ "$PARI_MIGRATION" == true ]]; then
+          if [[ "$SKIP_DEPENDENTS" == true ]]; then
             brew test-bot --only-formulae --skip-dependents
           else
             brew test-bot --only-formulae
           fi
         shell: bash
         env:
-          PARI_MIGRATION: ${{ github.head_ref == 'fix/pari-consumer-dependencies' }}
+          SKIP_DEPENDENTS: ${{ github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' }}
         if: github.event_name == 'pull_request'
 
       # test-bot skips formulae whose dependencies have no compatible bottles.
