@@ -19,6 +19,7 @@ class Sagemath < Formula
   depends_on "dimpase/tap/brial"
   depends_on "dimpase/tap/cliquer"
   depends_on "dimpase/tap/coxeter3"
+  depends_on "dimpase/tap/cvxopt"
   depends_on "dimpase/tap/cypari2"
   depends_on "dimpase/tap/cysignals"
   depends_on "dimpase/tap/eclib"
@@ -108,11 +109,13 @@ class Sagemath < Formula
 
   pypi_packages package_name:     "sagemath",
                 extra_packages:   %w[
-                  cython jinja2 memory-allocator meson-python packaging
+                  cython jinja2 lrcalc memory-allocator meson-python packaging
                   pyproject-metadata sagemath-data-elliptic-curves sagemath-data-graphs
                   sagemath-data-polytopes setuptools wheel
                 ],
-                exclude_packages: %w[cypari2 cysignals gmpy2 matplotlib meson numpy pillow pybind11 scipy sphinx]
+                exclude_packages: %w[
+                  cvxopt cypari2 cysignals gmpy2 matplotlib meson numpy pillow pybind11 scipy sphinx
+                ]
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz"
@@ -563,6 +566,20 @@ class Sagemath < Formula
       from sage.libs.lrcalc.lrcalc import lrcoef, mult
       assert lrcoef([3, 2, 1], [2, 1], [2, 1]) == 2
       assert mult([1], [1]) == {Partition([2]): 1, Partition([1, 1]): 1}
+      import cvxopt
+      installed_cvxopt = pathlib.Path("#{formula_opt_prefix("dimpase/tap/cvxopt")}") / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages/cvxopt/__init__.py"
+      assert installed_cvxopt.samefile(cvxopt.__file__), cvxopt.__file__
+      from cvxopt import cholmod, matrix as cvx_matrix, spmatrix
+      a = spmatrix([2.0, 3.0], [0, 1], [0, 1])
+      b = cvx_matrix([4.0, 9.0])
+      cholmod.linsolve(a, b)
+      assert max(abs(b[0] - 2.0), abs(b[1] - 3.0)) < 1e-7
+      p = MixedIntegerLinearProgram(maximization=False, solver="CVXOPT")
+      v = p.new_variable(real=True, nonnegative=True)
+      p.set_objective(v[0] + v[1])
+      p.add_constraint(v[0] + 2*v[1] >= 3)
+      p.add_constraint(2*v[0] + v[1] >= 3)
+      assert abs(p.solve() - 2.0) < 1e-7
       from sage.features.databases import DatabaseCremona, DatabaseGraphs, DatabaseReflexivePolytopes
       assert DatabaseCremona("cremona_mini").is_present()
       assert DatabaseGraphs().is_present()
