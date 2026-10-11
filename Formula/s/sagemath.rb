@@ -4,13 +4,7 @@ class Sagemath < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
   sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
   license "GPL-2.0-or-later"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1_1"
-    sha256 cellar: :any, arm64_tahoe:  "44f708920e6adff74f7dba2e938ad888cd51ec8b8bc9fcc1bdfa8e3cf64a7c8e"
-    sha256               x86_64_linux: "a740f98f5b03328310c17287a33b07c4a93e1f621bf56301d8bac7a871529677"
-  end
+  revision 2
 
   depends_on "cmake" => :build
   depends_on "meson" => :build
@@ -83,7 +77,6 @@ class Sagemath < Formula
   depends_on "pillow" => :no_linkage
   depends_on "ppl"
   depends_on "primecount"
-  depends_on "python@3.13"
   depends_on "python@3.14"
   depends_on "qhull"
   depends_on "singular"
@@ -93,8 +86,10 @@ class Sagemath < Formula
 
   on_macos do
     depends_on "dimpase/tap/numpy-accelerate"
+    depends_on "dimpase/tap/pillow-python313" => :no_linkage
     depends_on "dimpase/tap/scipy-accelerate"
     depends_on macos: :sonoma
+    depends_on "python@3.13"
 
     resource "appnope" do
       url "https://files.pythonhosted.org/packages/11/f7/a82489c2b6ebe32d3e2831895ae19c77861f0eadf3bb16034484d965dbb2/appnope-1.0.0.tar.gz"
