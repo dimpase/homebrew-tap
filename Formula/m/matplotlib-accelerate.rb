@@ -6,6 +6,13 @@ class MatplotlibAccelerate < Formula
   license "PSF-2.0"
   revision 2
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/matplotlib-accelerate-3.11.2_2"
+    sha256 cellar: :any, arm64_tahoe:  "4cda200a3dc6b963cdb263d6df7619ec57f37ad9cc84fbac097857b11a550483"
+    sha256 cellar: :any, arm64_linux:  "a5a724220f358d2045538a1078b1ca4b0e6131591b3748b930fe48240c51fd02"
+    sha256 cellar: :any, x86_64_linux: "80bc8c94fc9cdc4e096ee09b1ee77538731d737c56c0174ef70e0e3c068762b5"
+  end
+
   depends_on "cmake" => :build # for contourpy
   depends_on "meson" => :build
   depends_on "ninja" => :build
