@@ -4,19 +4,12 @@ class Pari < Formula
   url "https://pari.math.u-bordeaux.fr/pub/pari/unix/pari-2.19.0.tar.gz"
   sha256 "f317b9722eb5d9094a60303774f066f3a83e3ec1f170be8546c44d7583f30b6d"
   license "GPL-2.0-or-later"
-  revision 1
+  revision 2
   compatibility_version 1
 
   livecheck do
     url "https://pari.math.u-bordeaux.fr/pub/pari/unix/"
     regex(/href=.*?pari[._-]v?(\d+(?:\.\d+)+)\.t/i)
-  end
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pari-2.19.0_1"
-    sha256 arm64_tahoe:  "6eb74783700c645f5485e4fa9f70be5beb6527eb340cef40b9efa4504be1dd4d"
-    sha256 arm64_linux:  "dd5f64b32571060e76c15cae2999e3fba5f8d8353f85b8ff8ec4c4a767603891"
-    sha256 x86_64_linux: "fad0fb5fc0630c2787ff6c2d0a4259eccd70312335b2b0ad7fad87d5c816fd69"
   end
 
   depends_on "gmp"
@@ -29,6 +22,7 @@ class Pari < Formula
   # Upstream: 6fcdb19f551b5695a13c2ea8ec05796629dcc546
   # Reject numerically noninvertible complex Gaussian pivots (candidate upstream fix).
   # https://pari.math.u-bordeaux.fr/cgi-bin/bugreport.cgi?bug=2708
+  # Prevent Darwin worker exceptions from blocking signals in every thread.
   patch :DATA
 
   def install
@@ -72,6 +66,7 @@ class Pari < Formula
     (testpath/"test.gp").write <<~GP
       default(parisize,"1G");
       default(realprecision,10);
+      default(nbthreads,4);
       dist(a,b) = sqrt(a^2+b^2);
       print(dist(1,2));
       check(b) = {
@@ -99,8 +94,21 @@ class Pari < Formula
       };
       iferr(check_regressions(), E, print(E); quit(1));
       print("hyperellcharpoly and lfun regressions passed");
+      check_parallel_alarms() = {
+        parsum(i=1,4,iferr(1/0,E,0));
+        for(i=1,2,
+          if(type(alarm(1,for(k=1,10^8,isprime(k)))) != "t_ERROR", error("parallel alarm regression"))
+        );
+      };
+      iferr(check_parallel_alarms(), E, print(E); quit(1));
+      print("parallel alarm regression passed");
     GP
-    expected = "2.236067977\ncomplex pivot regression passed\nhyperellcharpoly and lfun regressions passed\n"
+    expected = <<~EOS
+      2.236067977
+      complex pivot regression passed
+      hyperellcharpoly and lfun regressions passed
+      parallel alarm regression passed
+    EOS
     assert_equal expected, pipe_output("#{bin}/gp --quiet test.gp", "", 0)
   end
 end
@@ -191,3 +199,162 @@ index a7ab2fec84..69a47fa428 100644
    mt_queue_start_lim(&pt, worker, l-1);
    for (i = 1; i < l || pending; i++)
    {
+
+diff --git a/src/headers/parisys.h b/src/headers/parisys.h
+--- a/src/headers/parisys.h
++++ b/src/headers/parisys.h
+@@ -50,6 +50,18 @@
+ #  define THREAD
+ #endif
+
++/* Darwin longjmp restores signal masks with sigprocmask, which changes the
++ * masks of all threads. A caught error in a signal-blocked worker must not
++ * block signals in the main thread. Keep jmp_buf and use the mask-free pair.
++ * Other platforms retain their existing error-recovery behavior. */
++#ifdef __APPLE__
++#  define pari_setjmp(env) _setjmp(env)
++#  define pari_longjmp(env, val) _longjmp(env, val)
++#else
++#  define pari_setjmp(env) setjmp(env)
++#  define pari_longjmp(env, val) longjmp(env, val)
++#endif
++
+ #if defined(_WIN32) || defined(__CYGWIN32__)
+ /* ANSI C does not allow to longjmp() out of a signal handler, in particular,
+  * the SIGINT handler. On Win32, the handler is executed in another thread, and
+diff --git a/src/headers/paricom.h b/src/headers/paricom.h
+--- a/src/headers/paricom.h
++++ b/src/headers/paricom.h
+@@ -46,7 +46,7 @@
+   jmp_buf *var=iferr_env;    \
+   jmp_buf __env;             \
+   iferr_env = &__env;        \
+-  if (setjmp(*iferr_env))    \
++  if (pari_setjmp(*iferr_env))    \
+   {                          \
+     GEN __iferr_data = pari_err_last(); \
+     iferr_env = var; \
+diff --git a/src/gp/gp.c b/src/gp/gp.c
+--- a/src/gp/gp.c
++++ b/src/gp/gp.c
+@@ -50,7 +50,7 @@
+ static void
+ gp_err_recover(long numerr)
+ {
+-  longjmp(env[s_env.n-1], numerr);
++  pari_longjmp(env[s_env.n-1], numerr);
+ }
+
+ /* numerr >= 0 */
+@@ -298,7 +298,7 @@
+   Buffer *b = filtered_buffer(&F);
+   struct gp_context rec;
+   long er;
+-  if ((er = setjmp(env[s_env.n-1])))
++  if ((er = pari_setjmp(env[s_env.n-1])))
+   { /* recover: jump from error [ > 0 ] or allocatemem [ -1 ] */
+     if (er > 0) { /* true error */
+       if (!(GP_DATA->recover)) exit(1);
+@@ -370,7 +370,7 @@
+ read_main(const char *s)
+ {
+   GEN z;
+-  if (setjmp(env[s_env.n-1]))
++  if (pari_setjmp(env[s_env.n-1]))
+     z = NULL;
+   else {
+     FILE *f = switchin(s);
+@@ -429,13 +429,13 @@
+     long er, br_status;
+     set_avma(av);
+     gp_context_save(&rec2);
+-    if ((er=setjmp(env[nenv])))
++    if ((er=pari_setjmp(env[nenv])))
+     {
+       if (er < 0)
+       {
+         s_env.n = 1;
+         frame_level = oldframe_level;
+-        longjmp(env[s_env.n-1], er);
++        pari_longjmp(env[s_env.n-1], er);
+       }
+       gp_context_restore(&rec2);
+       iferr_env = NULL;
+@@ -521,7 +521,7 @@
+   pari_stack_init(&s_env, sizeof(*env), (void**)&env);
+   (void)pari_stack_new(&s_env);
+
+-  if (setjmp(env[s_env.n-1]))
++  if (pari_setjmp(env[s_env.n-1]))
+   {
+     puts("### Errors on startup, exiting...\n\n");
+     exit(1);
+diff --git a/src/language/init.c b/src/language/init.c
+--- a/src/language/init.c
++++ b/src/language/init.c
+@@ -1884,7 +1884,7 @@
+     numerr = err_get_num(E);
+   }
+   global_err_data = E;
+-  if (*iferr_env) longjmp(*iferr_env, numerr);
++  if (*iferr_env) pari_longjmp(*iferr_env, numerr);
+   mt_err_recover(numerr);
+   va_end(ap);
+   if (cb_pari_err_handle &&
+diff --git a/src/language/gplib.c b/src/language/gplib.c
+--- a/src/language/gplib.c
++++ b/src/language/gplib.c
+@@ -1032,7 +1032,7 @@
+   for(;;)
+   {
+     char *nexts, *s, *t;
+-    if (setjmp(env[s_env.n-1])) err_printf("...skipping line %ld.\n", c);
++    if (pari_setjmp(env[s_env.n-1])) err_printf("...skipping line %ld.\n", c);
+     c = c + 1;
+     if (!get_line_from_file(NULL,&F,file)) break;
+     s = b->buf;
+diff --git a/src/mt/mpi.c b/src/mt/mpi.c
+--- a/src/mt/mpi.c
++++ b/src/mt/mpi.c
+@@ -242,7 +242,7 @@
+   struct gp_context rec;
+   pari_mt_nbthreads = 1;
+   gp_context_save(&rec);
+-  if (setjmp(child_env))
++  if (pari_setjmp(child_env))
+   {
+     send_GEN(pari_err_last(), 0);
+     gp_context_restore(&rec);
+@@ -322,7 +322,7 @@
+ void
+ mt_err_recover(long er)
+ {
+-  if (pari_MPI_rank) longjmp(child_env,er);
++  if (pari_MPI_rank) pari_longjmp(child_env,er);
+   else mtsingle_err_recover(er);
+ }
+
+diff --git a/src/test/in/parallel b/src/test/in/parallel
+--- a/src/test/in/parallel
++++ b/src/test/in/parallel
+@@ -52,6 +52,9 @@
+
+ my(N=1);until(type(A)=="t_ERROR",A=alarm(1,parfor(i=1,10,for(i=1,N,isprime(i))));N*=2);
+
++/* A caught worker error must leave the main thread able to receive alarms. */
++parsum(i=1,4,iferr(1/0,E,0)); type(alarm(1,while(1,)))
++
+ my(s,L=List());parfor(x=1,10,x!,f,s+=f);s
+ my(s,L=List());parfor(x=1,oo,if(x<=10,x!),f,s+=f;if(x>=10,break));s
+ my(s);parforprime(p=2,20,p!,f,s+=f);s
+diff --git a/src/test/32/parallel b/src/test/32/parallel
+--- a/src/test/32/parallel
++++ b/src/test/32/parallel
+@@ -52,6 +52,7 @@
+ 7432339208719
+ 7432339208719
+ [75, 85070591730234615858594180193637120807]
++"t_ERROR"
+ 4037913
+ 4037913
+ 122000794103870768
