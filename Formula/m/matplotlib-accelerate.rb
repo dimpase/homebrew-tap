@@ -4,20 +4,12 @@ class MatplotlibAccelerate < Formula
   url "https://files.pythonhosted.org/packages/e7/c8/9aa712a0afb882649424dd8de8ad9aa6235e796e84c6052e8f6dc1598d0d/matplotlib-3.11.2.tar.gz"
   sha256 "cec596316640f2b394b8f0daa0ea61a8eae82d017b620b9f202befb972a59ea4"
   license "PSF-2.0"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/matplotlib-accelerate-3.11.2_1"
-    sha256 cellar: :any, arm64_tahoe:  "02a89bb0308e07981075253604357b910a6a7085790ae9faa38baf9dcf74e876"
-    sha256 cellar: :any, arm64_linux:  "5ed774370436a47290daf1b58be9d927b7b93abbff62c073f7b2d900cf80b6f3"
-    sha256 cellar: :any, x86_64_linux: "2a7b8342d88aa62fd62b43e523832870f57b4ba15c29de9ff0c33cf1c9c91844"
-  end
+  revision 2
 
   depends_on "cmake" => :build # for contourpy
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
-  depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "freetype"
   depends_on "pillow" => :no_linkage
@@ -25,7 +17,9 @@ class MatplotlibAccelerate < Formula
   depends_on "qhull"
 
   on_macos do
+    depends_on "python@3.13" => [:build, :test]
     depends_on "dimpase/tap/numpy-accelerate"
+    depends_on "dimpase/tap/pillow-python313" => :no_linkage
     depends_on macos: :sonoma
   end
 
