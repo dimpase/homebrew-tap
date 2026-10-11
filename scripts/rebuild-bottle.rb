@@ -1,3 +1,6 @@
+# typed: strict
+# frozen_string_literal: true
+
 # Run with brew ruby rebuild-bottle.rb FORMULA.
 # Homebrew 7 reinstall CLI does not expose --build-bottle.
 require "formula"
@@ -13,7 +16,9 @@ installer = FormulaInstaller.new(f, build_bottle: true, verbose: true,
 Homebrew::Install.perform_preinstall_checks_once
 valid = Homebrew::Install.fetch_formulae([installer])
 raise "Source fetch failed" unless valid.include?(installer)
+
 context = Homebrew::Reinstall::InstallationContext.new(
- formula_installer: installer, keg: keg, formula: f,
- options: Options.new, link_keg: keg ? keg.linked? : !f.keg_only?)
+  formula_installer: installer, keg: keg, formula: f,
+  options: Options.new, link_keg: keg ? keg.linked? : !f.keg_only?
+)
 Homebrew::Reinstall.reinstall_formula(context)
