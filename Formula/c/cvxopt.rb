@@ -5,6 +5,13 @@ class Cvxopt < Formula
   sha256 "8059cef41f1f115c87bc9b75fec9f86db95e7f0afcf03a52d619ba433e443bcb"
   license "GPL-3.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cvxopt-1.3.3"
+    sha256 cellar: :any, arm64_tahoe:  "9bfad93cd1a63b2c7d11e0c5bb4ed7c714d5fedebeb95eb9cd46173f238372a3"
+    sha256               arm64_linux:  "f2f3ac59bb3808f8c10a730d8d773744ca868542c446ca02925935ca2ead3f94"
+    sha256               x86_64_linux: "30d9571bf1deb930f94f71164588b26a0907a2b7d6a046df9be1d89ac1cc8b8b"
+  end
+
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "glpk"
