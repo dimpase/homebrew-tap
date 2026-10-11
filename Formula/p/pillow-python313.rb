@@ -6,6 +6,13 @@ class PillowPython313 < Formula
   license "MIT-CMU"
   head "https://github.com/python-pillow/Pillow.git", branch: "main"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pillow-python313-12.3.0"
+    sha256 cellar: :any, arm64_tahoe:  "e42ab06e42d21e6963f7ef684f056ca0c318536e55d61a53a2ae35715546d020"
+    sha256               arm64_linux:  "45e83f7ff61563e24dec7c987fc3221d5f7d0843ed07e9daff2a9c37c8c319bf"
+    sha256               x86_64_linux: "e05c21e393bf28077fcddaeae6d42b76b03b5686d6b68a1d1f669705b4799eb5"
+  end
+
   depends_on "cmake" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
