@@ -42,6 +42,7 @@ class Sagemath < Formula
   depends_on "dimpase/tap/pari-galpol"
   depends_on "dimpase/tap/pari-seadata"
   depends_on "dimpase/tap/planarity"
+  depends_on "dimpase/tap/pplpy"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sirocco"
   depends_on "dimpase/tap/symmetrica"
@@ -114,7 +115,7 @@ class Sagemath < Formula
                   sagemath-data-polytopes setuptools wheel
                 ],
                 exclude_packages: %w[
-                  cvxopt cypari2 cysignals gmpy2 matplotlib meson numpy pillow pybind11 scipy sphinx
+                  cvxopt cypari2 cysignals gmpy2 matplotlib meson numpy pillow pplpy pybind11 scipy sphinx
                 ]
 
   resource "setuptools" do
@@ -292,11 +293,6 @@ class Sagemath < Formula
     sha256 "eab5f70271a490ef74618bb314fbb86e3c7e82fa3b9c922c2ea0e0a1a155d329"
   end
 
-  resource "pplpy" do
-    url "https://files.pythonhosted.org/packages/75/b0/bcda4d51601f4e7dc5d5983972d5947c6c2c9cb943de359f0ba989b1c7ac/pplpy-0.9.0.tar.gz"
-    sha256 "8289c50d680ce3f9eacac666cb4cdbbd8a711959e7cc7cf06f7fdb4035d0cc5d"
-  end
-
   resource "primecountpy" do
     url "https://files.pythonhosted.org/packages/82/0a/55d92a3733e41920c5e3fab2d0f2e4d265cfa17a87019a6fc756a9587037/primecountpy-0.2.1.tar.gz"
     sha256 "888706ab65cc089fb983de4639360dddc728baa4d9877a7ad8b116f645650b39"
@@ -462,8 +458,8 @@ class Sagemath < Formula
       resources.each do |r|
         r.stage do
           args = std_pip_args(prefix:          private_prefix,
-                              build_isolation: ["lrcalc", "pplpy", "primecountpy"].exclude?(r.name))
-          if ["pplpy", "primecountpy"].include?(r.name)
+                              build_isolation: ["lrcalc", "primecountpy"].exclude?(r.name))
+          if r.name == "primecountpy"
             args += ["--config-settings=setup-args=--wrap-mode=nofallback"]
           end
           system python3, "-m", "pip", "install", *args, "."
@@ -574,12 +570,20 @@ class Sagemath < Formula
       b = cvx_matrix([4.0, 9.0])
       cholmod.linsolve(a, b)
       assert max(abs(b[0] - 2.0), abs(b[1] - 3.0)) < 1e-7
-      p = MixedIntegerLinearProgram(maximization=False, solver="CVXOPT")
-      v = p.new_variable(real=True, nonnegative=True)
-      p.set_objective(v[0] + v[1])
-      p.add_constraint(v[0] + 2*v[1] >= 3)
-      p.add_constraint(2*v[0] + v[1] >= 3)
-      assert abs(p.solve() - 2.0) < 1e-7
+      for solver in ("CVXOPT", "PPL"):
+          p = MixedIntegerLinearProgram(maximization=False, solver=solver)
+          v = p.new_variable(real=True, nonnegative=True)
+          p.set_objective(v[0] + v[1])
+          p.add_constraint(v[0] + 2*v[1] >= 3)
+          p.add_constraint(2*v[0] + v[1] >= 3)
+          assert abs(p.solve() - 2.0) < 1e-7
+      import ppl
+      installed_ppl = pathlib.Path("#{formula_opt_prefix("dimpase/tap/pplpy")}") / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages/ppl/__init__.py"
+      assert installed_ppl.samefile(ppl.__file__), ppl.__file__
+      poly = Polyhedron(vertices=[(0, 0), (1, 0), (0, 1)], backend="ppl")
+      assert poly.n_vertices() == 3 and poly.dim() == 2
+      assert poly.contains((QQ(1)/4, QQ(1)/4))
+      assert not poly.contains((1, 1))
       from sage.features.databases import DatabaseCremona, DatabaseGraphs, DatabaseReflexivePolytopes
       assert DatabaseCremona("cremona_mini").is_present()
       assert DatabaseGraphs().is_present()
