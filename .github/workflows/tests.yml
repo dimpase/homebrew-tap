@@ -65,7 +65,7 @@ jobs:
           fi
         shell: bash
         env:
-          SKIP_DEPENDENTS: ${{ github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' || github.head_ref == 'fix/sagemath-cvxopt' || github.head_ref == 'fix/pari-darwin-signal-mask' }}
+          SKIP_DEPENDENTS: ${{ github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' || github.head_ref == 'fix/sagemath-cvxopt' || github.head_ref == 'fix/pari-darwin-signal-mask' || github.head_ref == 'fix/pplpy-shared-libraries' }}
         if: github.event_name == 'pull_request'
 
       # test-bot skips formulae whose dependencies have no compatible bottles.
