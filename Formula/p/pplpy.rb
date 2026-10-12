@@ -5,6 +5,13 @@ class Pplpy < Formula
   sha256 "8289c50d680ce3f9eacac666cb4cdbbd8a711959e7cc7cf06f7fdb4035d0cc5d"
   license "GPL-3.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/pplpy-0.9.0"
+    sha256 cellar: :any, arm64_tahoe:  "b614eb36ad883e035266932d13ef6e6236f15c6b92dadb8eb6f06265c1ea3ffe"
+    sha256 cellar: :any, arm64_linux:  "03d22b777b545b37349c45d3954fb1f6f4d58cd31d4fbe0e4f278b0f85a15a6e"
+    sha256 cellar: :any, x86_64_linux: "5b55b304f841690997751b7eb425e96f22368a461a0a552c42f1a03e89401638"
+  end
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
