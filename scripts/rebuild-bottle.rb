@@ -9,7 +9,7 @@ require "install"
 require "reinstall"
 name = ARGV.fetch(0)
 f = Formula[name]
-keg = f.opt_prefix.directory? ? Keg.new(f.opt_prefix.realpath) : nil
+keg = Keg.new(f.opt_prefix.realpath) if f.opt_prefix.directory?
 installer = FormulaInstaller.new(f, build_bottle: true, verbose: true,
   installed_on_request: keg ? keg.tab.installed_on_request == true : true,
   link_keg: keg ? keg.linked? : !f.keg_only?)
