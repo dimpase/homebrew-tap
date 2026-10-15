@@ -14,6 +14,40 @@ brew "<formula>"
 ```
 
 
+## SageMath
+
+`brew install dimpase/tap/sagemath` installs sagelib, the `sage` command and its
+Jupyter kernel. It depends on `sagemath-deps`, which provides the native libraries,
+Python dependencies, data packages and build tools. Updating sagelib therefore
+does not require rebuilding its Python dependencies.
+
+To install the dependencies without sagelib, use:
+
+```sh
+brew install dimpase/tap/sagemath-deps
+```
+
+The Python packages are available to Homebrew Python 3.14 on macOS and Linux,
+and also Python 3.13 on macOS. A virtual environment can use these packages with
+`--system-site-packages`:
+
+```sh
+"$(brew --prefix python@3.14)/bin/python3.14" -m venv --system-site-packages sage-venv
+source sage-venv/bin/activate
+source "$(brew --prefix sagemath-deps)/share/sagemath-deps/python3.14-env.sh"
+
+# From your Sage checkout:
+python -m pip install --no-build-isolation --no-deps -e . \
+  -Csetup-args=-Dbuild-docs=false -Csetup-args=--wrap-mode=nofallback
+```
+
+The environment script exposes the native headers, libraries and build tools,
+including Cython, that a pip build needs outside Homebrew. It preserves the
+active virtual environment's interpreter and tools. Source it again when opening
+a new development shell. On macOS, replace `3.14` with `3.13` throughout to use
+Python 3.13. The dependency set matches the Sage version in the formula; newer
+checkouts may require additional dependencies. Documentation is built separately.
+
 Currently implemented taps
 
 * bliss
