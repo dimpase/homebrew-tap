@@ -4,22 +4,15 @@ class Brial < Formula
   url "https://github.com/BRiAl/BRiAl/releases/download/1.2.15/brial-1.2.15.tar.bz2"
   sha256 "1d0e7de01b1b60ad892dee6c02503f5932e2ed211f3f8dbdf1a3216c696ef201"
   license all_of: ["0BSD", "GPL-2.0-only"]
-  revision 2
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/brial-1.2.15_2"
-    rebuild 2
-    sha256 cellar: :any, arm64_tahoe:  "faf5c2edd9267f15e3a69ac48028836099d599e58dde57a95fb9c213ffb6584f"
-    sha256 cellar: :any, x86_64_linux: "0966fcaf84c78db6d03cc325f075d8c480aa4358847e7b84789be0be9fb83973"
-  end
+  revision 3
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "boost"
-  depends_on "dimpase/tap/m4ri"
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
+  depends_on "m4ri"
   depends_on "pkgconf"
 
   patch :DATA
@@ -33,7 +26,23 @@ class Brial < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.cpp").write <<~CPP
+      #include <polybori/polybori.h>
+      #include <m4ri/m4ri.h>
+      #include <cassert>
+      int main() {
+        PBORI::BoolePolyRing ring(3);
+        PBORI::BoolePolynomial f = ring.variable(0) + ring.variable(1);
+        assert(f * f == f);
+        mzd_t *matrix = mzd_init(3, 3);
+        mzd_set_ui(matrix, 1);
+        assert(mzd_echelonize(matrix, 0) == 3);
+        mzd_free(matrix);
+      }
+    CPP
+    flags = shell_output("pkg-config --cflags --libs brial").split
+    system ENV.cxx, "-std=c++17", "test.cpp", "-I#{formula_opt_include("boost")}", *flags, "-o", "test"
+    system "./test"
   end
 end
 
