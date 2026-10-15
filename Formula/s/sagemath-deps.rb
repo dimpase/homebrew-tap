@@ -410,12 +410,14 @@ class SagemathDeps < Formula
     native_prefixes = deps.reject { |d| d.name.start_with?("python@") }
                           .map { |d| formula_opt_prefix(d.name) }
     paths = {
-      "PATH"              => [opt_libexec/"python#{python_version}/bin", *native_prefixes.map { |p| p/"bin" }],
+      "PATH"              => native_prefixes.map { |p| p/"bin" },
       "CPATH"             => native_prefixes.map { |p| p/"include" },
       "LIBRARY_PATH"      => native_prefixes.map { |p| p/"lib" },
       "PKG_CONFIG_PATH"   => native_prefixes.flat_map { |p| [p/"lib/pkgconfig", p/"share/pkgconfig"] },
       "CMAKE_PREFIX_PATH" => native_prefixes,
     }
+    paths.transform_values! { |entries| entries.select(&:directory?) }
+    paths["PATH"].unshift(opt_libexec/"python#{python_version}/bin")
     script = "# Source after activating a Homebrew Python #{python_version} virtual environment.\n"
     paths.each do |name, entries|
       # Keep packages installed in the development venv ahead of bundled tools.
