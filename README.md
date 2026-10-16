@@ -25,6 +25,11 @@ SageMath and `sagemath-deps` have bottles for **macOS 26 (Tahoe) on Apple Silico
 Jupyter kernel. It uses the separately bottled `sagemath-deps` environment, so
 updating sagelib does not rebuild its Python dependencies.
 
+On macOS, the tap's Accelerate variants of NumPy and SciPy conflict with the
+corresponding core formulae. If Homebrew reports a conflict, use `brew unlink numpy`
+or `brew unlink scipy` for the named core formula, then retry the Sage installation.
+Unlinking leaves the core package installed in the Cellar.
+
 `sagemath-deps` provides the native libraries, Python dependencies, data packages
 and build tools needed to build sagelib separately. To install these dependencies:
 
