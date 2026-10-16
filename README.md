@@ -56,7 +56,27 @@ including Cython, that a pip build needs outside Homebrew. It preserves the
 active virtual environment's interpreter and tools. Source it again when opening
 a new development shell. On macOS, replace `3.14` with `3.13` throughout to use
 Python 3.13. The dependency set matches the Sage version in the formula; newer
-checkouts may require additional dependencies. Documentation is built separately.
+checkouts may require additional dependencies.
+
+### Building documentation
+
+`sagemath-docbuild-deps` adds Sphinx, the Sage documentation themes and extensions,
+Jupyter notebook rendering, and local MathJax assets to `sagemath-deps`. It supports
+the same Python versions and development venvs. It does not include TeX or PDF tools.
+
+After building sagelib in your venv as above:
+
+```sh
+brew install dimpase/tap/sagemath-docbuild-deps
+source "$(brew --prefix sagemath-docbuild-deps)/share/sagemath-docbuild-deps/python3.14-env.sh"
+
+# From your Sage checkout, build the reference manual and tutorial:
+python src/build-docs.py --no-pdf-links reference html
+python src/build-docs.py --no-pdf-links tutorial html
+```
+
+The environment script also exposes Jupyter's rendering templates and MathJax.
+Packages installed in the venv take precedence over the bundled baseline.
 
 ## Formulae and bottle downloads
 
@@ -67,6 +87,7 @@ bottle releases.
 
 * [sagemath](Formula/s/sagemath.rb) [11.0.beta1_2](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-11.0.beta1_2) — Sagelib, the Sage command and Jupyter kernel.
 * [sagemath-deps](Formula/s/sagemath-deps.rb) [11.0.beta1](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-deps-11.0.beta1) — Native and Python dependencies for Sage and development venvs.
+* [sagemath-docbuild-deps](Formula/s/sagemath-docbuild-deps.rb) — Additional dependencies for building Sage HTML documentation, including themes and offline MathJax.
 * [cvxopt](Formula/c/cvxopt.rb) [1.3.3](https://github.com/dimpase/homebrew-tap/releases/tag/cvxopt-1.3.3) — Convex optimization.
 * [cypari2](Formula/c/cypari2.rb) [2.2.6](https://github.com/dimpase/homebrew-tap/releases/tag/cypari2-2.2.6) — Python interface to PARI/GP.
 * [cysignals](Formula/c/cysignals.rb) [1.13.1](https://github.com/dimpase/homebrew-tap/releases/tag/cysignals-1.13.1) — Signal handling for Cython.
