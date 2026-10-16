@@ -5,23 +5,15 @@ class SagemathDocbuildDeps < Formula
   sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
   license "GPL-2.0-or-later"
 
+  depends_on "maturin" => :build
+  depends_on "rust" => :build
+
   depends_on "dimpase/tap/sagemath-deps"
   depends_on "python@3.14"
 
   on_macos do
     depends_on macos: :sonoma
     depends_on "python@3.13"
-
-    resource "rpds-py-python313" do
-      on_arm do
-        url "https://files.pythonhosted.org/packages/f3/6b/686d9dc4359a8f163cfbbf89ee0b4e586431de22fe8248edb63a8cf50d49/rpds_py-2026.6.3-cp313-cp313-macosx_11_0_arm64.whl", using: :nounzip
-        sha256 "f4d78253f6996be4901669ad25319f842f740eccf4d58e3c7f3dd39e6dde1d8f"
-      end
-      on_intel do
-        url "https://files.pythonhosted.org/packages/a4/9e/b818ee580026ec578138e961027a68820c40afeb1ec8f6819b54fb99e196/rpds_py-2026.6.3-cp313-cp313-macosx_10_12_x86_64.whl", using: :nounzip
-        sha256 "3cfe765c1da0072636ca06628261e0ea05688e160d5c8a03e0217c3854037223"
-      end
-    end
   end
 
   # Match Sage's docs dependency group and lockfile. Reuse packages supplied by
@@ -212,27 +204,9 @@ class SagemathDocbuildDeps < Formula
     sha256 "7fab6269c8bf237c657876b52058ccb182e861518d1c695c1a9aaa8c1c105d5b"
   end
 
-  resource "rpds-py-python314" do
-    on_macos do
-      on_arm do
-        url "https://files.pythonhosted.org/packages/ba/54/f785cc3d3f60839ca57a5af4927a9f347b07b2799c373fc20f7949f87c7e/rpds_py-2026.6.3-cp314-cp314-macosx_11_0_arm64.whl", using: :nounzip
-        sha256 "d7469697dce35be237db177d42e2a2ee26e6dcc5fc052078a6fefabd288c6edd"
-      end
-      on_intel do
-        url "https://files.pythonhosted.org/packages/b6/36/7fbe9dcdaf857fb3f63c2a2284b62492d95f5e8334e947e5fb6e7f68c9be/rpds_py-2026.6.3-cp314-cp314-macosx_10_12_x86_64.whl", using: :nounzip
-        sha256 "931908d9fc855d8f74783377822be318edb6dcb19e47169dc038f9a1bf60b06e"
-      end
-    end
-    on_linux do
-      on_arm do
-        url "https://files.pythonhosted.org/packages/63/ef/d4cdaf309e6b095b43597103cf8c0b951d6cca2acce68c474f75ec12e0c7/rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", using: :nounzip
-        sha256 "bcfbcf66006befb9fd2aeaa9e01feaf881b4dc330a02ba07d2322b1c11be7b5d"
-      end
-      on_intel do
-        url "https://files.pythonhosted.org/packages/d1/9c/0d1fdc2e7aba23e290d603bc494e97bd205bae262ce33c6b32a69768ed5e/rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", using: :nounzip
-        sha256 "dc319e5a1de4b6913aac94bf6a2f9e847371e0a140a43dd4991db1a09bc2d504"
-      end
-    end
+  resource "rpds-py" do
+    url "https://files.pythonhosted.org/packages/aa/2a/9618a122aeb2a169a28b03889a2995fe297588964333d4a7d67bdf46e147/rpds_py-2026.6.3.tar.gz"
+    sha256 "1cebd1337c242e4ec2293e541f712b2da849b29f48f0c293684b71c0632625d4"
   end
 
   def pythons
@@ -253,11 +227,18 @@ class SagemathDocbuildDeps < Formula
       private_prefix = libexec/"python#{python_version}"
       resources.each do |r|
         next if r.name == "mathjax"
-        next if r.name.start_with?("rpds-py-python") && !r.name.end_with?(python_version.to_s.delete("."))
 
         r.stage do
+          # Build the native extension for each Python ABI from one resource.
+          # Rust and maturin are needed only when producing the dependency bottle.
+          if r.name == "rpds-py"
+            system "maturin", "build", "--release", "--locked", "--interpreter", python3, "--out", "wheels"
+            wheel = Dir["wheels/*.whl"].fetch(0)
+          else
+            wheel = Dir["*.whl"].fetch(0)
+          end
           system python3, "-m", "pip", "install", "--no-deps", "--ignore-installed", "--no-compile",
-                 "--prefix=#{private_prefix}", Dir["*.whl"].fetch(0)
+                 "--prefix=#{private_prefix}", wheel
         end
       end
 
@@ -328,9 +309,7 @@ class SagemathDocbuildDeps < Formula
         display_name: "Documentation test Python #{python_version}",
         language:     "python",
       })
-      packages = resources.map(&:name).reject do |name|
-        name == "mathjax" || name.start_with?("rpds-py-python")
-      end + ["rpds-py"]
+      packages = resources.map(&:name).reject { |name| name == "mathjax" }
       system venv/"bin/python", "-c", <<~PYTHON
         import importlib.metadata
         import pathlib
