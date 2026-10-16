@@ -6,6 +6,13 @@ class Sagemath < Formula
   license "GPL-2.0-or-later"
   revision 2
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1_2"
+    sha256 cellar: :any, arm64_tahoe:  "3fdc7f9119624ad242c592e79c2b9ba0e0f25191351f1874f0298b9bf5dbba16"
+    sha256               arm64_linux:  "ddb81b26aad2df739bbf77b95b132e478014206c2ef38977fb5adb1ce58ff8cd"
+    sha256               x86_64_linux: "9d1f0ec5a6216b76dd2e02401155fee562e9eb24f0f65b89f81a19b227fd4859"
+  end
+
   depends_on "cmake" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
