@@ -4,7 +4,7 @@ class MaximaEcl < Formula
   url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.49.0-source/maxima-5.49.0.tar.gz"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
   license "GPL-2.0-only"
-  revision 1
+  revision 2
 
   livecheck do
     url :stable
@@ -24,7 +24,6 @@ class MaximaEcl < Formula
   depends_on "ecl"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "gnuplot"
   depends_on "rlwrap"
 
   uses_from_macos "perl" => :build
@@ -49,6 +48,15 @@ class MaximaEcl < Formula
     (lib/"ecl-#{Formula["ecl"].version}").install "src/binary-ecl/maxima.fas"
     ohai "Now installing the rest of Maxima..."
     system "make", "install"
+  end
+
+  def caveats
+    <<~EOS
+      To use Maxima's Gnuplot plotting backend, install Gnuplot separately:
+        brew install gnuplot
+
+      SageMath's Matplotlib-based plotting does not require Gnuplot.
+    EOS
   end
 
   test do
