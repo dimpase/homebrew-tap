@@ -4,7 +4,7 @@ class MaximaEcl < Formula
   url "https://downloads.sourceforge.net/project/maxima/Maxima-source/5.49.0-source/maxima-5.49.0.tar.gz"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
   license "GPL-2.0-only"
-  revision 1
+  revision 2
 
   livecheck do
     url :stable
@@ -12,10 +12,10 @@ class MaximaEcl < Formula
   end
 
   bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/maxima-ecl-5.49.0_1"
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:  "064f468355b4b6354294047e9bc3b804b24f1fcf72c0ca26d370eaff6da4a42f"
-    sha256 cellar: :any, x86_64_linux: "36e6680f07deed8a4bdd1e40adc31d65204ece0e6bf1544c5c252955c14857c6"
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/maxima-ecl-5.49.0_2"
+    sha256 cellar: :any, arm64_tahoe:  "9d2fa41ccfa1bbed342322c36c97dccc98cd5ddfae48b8b42b500f279f1df815"
+    sha256 cellar: :any, arm64_linux:  "104f1d97e7f49f789c36865c1ca24987f700b6959e5a9db25c0bc97d4c98f4e5"
+    sha256 cellar: :any, x86_64_linux: "cadcb7d03bc70450c04268b121318fe48a8ce27a0042b1d7c94ffa3760bafc28"
   end
 
   depends_on "gawk" => :build
@@ -24,7 +24,6 @@ class MaximaEcl < Formula
   depends_on "ecl"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "gnuplot"
   depends_on "rlwrap"
 
   uses_from_macos "perl" => :build
@@ -49,6 +48,15 @@ class MaximaEcl < Formula
     (lib/"ecl-#{Formula["ecl"].version}").install "src/binary-ecl/maxima.fas"
     ohai "Now installing the rest of Maxima..."
     system "make", "install"
+  end
+
+  def caveats
+    <<~EOS
+      To use Maxima's Gnuplot plotting backend, install Gnuplot separately:
+        brew install gnuplot
+
+      SageMath's Matplotlib-based plotting does not require Gnuplot.
+    EOS
   end
 
   test do
