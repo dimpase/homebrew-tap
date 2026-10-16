@@ -16,12 +16,8 @@ brew "<formula>"
 
 ## SageMath
 
-`brew install dimpase/tap/sagemath` installs sagelib, the `sage` command and its
-Jupyter kernel. It depends on `sagemath-deps`, which provides the native libraries,
-Python dependencies, data packages and build tools. Updating sagelib therefore
-does not require rebuilding its Python dependencies.
-
-To install the dependencies without sagelib, use:
+`sagemath-deps` provides the native libraries, Python dependencies, data packages
+and build tools needed to build sagelib separately. To install these dependencies:
 
 ```sh
 brew install dimpase/tap/sagemath-deps

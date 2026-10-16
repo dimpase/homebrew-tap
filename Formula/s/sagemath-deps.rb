@@ -446,8 +446,9 @@ class SagemathDeps < Formula
     global_site = HOMEBREW_PREFIX/site_packages
     # Prefer these resources to Homebrew's other Python packages, while allowing
     # a development venv to override them with its own installed packages.
+    # Linux Python also supplies packages (including wheel) in its own keg.
     (prefix/site_packages/"sagemath-deps.pth").write <<~EOS
-      import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(sys.path.index('#{global_site}') if '#{global_site}' in sys.path else len(sys.path), '#{private_site}')
+      import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
     EOS
   end
 

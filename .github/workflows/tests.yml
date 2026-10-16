@@ -58,13 +58,18 @@ jobs:
       - run: brew test-bot --only-tap-syntax
       # Publish dependency migrations before rebuilding Sage with their bottles.
       - run: |
-          if [[ "$SKIP_DEPENDENTS" == true ]]; then
+          if [[ "$DEPS_ONLY" == true ]]; then
+            brew test-bot --only-formulae --skip-dependents \
+              --testing-formulae=dimpase/tap/sagemath-deps \
+              --added-formulae=dimpase/tap/sagemath-deps
+          elif [[ "$SKIP_DEPENDENTS" == true ]]; then
             brew test-bot --only-formulae --skip-dependents
           else
             brew test-bot --only-formulae
           fi
         shell: bash
         env:
+          DEPS_ONLY: ${{ github.head_ref == 'feat/sagemath-deps' }}
           SKIP_DEPENDENTS: ${{ github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' || github.head_ref == 'fix/sagemath-cvxopt' || github.head_ref == 'fix/pari-darwin-signal-mask' || github.head_ref == 'fix/pplpy-shared-libraries' || github.head_ref == 'fix/brial-core-m4ri' }}
         if: github.event_name == 'pull_request'
 
@@ -75,11 +80,15 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
+          DEPS_ONLY: ${{ github.head_ref == 'feat/sagemath-deps' }}
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
           tap_path=$(brew --repo dimpase/tap)
           git -C "$tap_path" fetch origin "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
           while IFS= read -r formula_path; do
+            if [[ "$DEPS_ONLY" == true && "$formula_path" != Formula/s/sagemath-deps.rb ]]; then
+              continue
+            fi
             [[ -f "$tap_path/$formula_path" ]] || continue
             formula_name="${formula_path##*/}"
             formula_name="${formula_name%.rb}"
