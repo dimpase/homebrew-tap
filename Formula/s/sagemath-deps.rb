@@ -1,16 +1,9 @@
 class SagemathDeps < Formula
   desc "Native and Python dependencies for building and running SageMath"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
-  sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta4.tar.gz"
+  sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
   license "GPL-2.0-or-later"
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta1"
-    sha256 cellar: :any, arm64_tahoe:  "4420ba9a51aaadaee2a54c32d628a4d54973bd9b20217fb9e0a23af444c14d8f"
-    sha256 cellar: :any, arm64_linux:  "80b3b0cf1b11c59e3e0cfc846ef24581a667e72f8ffa351f5b50ab89167f1a22"
-    sha256 cellar: :any, x86_64_linux: "b38c1150d2335576c32d7fe45a8f66e5b0d58cd652226bb8cd699f58ec1b82e7"
-  end
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -127,8 +120,8 @@ class SagemathDeps < Formula
                 ]
 
   resource "setuptools" do
-    url "https://files.pythonhosted.org/packages/6d/44/f5da03a8ef95d369145c5bb53050e7877c9f3d312e128605fd9504829143/setuptools-84.0.0.tar.gz"
-    sha256 "f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73"
+    url "https://files.pythonhosted.org/packages/70/b3/c19426f783614d625699a4b247faf628ea9ab1db228674491767b417f9e1/setuptools-84.2.1.tar.gz"
+    sha256 "3ff8b3b5492a0aa66960f4419365a86b84e013070d4313e4d4a6894f5d64d6bc"
   end
 
   resource "packaging" do
@@ -167,8 +160,8 @@ class SagemathDeps < Formula
   end
 
   resource "certifi" do
-    url "https://files.pythonhosted.org/packages/a3/c2/24167ea9858356b47a87a50d39908bfdb72ceeefe0041586e704e5376b3a/certifi-2026.7.22.tar.gz"
-    sha256 "741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55"
+    url "https://files.pythonhosted.org/packages/a6/bd/1436c50cc46699de0230fbaacc1d1de7bfec413176099949e9d5112e88f2/certifi-2026.10.19.tar.gz"
+    sha256 "035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae"
   end
 
   resource "charset-normalizer" do
@@ -192,8 +185,8 @@ class SagemathDeps < Formula
   end
 
   resource "executing" do
-    url "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz"
-    sha256 "3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4"
+    url "https://files.pythonhosted.org/packages/52/92/8a611141e42930c0f194f7504063ab87dfe970cf1a5af28e7703df448734/executing-2.3.0.tar.gz"
+    sha256 "15919cb5d667e5cb4e099511971d00d659573fff2dd5c4e6cd8b71636c7858d2"
   end
 
   resource "fpylll" do
@@ -227,8 +220,8 @@ class SagemathDeps < Formula
   end
 
   resource "jedi" do
-    url "https://files.pythonhosted.org/packages/46/b7/a3635f6a2d7cf5b5dd98064fc1d5fbbafcb25477bcea204a3a92145d158b/jedi-0.20.0.tar.gz"
-    sha256 "c3f4ccbd276696f4b19c54618d4fb18f9fc24b0aef02acf704b23f487daa1011"
+    url "https://files.pythonhosted.org/packages/a3/a4/4692ecd7fa700ac1066b1c1f6cadef60aa2e01e5e364710235137d823e0a/jedi-0.20.1.tar.gz"
+    sha256 "2f71208c3f9c1bca057c0e90d3f272aba44ace88fc4067d7587e9e069331b7e5"
   end
 
   resource "jinja2" do
@@ -272,8 +265,8 @@ class SagemathDeps < Formula
   end
 
   resource "nest-asyncio2" do
-    url "https://files.pythonhosted.org/packages/5e/a6/a2775b388a14b5ea0c894bbe513c0d3e04e65e8ae583e60f5357722b8e03/nest_asyncio2-1.7.3.tar.gz"
-    sha256 "2e9a84d5d1efe6d020c72988d21aec569bac42d98af2ff6b9de24640c5d22a34"
+    url "https://files.pythonhosted.org/packages/32/2c/70e3b6bb2189cfd260280b7e1042bd622949a258663f95e887fada4ac1e6/nest_asyncio2-1.7.4.tar.gz"
+    sha256 "995b1409d926ec55e0876ea39a69bffdd8852cf1db3652c177e8c8ffdbcaf3cc"
   end
 
   resource "networkx" do
@@ -297,8 +290,8 @@ class SagemathDeps < Formula
   end
 
   resource "platformdirs" do
-    url "https://files.pythonhosted.org/packages/17/c8/721b3855fe457da514fe249247d404b9b39c5d16532278f70ebaa6acf18b/platformdirs-4.12.2.tar.gz"
-    sha256 "eab5f70271a490ef74618bb314fbb86e3c7e82fa3b9c922c2ea0e0a1a155d329"
+    url "https://files.pythonhosted.org/packages/58/e6/d0abbb256b44e6a05748c6942511ff67db8dbb068de0c35b24bf1b395b09/platformdirs-4.13.5.tar.gz"
+    sha256 "05831adf87d392760f4b5c3a0a95579ab5a10b18b9b9bd43680dcb47544788a0"
   end
 
   resource "primecountpy" do
@@ -362,8 +355,8 @@ class SagemathDeps < Formula
   end
 
   resource "tornado" do
-    url "https://files.pythonhosted.org/packages/06/61/53d562a57b28c08eda40b258c0f975e360541943ad7c7bef897a40caafda/tornado-6.5.10.tar.gz"
-    sha256 "a6b1ccd08c04b4a06fb5aeb381be99de5ad1e5375c1785e31d78c880feb57687"
+    url "https://files.pythonhosted.org/packages/d0/02/5f549b1ad5da6267ed1e1fac2eef69257b1979cc812497002499b7895ff9/tornado-6.6.tar.gz"
+    sha256 "34c4aa916d7f2b2d5cadee2c6850f5a4a7f3d688cbf58399ea9bd3057af4abd5"
   end
 
   resource "traitlets" do
@@ -382,8 +375,8 @@ class SagemathDeps < Formula
   end
 
   resource "wcwidth" do
-    url "https://files.pythonhosted.org/packages/dc/ac/3a943d2792c9bb368aaa8b50121c0f778460ba2d7fbdc0a0366201d9e761/wcwidth-0.9.1.tar.gz"
-    sha256 "5823209b0d43af322ce698c689380d7c15ca31fa8e6e3be8459f27031bef0af5"
+    url "https://files.pythonhosted.org/packages/69/4a/82d61476a1ccc20d43d0805724c5de4baa4971131a8db1816705ef53fe16/wcwidth-0.9.3.tar.gz"
+    sha256 "dfe7cfbd4cb59db9fe0931bd6091ab4a95b3acc5d56bfb50fa9fef0ccba5dc5c"
   end
 
   resource "widgetsnbextension" do
