@@ -1,16 +1,9 @@
 class SagemathDocbuildDeps < Formula
   desc "Dependencies for building SageMath HTML documentation"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
-  sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta4.tar.gz"
+  sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
   license "GPL-2.0-or-later"
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-docbuild-deps-11.0.beta1"
-    sha256 cellar: :any, arm64_tahoe:  "fec5b8d2818753795e91f9f053bb5f5006ee600592ec163e4a4fb23581fbd2ae"
-    sha256 cellar: :any, arm64_linux:  "95e2bc8249008e0e6d6d63c1c24ee1270fa22a72e5242dd6d1c4b1ee7a523e78"
-    sha256 cellar: :any, x86_64_linux: "cb6e864e4a59cf3554c7236c4474b3e4cca6cbf1c467319cdb30e5237ac64b3d"
-  end
 
   depends_on "maturin" => :build
   depends_on "rust" => :build
@@ -62,8 +55,8 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "docutils" do
-    url "https://files.pythonhosted.org/packages/02/10/5da547df7a391dcde17f59520a231527b8571e6f46fc8efb02ccb370ab12/docutils-0.22.4-py3-none-any.whl", using: :nounzip
-    sha256 "d0013f540772d1420576855455d050a2180186c91c15779301ac2ccb3eeb68de"
+    url "https://files.pythonhosted.org/packages/32/91/30151a39f7570f448ed84529390628a651d7f27c87d73c9b887f8189695e/docutils-0.23-py3-none-any.whl", using: :nounzip
+    sha256 "25d013af9bf23bc1c7b2b093dff4208166c53a94786c9e447808335ef1185fea"
   end
 
   resource "fastjsonschema" do
@@ -102,8 +95,8 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "mistune" do
-    url "https://files.pythonhosted.org/packages/77/e4/288365afae98953bc01de09f686f40d8ee84578135aa7767d5d4e60b5278/mistune-3.3.4-py3-none-any.whl", using: :nounzip
-    sha256 "ee015381e955e370962968befe1d729ab60fafb6a715ac6751763fbce38c8d4a"
+    url "https://files.pythonhosted.org/packages/2c/f7/021d590d52c1ac28e3290311776854c6a1c927fa3fb4b25ce74caf937a3d/mistune-3.4.0-py3-none-any.whl", using: :nounzip
+    sha256 "d03cec4c8620f21517a996d82d14f3b59c30d79bda2cc6c56bd32b839f18ce6b"
   end
 
   resource "mathjax" do
@@ -117,8 +110,8 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "nbconvert" do
-    url "https://files.pythonhosted.org/packages/67/f8/bb0a9d5f46819c821dc1f004aa2cc29b1d91453297dbf5ff20470f00f193/nbconvert-7.17.1-py3-none-any.whl", using: :nounzip
-    sha256 "aa85c087b435e7bf1ffd03319f658e285f2b89eccab33bc1ba7025495ab3e7c8"
+    url "https://files.pythonhosted.org/packages/81/fd/a8d457af68848a8e5c12dd1d84ff35c415db471af78280e0703db4efbb12/nbconvert-7.17.2-py3-none-any.whl", using: :nounzip
+    sha256 "6a143c11c00bf831604da4b1be4347d36ea52367057eb920135d69bc2862fed2"
   end
 
   resource "nbformat" do
@@ -147,13 +140,13 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "soupsieve" do
-    url "https://files.pythonhosted.org/packages/eb/dc/ad025c1ee131eba60c69f4dd5779b18fcf1e6b21a343e2162a84d5d133c7/soupsieve-2.9.2-py3-none-any.whl", using: :nounzip
-    sha256 "8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823"
+    url "https://files.pythonhosted.org/packages/49/ca/f639c80449997b88aba7bc9705d25dd76cc0844f45f187862fd8f8bb18fa/soupsieve-3.0.3-py3-none-any.whl", using: :nounzip
+    sha256 "fa30e3ba4809cb81ce1f3209f2fbe3e779fc445f0439bc147a0d7c4601743f21"
   end
 
   resource "sphinx" do
-    url "https://files.pythonhosted.org/packages/73/f7/b1884cb3188ab181fc81fa00c266699dab600f927a964df02ec3d5d1916a/sphinx-9.1.0-py3-none-any.whl", using: :nounzip
-    sha256 "c84fdd4e782504495fe4f2c0b3413d6c2bf388589bb352d439b2a3bb99991978"
+    url "https://files.pythonhosted.org/packages/c4/28/a0c50761cd215b7042f4bc617a6bc5c0cd7be62f75bc908e169e28a4d21e/sphinx-9.2.0-py3-none-any.whl", using: :nounzip
+    sha256 "4c3ec13b612712c0d3ce4cbdd9e3eb91e68577e07a8e31f32f21cf178453578c"
   end
 
   resource "sphinx-basic-ng" do
@@ -187,8 +180,8 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "sphinxcontrib-jsmath" do
-    url "https://files.pythonhosted.org/packages/c2/42/4c8646762ee83602e3fb3fbe774c2fac12f317deb0b5dbeeedd2d3ba4b77/sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl", using: :nounzip
-    sha256 "2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178"
+    url "https://files.pythonhosted.org/packages/da/c2/2965c35b39587d4b7a397f65a9c7d4b942b031061e7ac1ce91782f394a0d/sphinxcontrib_jsmath-2.0.0-py3-none-any.whl", using: :nounzip
+    sha256 "15ca92fe0eec82f0baf91a7efcc51ffacdb605924be6327683a52ebdacb6744c"
   end
 
   resource "sphinxcontrib-qthelp" do
@@ -212,8 +205,8 @@ class SagemathDocbuildDeps < Formula
   end
 
   resource "rpds-py" do
-    url "https://files.pythonhosted.org/packages/aa/2a/9618a122aeb2a169a28b03889a2995fe297588964333d4a7d67bdf46e147/rpds_py-2026.6.3.tar.gz"
-    sha256 "1cebd1337c242e4ec2293e541f712b2da849b29f48f0c293684b71c0632625d4"
+    url "https://files.pythonhosted.org/packages/42/68/3bd46b8a5e01d3c2ebdf9c5e9497912e3fe0cde02bac21a7130ca866e403/rpds_py-2026.9.1.tar.gz"
+    sha256 "4793ef7f78268b124b73fa933440f01d258bbae01de9fa53e9080c9ab0425a12"
   end
 
   def pythons
@@ -328,7 +321,7 @@ class SagemathDocbuildDeps < Formula
             assert pathlib.Path(dist.locate_file("")).resolve() == root, (name, dist.locate_file(""))
         import docutils, furo, jupyter_sphinx, sphinx, sphinx_copybutton, sphinx_inline_tabs
         import nbconvert, nbformat, rpds
-        assert sphinx.version_info[:2] == (9, 1)
+        assert sphinx.version_info[:2] == (9, 2)
       PYTHON
       system "bash", "-c", <<~SH
         set -eu
