@@ -1,17 +1,9 @@
 class Sagemath < Formula
   desc "Open source mathematics software"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta1.tar.gz"
-  sha256 "fc3e2af93024456c3898243a49dcfa721292b85f264c4c3a94c2ed22d3385091"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta4.tar.gz"
+  sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
   license "GPL-2.0-or-later"
-  revision 2
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta1_2"
-    sha256 cellar: :any, arm64_tahoe:  "3fdc7f9119624ad242c592e79c2b9ba0e0f25191351f1874f0298b9bf5dbba16"
-    sha256               arm64_linux:  "ddb81b26aad2df739bbf77b95b132e478014206c2ef38977fb5adb1ce58ff8cd"
-    sha256               x86_64_linux: "9d1f0ec5a6216b76dd2e02401155fee562e9eb24f0f65b89f81a19b227fd4859"
-  end
 
   depends_on "cmake" => :build
   depends_on "meson" => :build
@@ -74,22 +66,9 @@ class Sagemath < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # Sage PR #42878: discover the renamed Python data distributions.
-  patch do
-    url "https://github.com/sagemath/sage/commit/489c311673529a58e208c77583a9f426459993c1.patch?full_index=1"
-    sha256 "fcbd6688d7553731c97a80e4cd5482c5915265316e6b03fbe9ee8afbf3400b1e"
-  end
-
-  patch do
-    url "https://github.com/sagemath/sage/commit/014fec56e64246e83c9ae5a65b5494d89f969adf.patch?full_index=1"
-    sha256 "c8efcfa23d1a1b9db3fc7bb4bdab6acec474d0feed88223d5f06d1582d3fe7f8"
-  end
-
-  # Sage PR #42920: Sphinx belongs to the optional documentation dependencies.
-  patch do
-    url "https://github.com/sagemath/sage/commit/6a1d13494fa89f9db30775879adc7ab24dabe1da.patch?full_index=1"
-    sha256 "72100f9cbb66486569d788d4e300b9acf82f8a3769f4819158353e16fe926998"
-  end
+  # Rebased runtime changes from Sage PRs #42878 and #42920:
+  # discover packaged datasets and keep Sphinx in the documentation environment.
+  patch :DATA
 
   def pythons
     deps.map(&:to_formula)
@@ -264,3 +243,219 @@ class Sagemath < Formula
     assert_equal "4", shell_output("#{bin}/sage -c 'print(2+2)'").strip
   end
 end
+
+__END__
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -66,8 +66,10 @@
+   'primecountpy; sys_platform != "win32"',
+   'ptyprocess > 0.5',
+   'requests >=2.13.0',
++  'sagemath-data-elliptic-curves >=0.8.2',
++  'sagemath-data-graphs >=20210214.1',
++  'sagemath-data-polytopes >=20170220.1',
+   'scipy >=1.15',
+-  'sphinx >=9.1, <10',
+   'sympy >=1.6, <2.0',
+   # TODO: Remove this once the migration to meson is complete
+   'pkgconfig',
+@@ -176,9 +178,6 @@
+ ]
+
+ dependencies = [
+-  "pkg:generic/sagemath-elliptic-curves",
+-  "pkg:generic/sagemath-graphs",
+-  "pkg:generic/sagemath-polytopes-db",
+   "pkg:generic/tachyon",
+ ]
+
+diff --git a/src/sage/features/databases.py b/src/sage/features/databases.py
+index 4a83e74f380..bd55b509091 100644
+--- a/src/sage/features/databases.py
++++ b/src/sage/features/databases.py
+@@ -16,9 +16,46 @@ Features for testing the presence of various databases
+ #                  https://www.gnu.org/licenses/
+ # *****************************************************************************
+
++import atexit
++from contextlib import ExitStack
++from functools import cache
++from importlib.resources import as_file, files
++
+ from sage.env import sage_data_paths
+ from sage.features import PythonModule, StaticFile
+
++# Keep extracted resources alive for callers that retain filenames or open
++# database connections. With installed wheels, as_file uses the original path.
++_data_resource_contexts = ExitStack()
++atexit.register(_data_resource_contexts.close)
++
++
++@cache
++def _packaged_data_path(package, subdirectory):
++    """
++    Return a packaged data directory, retaining any temporary extraction.
++    """
++    try:
++        resource = files(package).joinpath(subdirectory)
++    except ModuleNotFoundError:
++        return None
++    return str(_data_resource_contexts.enter_context(as_file(resource)))
++
++
++def _data_search_path(name, override, package, subdirectory=""):
++    """
++    Search legacy data directories before the packaged resources.
++
++    An explicit directory override remains authoritative.
++    """
++    if override:
++        return override
++    paths = list(sage_data_paths(name))
++    packaged_path = _packaged_data_path(package, subdirectory)
++    if packaged_path is not None:
++        paths.append(packaged_path)
++    return paths
++
+
+ class DatabaseCremona(StaticFile):
+     r"""
+@@ -51,7 +88,7 @@ class DatabaseCremona(StaticFile):
+         """
+         from sage.env import CREMONA_LARGE_DATA_DIR, CREMONA_MINI_DATA_DIR
+
+-        CREMONA_DATA_DIRS = set([CREMONA_MINI_DATA_DIR, CREMONA_LARGE_DATA_DIR])
++        CREMONA_DATA_DIRS = {CREMONA_MINI_DATA_DIR, CREMONA_LARGE_DATA_DIR}
+         CREMONA_DATA_DIRS.discard(None)
+         search_path = CREMONA_DATA_DIRS or sage_data_paths("cremona")
+
+@@ -60,6 +97,10 @@ class DatabaseCremona(StaticFile):
+         if name == "cremona_mini":
+             spkg = "elliptic_curves"
+             spkg_type = "standard"
++            if not CREMONA_DATA_DIRS:
++                search_path = _data_search_path(
++                    "cremona", None, "sage_data_elliptic_curves.data", "cremona"
++                )
+
+         StaticFile.__init__(
+             self,
+@@ -95,7 +136,9 @@ class DatabaseEllcurves(StaticFile):
+         """
+         from sage.env import ELLCURVE_DATA_DIR
+
+-        search_path = ELLCURVE_DATA_DIR or sage_data_paths("ellcurves")
++        search_path = _data_search_path(
++            "ellcurves", ELLCURVE_DATA_DIR, "sage_data_elliptic_curves.data", "ellcurves"
++        )
+
+         StaticFile.__init__(
+             self,
+@@ -130,7 +173,9 @@ class DatabaseGraphs(StaticFile):
+         """
+         from sage.env import GRAPHS_DATA_DIR
+
+-        search_path = GRAPHS_DATA_DIR or sage_data_paths("graphs")
++        search_path = _data_search_path(
++            "graphs", GRAPHS_DATA_DIR, "sage_data_graphs.data"
++        )
+
+         StaticFile.__init__(
+             self,
+@@ -288,6 +333,10 @@ class DatabaseReflexivePolytopes(StaticFile):
+         dirname = "Full3d"
+         if name == "polytopes_db_4d":
+             dirname = "Hodge4d"
++        else:
++            search_path = _data_search_path(
++                "reflexive_polytopes", POLYTOPE_DATA_DIR, "sage_data_polytopes", "data"
++            )
+
+         StaticFile.__init__(self, name, filename=dirname, search_path=search_path)
+
+diff --git a/src/sage/graphs/isgci.py b/src/sage/graphs/isgci.py
+index caf6439827f..50ebd0e5ea6 100644
+--- a/src/sage/graphs/isgci.py
++++ b/src/sage/graphs/isgci.py
+@@ -375,16 +375,19 @@ Methods
+ -------
+ """
+
+-from sage.structure.sage_object import SageObject
+-from sage.structure.unique_representation import CachedRepresentation, UniqueRepresentation
+-from sage.misc.unknown import Unknown
+-from sage.features.databases import DatabaseGraphs
+-from sage.misc.cachefunc import cached_method
+-
+ import os
+ import zipfile
+-from urllib.request import urlopen
+ from ssl import create_default_context as default_context
++from urllib.request import urlopen
++
++from sage.features.databases import DatabaseGraphs
++from sage.misc.cachefunc import cached_method
++from sage.misc.unknown import Unknown
++from sage.structure.sage_object import SageObject
++from sage.structure.unique_representation import (
++    CachedRepresentation,
++    UniqueRepresentation,
++)
+
+ # ****************************************************************************
+ #      Copyright (C) 2011 Nathann Cohen <nathann.cohen@gmail.com>
+@@ -788,19 +791,20 @@ class GraphClasses(UniqueRepresentation):
+             sage: graph_classes._download_db()  # optional - internet
+         """
+         import tempfile
+-        data_dir = os.path.dirname(DatabaseGraphs().absolute_filename())
++
++        from sage.env import DOT_SAGE
++
++        data_dir = os.path.join(DOT_SAGE, "db", "graphs")
++        os.makedirs(data_dir, exist_ok=True)
+         u = urlopen('https://www.graphclasses.org/data.zip',
+                     context=default_context())
+         with tempfile.NamedTemporaryFile(suffix='.zip') as f:
+             f.write(u.read())
+-            z = zipfile.ZipFile(f.name)
+-
+-            # Save a systemwide updated copy whenever possible
+-            try:
++            f.seek(0)
++            with zipfile.ZipFile(f) as z:
++                # Keep downloaded updates separate from installed package data.
+                 z.extract(_XML_FILE, data_dir)
+                 z.extract(_SMALLGRAPHS_FILE, data_dir)
+-            except OSError:
+-                pass
+
+     def _parse_db(self):
+         r"""
+@@ -811,9 +815,18 @@ class GraphClasses(UniqueRepresentation):
+             sage: graph_classes._parse_db()
+         """
+         import xml.etree.ElementTree as ET
++
++        from sage.env import DOT_SAGE, GRAPHS_DATA_DIR
+         from sage.graphs.graph import Graph
+
+         data_dir = os.path.dirname(DatabaseGraphs().absolute_filename())
++
++        user_data_dir = os.path.join(DOT_SAGE, "db", "graphs")
++        if not GRAPHS_DATA_DIR and all(
++            os.path.isfile(os.path.join(user_data_dir, name))
++            for name in (_XML_FILE, _SMALLGRAPHS_FILE)
++        ):
++            data_dir = user_data_dir
+         xml_file = os.path.join(data_dir, _XML_FILE)
+         tree = ET.ElementTree(file=xml_file)
+         root = tree.getroot()
+@@ -847,7 +860,7 @@ class GraphClasses(UniqueRepresentation):
+         This method downloads the ISGCI database from the website
+         `GraphClasses.org <http://www.graphclasses.org/>`_. It then extracts the
+         zip file and parses its XML content. The XML file is saved in the directory
+-        controlled by the :class:`DatabaseGraphs` class (usually, ``$HOME/.sage/db``).
++        ``$DOT_SAGE/db/graphs`` (usually, ``$HOME/.sage/db/graphs``).
+
+         EXAMPLES::
