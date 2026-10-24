@@ -5,6 +5,13 @@ class SagemathDocbuildDeps < Formula
   sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-docbuild-deps-11.0.beta4"
+    sha256 cellar: :any, arm64_tahoe:  "769839ef5497467afd8e3bd0be66a0f6739967b4eecda2bd1b998ac9477a2d0b"
+    sha256 cellar: :any, arm64_linux:  "bc39f72c86978076d48f2acffdc25f0be132b0aaba8147db3bcaa56e7d00991d"
+    sha256 cellar: :any, x86_64_linux: "701b8d95a1498918d44bee488c90cd3c9d4a1c33c8243cb544dda9eefd739fc7"
+  end
+
   depends_on "maturin" => :build
   depends_on "rust" => :build
 
