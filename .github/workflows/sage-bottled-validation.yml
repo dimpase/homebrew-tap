@@ -1,0 +1,100 @@
+name: Sage beta6 from Homebrew bottles
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platforms to validate (use both for the final validation)
+        type: choice
+        default: both
+        options:
+          - both
+          - macOS
+          - Linux ARM64
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.platform == 'macOS' && '[{"os":"macos-26"}]' || inputs.platform == 'Linux ARM64' && '[{"os":"ubuntu-24.04-arm","container":"ghcr.io/homebrew/ubuntu24.04:latest"}]' || '[{"os":"macos-26"},{"os":"ubuntu-24.04-arm","container":"ghcr.io/homebrew/ubuntu24.04:latest"}]') }}
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      # Only the audited closure is installed; unrelated preinstalled dependents
+      # must not trigger automatic upgrades outside that closure.
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      HOMEBREW_NO_ASK: 1
+      UV_PYTHON_DOWNLOADS: never
+
+    steps:
+      - name: Set up Homebrew and check out this tap
+        id: homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare artifact directory and external taps
+        run: |
+          validation_root="$RUNNER_TEMP/sage-beta6-validation"
+          printf 'VALIDATION_ROOT=%s\n' "$validation_root" >> "$GITHUB_ENV"
+          mkdir -p "$validation_root/artifacts"
+          brew tap dimpase/gap
+          brew tap macaulay2/tap
+          brew trust --tap dimpase/gap macaulay2/tap
+          brew config > "$validation_root/artifacts/brew-config.txt"
+
+      - name: Install and verify the complete published bottle closure
+        env:
+          REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
+        run: |
+          brew ruby -- "$REPOSITORY/scripts/sage-bottles.rb" \
+            2>&1 | tee "$VALIDATION_ROOT/artifacts/bottle-install.log"
+
+      - name: Prepare exact source and isolated Python environment
+        env:
+          REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
+        run: |
+          "$(brew --prefix python@3.14)/bin/python3.14" -I \
+            "$REPOSITORY/scripts/sage-validation.py" prepare \
+            2>&1 | tee "$VALIDATION_ROOT/artifacts/prepare.log"
+
+      - name: Build Sage with all eleven native features
+        env:
+          REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
+        run: |
+          bash "$REPOSITORY/scripts/run-sage-validation.sh" build \
+            2>&1 | tee "$VALIDATION_ROOT/artifacts/build.log"
+
+      - name: Run full pytest and long doctest groups
+        env:
+          REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
+        run: bash "$REPOSITORY/scripts/run-sage-validation.sh" test
+
+      - name: Preserve Meson diagnostics
+        if: always()
+        run: |
+          if [[ -d "$VALIDATION_ROOT/meson-build/meson-logs" ]]; then
+            cp -R "$VALIDATION_ROOT/meson-build/meson-logs" "$VALIDATION_ROOT/artifacts/"
+          fi
+          if [[ -d "$VALIDATION_ROOT/meson-build/meson-info" ]]; then
+            cp -R "$VALIDATION_ROOT/meson-build/meson-info" "$VALIDATION_ROOT/artifacts/"
+          fi
+
+      - name: Upload logs, receipts and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sage-beta6-bottled-validation-${{ matrix.os }}
+          path: ${{ runner.temp }}/sage-beta6-validation/artifacts
+          if-no-files-found: warn
+          retention-days: 30
