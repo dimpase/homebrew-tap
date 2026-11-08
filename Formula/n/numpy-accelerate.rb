@@ -65,7 +65,7 @@ class NumpyAccelerate < Formula
 
   def caveats
     <<~EOS
-      To run `f2py`, you may need to `brew install #{pythons.last}`
+      To run `f2py`, you may need to `brew install python@3.14`
     EOS
   end
 
