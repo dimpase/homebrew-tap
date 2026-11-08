@@ -26,7 +26,17 @@ class Gf2x < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.c").write <<~EOS
+      #include <gf2x.h>
+      int main(void) {
+        unsigned long a[] = {3}, b[] = {5}, c[2] = {0, 0};
+        if (gf2x_mul(c, a, 1, b, 1) != 0) return 1;
+        /* (x + 1)(x^2 + 1) = x^3 + x^2 + x + 1 over GF(2). */
+        return c[0] != 15 || c[1] != 0;
+      }
+    EOS
+    system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lgf2x", "-o", "test"
+    system "./test"
   end
 end
 
