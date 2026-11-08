@@ -114,7 +114,8 @@ class SagemathDeps < Formula
                 extra_packages:   %w[
                   cython elliptic-curve-databases graph-databases jinja2 lrcalc
                   memory-allocator meson-python packaging polytope-databases
-                  pyproject-metadata setuptools wheel
+                  pyproject-metadata sagemath-data-elliptic-curves sagemath-data-graphs
+                  sagemath-data-polytopes setuptools wheel
                 ],
                 exclude_packages: %w[
                   cvxopt cypari2 cysignals gmpy2 matplotlib meson numpy pillow pplpy pybind11 scipy sphinx
@@ -400,6 +401,23 @@ class SagemathDeps < Formula
     sha256 "5a2bf93c9f92a0c010c911c7ebe2a3af0275f9f11e86894ba00810887b04daa7"
   end
 
+  # Keep the published Sage 11.0.beta1 bottle working during the migration.
+  # Remove these legacy resources after the beta6 runtime bottles are published.
+  resource "sagemath-data-polytopes" do
+    url "https://files.pythonhosted.org/packages/69/74/0a06131ee113a0022c52f4b6517fbeae6551e839472acc2264676167fea0/sagemath_data_polytopes-20170220.1.tar.gz"
+    sha256 "78e742c0f7d46132cd874041094a5aaa64a7978c3d35ff7b9cecab4fe1f1814d"
+  end
+
+  resource "sagemath-data-graphs" do
+    url "https://files.pythonhosted.org/packages/82/7b/2c18e019b90d9b0bdd84a83d6bd76450c5610761938308265518f17d17d8/sagemath_data_graphs-20210214.1.tar.gz"
+    sha256 "2d021f4df20c4b5026e9d3167e485c54739e34f37b824c190441eecdd0abb5dd"
+  end
+
+  resource "sagemath-data-elliptic-curves" do
+    url "https://files.pythonhosted.org/packages/7d/ab/ef83f5504fbbe3e08ded3dfb91fec6c9e051219499fcbe511b18d9dac5b7/sagemath_data_elliptic_curves-0.8.2.tar.gz"
+    sha256 "5540a8d91eb6b189d5a2960c2a2e3b3b671e5969be8c36ddb51b7ac4eed05596"
+  end
+
   def pythons
     deps.map(&:to_formula)
         .select { |f| f.name.start_with?("python@") }
@@ -558,6 +576,7 @@ class SagemathDeps < Formula
         import cysignals, gmpy2, numpy, scipy, matplotlib, PIL, ipykernel, ipywidgets
         import networkx, requests
         import elliptic_curve_databases, graph_databases, polytope_databases
+        import sage_data_elliptic_curves, sage_data_graphs, sage_data_polytopes
         from sympy import Symbol, factor
         x = Symbol("x")
         assert factor(x**2 - 1) == (x - 1)*(x + 1)
