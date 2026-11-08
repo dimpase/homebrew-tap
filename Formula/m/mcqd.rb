@@ -23,6 +23,28 @@ class Mcqd < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.cpp").write <<~EOS
+      #include <mcqd.h>
+      int main() {
+        const bool adjacency[4][4] = {
+          {false, true, true, false},
+          {true, false, true, false},
+          {true, true, false, true},
+          {false, false, true, false}
+        };
+        const bool *rows[] = {adjacency[0], adjacency[1], adjacency[2], adjacency[3]};
+        Maxclique graph(rows, 4);
+        int *clique = nullptr, size = 0;
+        graph.mcqdyn(clique, size);
+        bool correct = size == 3;
+        for (int i = 0; i < size; ++i)
+          for (int j = i + 1; j < size; ++j)
+            correct = correct && adjacency[clique[i]][clique[j]];
+        delete[] clique;
+        return !correct;
+      }
+    EOS
+    system ENV.cxx, "-std=c++11", "test.cpp", "-I#{include}", "-L#{lib}", "-lmcqd", "-o", "test"
+    system "./test"
   end
 end
