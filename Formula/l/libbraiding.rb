@@ -25,6 +25,16 @@ class Libbraiding < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.cpp").write <<~EOS
+      #include <braiding.h>
+      int main() {
+        auto left = Braiding::WordToBraid({1, 2, 1}, 3);
+        auto right = Braiding::WordToBraid({2, 1, 2}, 3);
+        auto different = Braiding::WordToBraid({1, 1, 1}, 3);
+        return left != right || left == different;
+      }
+    EOS
+    system ENV.cxx, "-std=c++11", "test.cpp", "-I#{include}", "-L#{lib}", "-lbraiding", "-o", "test"
+    system "./test"
   end
 end
