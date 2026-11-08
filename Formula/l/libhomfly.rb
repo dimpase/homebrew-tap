@@ -25,6 +25,16 @@ class Libhomfly < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.c").write <<~EOS
+      #include <homfly.h>
+      #include <string.h>
+      int main(void) {
+        char trefoil[] = "1 6 0 1 1 -1 2 1 0 -1 1 1 2 -1 0 1 1 1 2 1";
+        char *polynomial = homfly_str(trefoil);
+        return !polynomial || strcmp(polynomial, " - L^-4 - 2L^-2 + M^2L^-2");
+      }
+    EOS
+    system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lhomfly", "-o", "test"
+    system "./test"
   end
 end
