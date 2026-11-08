@@ -24,6 +24,27 @@ class Sirocco < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.cpp").write <<~EOS
+      #include <sirocco.h>
+      #include <math.h>
+      #include <stdlib.h>
+      int main(void) {
+        /* Track the root y = -x^2 from x = 0 to x = 1. */
+        double coefficients[24] = {0};
+        coefficients[8] = coefficients[9] = 1;
+        coefficients[12] = coefficients[13] = 1;
+        double *path = homotopyPath(2, coefficients, 0, 0);
+        if (!path) return 1;
+        int count = (int)path[0];
+        int correct = count >= 2 && fabs(path[3 * count - 2] - 1) < 1e-12
+                      && fabs(path[3 * count - 1] + 1) < 1e-12
+                      && fabs(path[3 * count]) < 1e-12;
+        free(path);
+        return !correct;
+      }
+    EOS
+    system ENV.cxx, "test.cpp", "-I#{include}", "-I#{formula_opt_include("mpfr")}",
+           "-I#{formula_opt_include("gmp")}", "-L#{lib}", "-lsirocco", "-lm", "-o", "test"
+    system "./test"
   end
 end
