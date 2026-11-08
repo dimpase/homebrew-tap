@@ -25,7 +25,16 @@ class Bliss < Formula
   end
 
   test do
-    system "true"
+    (testpath/"cycle4.dimacs").write <<~EOS
+      p edge 4 4
+      e 1 2
+      e 2 3
+      e 3 4
+      e 4 1
+    EOS
+    output = shell_output("#{bin}/bliss -can #{testpath}/cycle4.dimacs")
+    assert_match(/\|Aut\|:\s+8\b/, output)
+    assert_match "Canonical labeling:", output
   end
 end
 
