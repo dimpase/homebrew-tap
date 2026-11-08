@@ -6,12 +6,6 @@ class GmpEcm < Formula
   license all_of: ["GPL-3.0-or-later", "LGPL-3.0-or-later"]
   head "https://gitlab.inria.fr/zimmerma/ecm.git", branch: "master"
 
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/gmp-ecm-7.0.7"
-    sha256 cellar: :any, arm64_tahoe:  "d99c1306d016e614d720cef8c3230c330d86d2e0b2b5d707d39819191543d164"
-    sha256 cellar: :any, x86_64_linux: "a349ebba2fdbea6403137b1889fbfe4b3a2490e913d9a0b2ea8fd1804aa12630"
-  end
-
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
