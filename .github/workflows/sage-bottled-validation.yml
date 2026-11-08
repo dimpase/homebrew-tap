@@ -57,7 +57,7 @@ jobs:
         env:
           REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
         run: |
-          brew ruby -- "$REPOSITORY/scripts/sage-bottles.rb" \
+          brew ruby -- "$REPOSITORY/scripts/sage-bottles.rb" "$VALIDATION_ROOT" \
             2>&1 | tee "$VALIDATION_ROOT/artifacts/bottle-install.log"
 
       - name: Prepare exact source and isolated Python environment
