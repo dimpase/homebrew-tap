@@ -1,8 +1,8 @@
 class Sagemath < Formula
   desc "Open source mathematics software"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta4.tar.gz"
-  sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
+  sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
 
   depends_on "cmake" => :build
@@ -66,10 +66,6 @@ class Sagemath < Formula
     depends_on "zlib-ng-compat"
   end
 
-  # Rebased runtime changes from Sage PRs #42878 and #42920:
-  # discover packaged datasets and keep Sphinx in the documentation environment.
-  patch :DATA
-
   def pythons
     deps.map(&:to_formula)
         .select { |f| f.name.start_with?("python@") }
@@ -77,11 +73,6 @@ class Sagemath < Formula
   end
 
   def install
-    # The tap's MeatAxe formula installs its multiplication tables in lib.
-    inreplace "src/sage/env.py",
-              'MTXLIB = var("MTXLIB", join(SAGE_SHARE, "meataxe"))',
-              "MTXLIB = var(\"MTXLIB\", \"#{formula_opt_lib("dimpase/tap/meataxe")}\")"
-
     if OS.mac?
       inreplace "src/meson.build", "blas = dependency(blas_order)", "blas = dependency('accelerate')"
     else
@@ -99,6 +90,7 @@ class Sagemath < Formula
       setup_args << "-D#{feature}=enabled"
     end
     setup_args = setup_args.map { |arg| "--config-settings=setup-args=#{arg}" }
+    config_template = (buildpath/"src/sage/config.py.in").read
 
     pythons.each do |python3|
       python_version = Language::Python.major_minor_version(python3)
@@ -106,6 +98,14 @@ class Sagemath < Formula
       site_packages = Language::Python.site_packages(python3)
       ENV["PYTHONPATH"] = "#{private_prefix/site_packages}:#{prefix/site_packages}"
       ENV.prepend_path "PATH", private_prefix/"bin"
+
+      # Record bottle defaults in Sage's generated configuration. Explicit
+      # runtime environment variables continue to override these paths.
+      File.write(buildpath/"src/sage/config.py.in", config_template + <<~PYTHON)
+        SAGE_SHARE = "#{HOMEBREW_PREFIX}/share"
+        MTXLIB = "#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
+        SAGE_DOC = "#{HOMEBREW_PREFIX}/share/doc/sage"
+      PYTHON
 
       system python3, "-m", "pip", "install", *std_pip_args,
              *setup_args,
@@ -135,9 +135,15 @@ class Sagemath < Formula
     (testpath/"test.py").write <<~PYTHON
       import importlib.metadata
       import json
+      import os
       import pathlib
       import subprocess
       import sys
+
+      # Exercise the bottle's default paths without a development shell setup.
+      for name in ("SAGE_DATA_PATH", "SAGE_SHARE", "SAGE_DOC", "MTXLIB", "CREMONA_MINI_DATA_DIR", "CREMONA_LARGE_DATA_DIR",
+                   "ELLCURVE_DATA_DIR", "GRAPHS_DATA_DIR", "POLYTOPE_DATA_DIR"):
+          os.environ.pop(name, None)
 
       import numpy as np
       import matplotlib
@@ -148,7 +154,7 @@ class Sagemath < Formula
       import sage.all
       assert pathlib.Path(sage.all.__file__).resolve().is_relative_to(pathlib.Path("#{prefix}").resolve())
       deps_site = pathlib.Path("#{formula_opt_libexec("dimpase/tap/sagemath-deps")}") / f"python{sys.version_info.major}.{sys.version_info.minor}" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages"
-      for name in ("sympy", "ipykernel", "sagemath-data-graphs"):
+      for name in ("sympy", "ipykernel", "elliptic-curve-databases", "graph-databases", "polytope-databases"):
           dist = importlib.metadata.distribution(name)
           assert pathlib.Path(dist.locate_file("")).resolve() == deps_site.resolve(), name
       kernel_spec = pathlib.Path("#{share}/jupyter/kernels/sagemath/kernel.json")
@@ -197,7 +203,7 @@ class Sagemath < Formula
       x = R.gen()
       assert (x**2 - 1).factor().value() == x**2 - 1
       assert GF(16).multiplicative_generator().multiplicative_order() == 15
-      for field in (GF(2), GF(16, "a")):
+      for field in (GF(2), GF(9, "a"), GF(16, "a"), GF(125, "a"), GF(256, "a")):
           a = matrix(field, [[1, 1], [0, 1]])
           assert a * a.inverse() == 1
       assert EllipticCurve([0, -1, 1, -10, -20]).rank(algorithm="mwrank_lib") == 0
@@ -232,10 +238,21 @@ class Sagemath < Formula
       assert poly.n_vertices() == 3 and poly.dim() == 2
       assert poly.contains((QQ(1)/4, QQ(1)/4))
       assert not poly.contains((1, 1))
-      from sage.features.databases import DatabaseCremona, DatabaseGraphs, DatabaseReflexivePolytopes
-      assert DatabaseCremona("cremona_mini").is_present()
-      assert DatabaseGraphs().is_present()
-      assert DatabaseReflexivePolytopes().is_present()
+      from sage.env import MTXLIB, SAGE_DATA_PATH, SAGE_DOC, SAGE_SHARE, sage_data_paths
+      assert pathlib.Path(SAGE_DOC) == pathlib.Path("#{HOMEBREW_PREFIX}/share/doc/sage"), SAGE_DOC
+      data_root = pathlib.Path("#{HOMEBREW_PREFIX}/share/sagemath")
+      assert pathlib.Path(SAGE_SHARE) == data_root.parent, SAGE_SHARE
+      assert SAGE_DATA_PATH is None, SAGE_DATA_PATH
+      assert data_root in {pathlib.Path(path) for path in sage_data_paths()}, sage_data_paths()
+      assert pathlib.Path(MTXLIB) == pathlib.Path("#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"), MTXLIB
+      assert (pathlib.Path(MTXLIB) / "p256.zzz").is_file()
+      from sage.features.databases import DatabaseCremona, DatabaseEllcurves, DatabaseGraphs, DatabaseReflexivePolytopes
+      for feature, relative in ((DatabaseCremona("cremona_mini"), "cremona/cremona_mini.db"),
+                                (DatabaseEllcurves(), "ellcurves/rank0"),
+                                (DatabaseGraphs(), "graphs/graphs.db"),
+                                (DatabaseReflexivePolytopes(), "reflexive_polytopes/Full3d")):
+          assert feature.is_present(), feature
+          assert pathlib.Path(feature.absolute_filename()).samefile(data_root / relative), feature
     PYTHON
     pythons.each do |python3|
       system python3, testpath/"test.py"
@@ -243,219 +260,3 @@ class Sagemath < Formula
     assert_equal "4", shell_output("#{bin}/sage -c 'print(2+2)'").strip
   end
 end
-
-__END__
---- a/pyproject.toml
-+++ b/pyproject.toml
-@@ -66,8 +66,10 @@
-   'primecountpy; sys_platform != "win32"',
-   'ptyprocess > 0.5',
-   'requests >=2.13.0',
-+  'sagemath-data-elliptic-curves >=0.8.2',
-+  'sagemath-data-graphs >=20210214.1',
-+  'sagemath-data-polytopes >=20170220.1',
-   'scipy >=1.15',
--  'sphinx >=9.1, <10',
-   'sympy >=1.6, <2.0',
-   # TODO: Remove this once the migration to meson is complete
-   'pkgconfig',
-@@ -176,9 +178,6 @@
- ]
-
- dependencies = [
--  "pkg:generic/sagemath-elliptic-curves",
--  "pkg:generic/sagemath-graphs",
--  "pkg:generic/sagemath-polytopes-db",
-   "pkg:generic/tachyon",
- ]
-
-diff --git a/src/sage/features/databases.py b/src/sage/features/databases.py
-index 4a83e74f380..bd55b509091 100644
---- a/src/sage/features/databases.py
-+++ b/src/sage/features/databases.py
-@@ -16,9 +16,46 @@ Features for testing the presence of various databases
- #                  https://www.gnu.org/licenses/
- # *****************************************************************************
-
-+import atexit
-+from contextlib import ExitStack
-+from functools import cache
-+from importlib.resources import as_file, files
-+
- from sage.env import sage_data_paths
- from sage.features import PythonModule, StaticFile
-
-+# Keep extracted resources alive for callers that retain filenames or open
-+# database connections. With installed wheels, as_file uses the original path.
-+_data_resource_contexts = ExitStack()
-+atexit.register(_data_resource_contexts.close)
-+
-+
-+@cache
-+def _packaged_data_path(package, subdirectory):
-+    """
-+    Return a packaged data directory, retaining any temporary extraction.
-+    """
-+    try:
-+        resource = files(package).joinpath(subdirectory)
-+    except ModuleNotFoundError:
-+        return None
-+    return str(_data_resource_contexts.enter_context(as_file(resource)))
-+
-+
-+def _data_search_path(name, override, package, subdirectory=""):
-+    """
-+    Search legacy data directories before the packaged resources.
-+
-+    An explicit directory override remains authoritative.
-+    """
-+    if override:
-+        return override
-+    paths = list(sage_data_paths(name))
-+    packaged_path = _packaged_data_path(package, subdirectory)
-+    if packaged_path is not None:
-+        paths.append(packaged_path)
-+    return paths
-+
-
- class DatabaseCremona(StaticFile):
-     r"""
-@@ -51,7 +88,7 @@ class DatabaseCremona(StaticFile):
-         """
-         from sage.env import CREMONA_LARGE_DATA_DIR, CREMONA_MINI_DATA_DIR
-
--        CREMONA_DATA_DIRS = set([CREMONA_MINI_DATA_DIR, CREMONA_LARGE_DATA_DIR])
-+        CREMONA_DATA_DIRS = {CREMONA_MINI_DATA_DIR, CREMONA_LARGE_DATA_DIR}
-         CREMONA_DATA_DIRS.discard(None)
-         search_path = CREMONA_DATA_DIRS or sage_data_paths("cremona")
-
-@@ -60,6 +97,10 @@ class DatabaseCremona(StaticFile):
-         if name == "cremona_mini":
-             spkg = "elliptic_curves"
-             spkg_type = "standard"
-+            if not CREMONA_DATA_DIRS:
-+                search_path = _data_search_path(
-+                    "cremona", None, "sage_data_elliptic_curves.data", "cremona"
-+                )
-
-         StaticFile.__init__(
-             self,
-@@ -95,7 +136,9 @@ class DatabaseEllcurves(StaticFile):
-         """
-         from sage.env import ELLCURVE_DATA_DIR
-
--        search_path = ELLCURVE_DATA_DIR or sage_data_paths("ellcurves")
-+        search_path = _data_search_path(
-+            "ellcurves", ELLCURVE_DATA_DIR, "sage_data_elliptic_curves.data", "ellcurves"
-+        )
-
-         StaticFile.__init__(
-             self,
-@@ -130,7 +173,9 @@ class DatabaseGraphs(StaticFile):
-         """
-         from sage.env import GRAPHS_DATA_DIR
-
--        search_path = GRAPHS_DATA_DIR or sage_data_paths("graphs")
-+        search_path = _data_search_path(
-+            "graphs", GRAPHS_DATA_DIR, "sage_data_graphs.data"
-+        )
-
-         StaticFile.__init__(
-             self,
-@@ -288,6 +333,10 @@ class DatabaseReflexivePolytopes(StaticFile):
-         dirname = "Full3d"
-         if name == "polytopes_db_4d":
-             dirname = "Hodge4d"
-+        else:
-+            search_path = _data_search_path(
-+                "reflexive_polytopes", POLYTOPE_DATA_DIR, "sage_data_polytopes", "data"
-+            )
-
-         StaticFile.__init__(self, name, filename=dirname, search_path=search_path)
-
-diff --git a/src/sage/graphs/isgci.py b/src/sage/graphs/isgci.py
-index caf6439827f..50ebd0e5ea6 100644
---- a/src/sage/graphs/isgci.py
-+++ b/src/sage/graphs/isgci.py
-@@ -375,16 +375,19 @@ Methods
- -------
- """
-
--from sage.structure.sage_object import SageObject
--from sage.structure.unique_representation import CachedRepresentation, UniqueRepresentation
--from sage.misc.unknown import Unknown
--from sage.features.databases import DatabaseGraphs
--from sage.misc.cachefunc import cached_method
--
- import os
- import zipfile
--from urllib.request import urlopen
- from ssl import create_default_context as default_context
-+from urllib.request import urlopen
-+
-+from sage.features.databases import DatabaseGraphs
-+from sage.misc.cachefunc import cached_method
-+from sage.misc.unknown import Unknown
-+from sage.structure.sage_object import SageObject
-+from sage.structure.unique_representation import (
-+    CachedRepresentation,
-+    UniqueRepresentation,
-+)
-
- # ****************************************************************************
- #      Copyright (C) 2011 Nathann Cohen <nathann.cohen@gmail.com>
-@@ -788,19 +791,20 @@ class GraphClasses(UniqueRepresentation):
-             sage: graph_classes._download_db()  # optional - internet
-         """
-         import tempfile
--        data_dir = os.path.dirname(DatabaseGraphs().absolute_filename())
-+
-+        from sage.env import DOT_SAGE
-+
-+        data_dir = os.path.join(DOT_SAGE, "db", "graphs")
-+        os.makedirs(data_dir, exist_ok=True)
-         u = urlopen('https://www.graphclasses.org/data.zip',
-                     context=default_context())
-         with tempfile.NamedTemporaryFile(suffix='.zip') as f:
-             f.write(u.read())
--            z = zipfile.ZipFile(f.name)
--
--            # Save a systemwide updated copy whenever possible
--            try:
-+            f.seek(0)
-+            with zipfile.ZipFile(f) as z:
-+                # Keep downloaded updates separate from installed package data.
-                 z.extract(_XML_FILE, data_dir)
-                 z.extract(_SMALLGRAPHS_FILE, data_dir)
--            except OSError:
--                pass
-
-     def _parse_db(self):
-         r"""
-@@ -811,9 +815,18 @@ class GraphClasses(UniqueRepresentation):
-             sage: graph_classes._parse_db()
-         """
-         import xml.etree.ElementTree as ET
-+
-+        from sage.env import DOT_SAGE, GRAPHS_DATA_DIR
-         from sage.graphs.graph import Graph
-
-         data_dir = os.path.dirname(DatabaseGraphs().absolute_filename())
-+
-+        user_data_dir = os.path.join(DOT_SAGE, "db", "graphs")
-+        if not GRAPHS_DATA_DIR and all(
-+            os.path.isfile(os.path.join(user_data_dir, name))
-+            for name in (_XML_FILE, _SMALLGRAPHS_FILE)
-+        ):
-+            data_dir = user_data_dir
-         xml_file = os.path.join(data_dir, _XML_FILE)
-         tree = ET.ElementTree(file=xml_file)
-         root = tree.getroot()
-@@ -847,7 +860,7 @@ class GraphClasses(UniqueRepresentation):
-         This method downloads the ISGCI database from the website
-         `GraphClasses.org <http://www.graphclasses.org/>`_. It then extracts the
-         zip file and parses its XML content. The XML file is saved in the directory
--        controlled by the :class:`DatabaseGraphs` class (usually, ``$HOME/.sage/db``).
-+        ``$DOT_SAGE/db/graphs`` (usually, ``$HOME/.sage/db/graphs``).
-
-         EXAMPLES::
