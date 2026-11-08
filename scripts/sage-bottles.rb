@@ -11,7 +11,7 @@ require "utils/bottles"
 require_relative "sage-bottle-closure"
 require_relative "sage-bottle-linkage"
 
-# brew ruby filters custom environment variables, so accept the root explicitly.
+# The workflow supplies the validation root explicitly.
 artifacts = Pathname(ARGV.fetch(0))/"artifacts"
 artifacts.mkpath
 raise "ARM64 runner required" if Hardware::CPU.arch != :arm64

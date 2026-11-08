@@ -50,14 +50,14 @@ jobs:
           mkdir -p "$validation_root/artifacts"
           brew tap dimpase/gap
           brew tap macaulay2/tap
-          brew trust --tap dimpase/gap macaulay2/tap
+          brew trust --tap dimpase/tap dimpase/gap macaulay2/tap
           brew config > "$validation_root/artifacts/brew-config.txt"
 
       - name: Install and verify the complete published bottle closure
         env:
           REPOSITORY: ${{ steps.homebrew.outputs.repository-path }}
         run: |
-          brew ruby -- "$REPOSITORY/scripts/sage-bottles.rb" "$VALIDATION_ROOT" \
+          PATH="$REPOSITORY/scripts:$PATH" brew sage-bottles "$VALIDATION_ROOT" \
             2>&1 | tee "$VALIDATION_ROOT/artifacts/bottle-install.log"
 
       - name: Prepare exact source and isolated Python environment
