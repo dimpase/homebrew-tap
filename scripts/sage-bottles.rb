@@ -102,7 +102,8 @@ formulae.zip(rows).each do |formula, row|
   if formula.any_version_installed?
     SystemCommand.safe_system HOMEBREW_BREW_FILE, "reinstall", "--force-bottle", formula.full_name
   else
-    SystemCommand.safe_system HOMEBREW_BREW_FILE, "install", "--force-bottle", "--ignore-dependencies", formula.full_name
+    SystemCommand.safe_system HOMEBREW_BREW_FILE, "install", "--force-bottle", "--ignore-dependencies",
+                              formula.full_name
   end
   keg = Pathname(row[:keg])
   receipt_path = keg/"INSTALL_RECEIPT.json"
