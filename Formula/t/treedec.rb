@@ -26,7 +26,21 @@ class Treedec < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.cpp").write <<~EOS
+      #include <boost/graph/adjacency_list.hpp>
+      #include <treedec/combinations.hpp>
+      int main() {
+        using Graph = boost::adjacency_list<boost::setS, boost::vecS, boost::undirectedS>;
+        Graph graph(4);
+        for (unsigned i = 0; i < 4; ++i) boost::add_edge(i, (i + 1) % 4, graph);
+        TD_tree_dec_t decomposition;
+        treedec::exact_decomposition_cutset(graph, decomposition);
+        return treedec::get_width(decomposition) != 2;
+      }
+    EOS
+    system ENV.cxx, "-std=c++17", "test.cpp", "-I#{include}",
+           "-I#{formula_opt_include("boost")}", "-o", "test"
+    system "./test"
   end
 end
 
