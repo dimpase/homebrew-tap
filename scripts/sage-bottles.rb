@@ -6,6 +6,7 @@ require "json"
 require "digest"
 require "cache_store"
 require "linkage_checker"
+require "system_command"
 require "utils/bottles"
 require_relative "sage-bottle-closure"
 require_relative "sage-bottle-linkage"
@@ -53,7 +54,7 @@ begin
     save_report.call
     next row unless bottle
 
-    safe_system HOMEBREW_BREW_FILE, "fetch", "--force-bottle", "--retry", formula.full_name
+    SystemCommand.safe_system HOMEBREW_BREW_FILE, "fetch", "--force-bottle", "--retry", formula.full_name
     archive = bottle.cached_download
     bottle.verify_download_integrity(archive)
     receipt_path = Utils::Bottles.receipt_path(archive)
@@ -99,9 +100,9 @@ formulae.zip(rows).each do |formula, row|
   # this formula's runtime dependencies have already been poured and verified.
   # `reinstall` has no --ignore-dependencies option; `install` does.
   if formula.any_version_installed?
-    safe_system HOMEBREW_BREW_FILE, "reinstall", "--force-bottle", formula.full_name
+    SystemCommand.safe_system HOMEBREW_BREW_FILE, "reinstall", "--force-bottle", formula.full_name
   else
-    safe_system HOMEBREW_BREW_FILE, "install", "--force-bottle", "--ignore-dependencies", formula.full_name
+    SystemCommand.safe_system HOMEBREW_BREW_FILE, "install", "--force-bottle", "--ignore-dependencies", formula.full_name
   end
   keg = Pathname(row[:keg])
   receipt_path = keg/"INSTALL_RECEIPT.json"
