@@ -1,16 +1,9 @@
 class SagemathDeps < Formula
   desc "Native and Python dependencies for building and running SageMath"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta4.tar.gz"
-  sha256 "0b2836cb6caf77bfb5e76934eae07193387fa342976e08378d321416b6504ece"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
+  sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta4"
-    sha256 cellar: :any, arm64_tahoe:  "c93abc73958ef08b3cdb8c905df37bc1a16dad31ab29a2f79ae6549d78bcdcc3"
-    sha256 cellar: :any, arm64_linux:  "4a9840afd75e65cbf4e6ee8c05f78b20e7ec18de805e5fd03dc2a77a10dc8a3f"
-    sha256 cellar: :any, x86_64_linux: "cf6c05631f3e5297fdf333573f98378a70ae3b57343c29a638f03aa20c6b06ce"
-  end
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -90,6 +83,7 @@ class SagemathDeps < Formula
   depends_on "python@3.14"
   depends_on "qhull"
   depends_on "singular"
+  depends_on "uv"
   depends_on "webp"
   # Kernel messaging dependencies are required; JupyterLab/Notebook run separately.
   depends_on "zeromq"
@@ -118,9 +112,9 @@ class SagemathDeps < Formula
 
   pypi_packages package_name:     "sagemath",
                 extra_packages:   %w[
-                  cython jinja2 lrcalc memory-allocator meson-python packaging
-                  pyproject-metadata sagemath-data-elliptic-curves sagemath-data-graphs
-                  sagemath-data-polytopes setuptools wheel
+                  cython elliptic-curve-databases graph-databases jinja2 lrcalc
+                  memory-allocator meson-python packaging polytope-databases
+                  pyproject-metadata setuptools wheel
                 ],
                 exclude_packages: %w[
                   cvxopt cypari2 cysignals gmpy2 matplotlib meson numpy pillow pplpy pybind11 scipy sphinx
@@ -391,19 +385,19 @@ class SagemathDeps < Formula
     sha256 "adeea0ae78f0856ee4945f413299801b82a0a01416303301f39a704282a37b73"
   end
 
-  resource "sagemath-data-polytopes" do
-    url "https://files.pythonhosted.org/packages/69/74/0a06131ee113a0022c52f4b6517fbeae6551e839472acc2264676167fea0/sagemath_data_polytopes-20170220.1.tar.gz"
-    sha256 "78e742c0f7d46132cd874041094a5aaa64a7978c3d35ff7b9cecab4fe1f1814d"
+  resource "polytope-databases" do
+    url "https://files.pythonhosted.org/packages/33/0d/4acc73023decb8891530595cf229d647df0085457d8f1363b5643ace07cf/polytope_databases-20170220.2.tar.gz"
+    sha256 "c7793ad1f4dc4cf0a5d94fe3a6e8855ed7b055194c5c7b1305c862e0e609367b"
   end
 
-  resource "sagemath-data-graphs" do
-    url "https://files.pythonhosted.org/packages/82/7b/2c18e019b90d9b0bdd84a83d6bd76450c5610761938308265518f17d17d8/sagemath_data_graphs-20210214.1.tar.gz"
-    sha256 "2d021f4df20c4b5026e9d3167e485c54739e34f37b824c190441eecdd0abb5dd"
+  resource "graph-databases" do
+    url "https://files.pythonhosted.org/packages/e7/39/3b2accb0a96c414d8acb063e5e7f1c7bf90d5f2f923507de62ddfe008e3a/graph_databases-20210214.2.tar.gz"
+    sha256 "d8dca276b5839ecd0126219597ff9b9def92f9d2b7dd217a1bc672b6623d0917"
   end
 
-  resource "sagemath-data-elliptic-curves" do
-    url "https://files.pythonhosted.org/packages/7d/ab/ef83f5504fbbe3e08ded3dfb91fec6c9e051219499fcbe511b18d9dac5b7/sagemath_data_elliptic_curves-0.8.2.tar.gz"
-    sha256 "5540a8d91eb6b189d5a2960c2a2e3b3b671e5969be8c36ddb51b7ac4eed05596"
+  resource "elliptic-curve-databases" do
+    url "https://files.pythonhosted.org/packages/00/c2/3a36dafcbb97c8e6489e93523fd68425db4572cc3c4889741c2e99b3837d/elliptic_curve_databases-0.8.3.tar.gz"
+    sha256 "5a2bf93c9f92a0c010c911c7ebe2a3af0275f9f11e86894ba00810887b04daa7"
   end
 
   def pythons
@@ -434,7 +428,8 @@ class SagemathDeps < Formula
     script += <<~SH
       export PARI_DIR="#{formula_opt_prefix("dimpase/tap/pari")}"
       export BOOST_ROOT="#{formula_opt_prefix("boost")}"
-      export MTXLIB="#{formula_opt_lib("dimpase/tap/meataxe")}"
+      export MTXLIB="#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
+      export SAGE_DATA_PATH="#{opt_pkgshare}/python#{python_version}-data${SAGE_DATA_PATH:+:$SAGE_DATA_PATH}"
     SH
     if OS.linux?
       gcc = deps.find { |d| d.name == "gcc" }.to_formula
@@ -457,6 +452,21 @@ class SagemathDeps < Formula
     (prefix/site_packages/"sagemath-deps.pth").write <<~EOS
       import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
     EOS
+  end
+
+  def link_datasets(python_version, site_packages)
+    # Sage 11.0.beta6 searches filesystem data directories. Expose the PyPI
+    # payloads without patching Sage to import unreleased dataset features.
+    private_site = libexec/"python#{python_version}"/site_packages
+    data_root = pkgshare/"python#{python_version}-data"
+    {
+      "cremona"             => "elliptic_curve_databases/data/cremona",
+      "ellcurves"           => "elliptic_curve_databases/data/ellcurves",
+      "graphs"              => "graph_databases/data",
+      "reflexive_polytopes" => "polytope_databases/data",
+    }.each do |name, directory|
+      data_root.install_symlink private_site/directory => name
+    end
   end
 
   def install
@@ -490,6 +500,7 @@ class SagemathDeps < Formula
       end
 
       write_python_paths(python_version, site_packages)
+      link_datasets(python_version, site_packages)
       write_development_environment(python_version)
     end
   end
@@ -498,13 +509,13 @@ class SagemathDeps < Formula
     <<~EOS
       The Python dependencies are available to Homebrew Python without installing
       sagelib. To use them in a virtual environment:
-        #{formula_opt_bin("python@3.14")}/python3.14 -m venv --system-site-packages sage-venv
+        uv venv --python #{formula_opt_bin("python@3.14")}/python3.14 --system-site-packages sage-venv
         source sage-venv/bin/activate
         source #{opt_pkgshare}/python3.14-env.sh
 
       The environment script exposes the native headers, libraries and build tools
-      for a separate sagelib build. Use pip's --no-build-isolation and --no-deps
-      options to reuse these dependencies.
+      and the standard datasets for a separate sagelib build. Use uv pip's
+      --no-build-isolation and --no-deps options to reuse these dependencies.
     EOS
   end
 
@@ -528,7 +539,7 @@ class SagemathDeps < Formula
       refute_path_exists prefix/site_packages/"sage"
       refute_path_exists private_site/"sage"
       venv = testpath/"venv-#{python_version}"
-      system python3, "-m", "venv", "--system-site-packages", venv
+      system "uv", "venv", "--python", python3, "--system-site-packages", venv
       system venv/"bin/python", "-c", <<~PYTHON
         import importlib.metadata
         import pathlib
@@ -546,6 +557,7 @@ class SagemathDeps < Formula
         import Cython, mesonpy, memory_allocator, jinja2, packaging
         import cysignals, gmpy2, numpy, scipy, matplotlib, PIL, ipykernel, ipywidgets
         import networkx, requests
+        import elliptic_curve_databases, graph_databases, polytope_databases
         from sympy import Symbol, factor
         x = Symbol("x")
         assert factor(x**2 - 1) == (x - 1)*(x + 1)
@@ -572,8 +584,16 @@ class SagemathDeps < Formula
       system "bash", "-c", <<~SH
         set -eu
         source "#{venv}/bin/activate"
+        export SAGE_DATA_PATH="#{testpath}/optional-data"
         source "#{pkgshare}/python#{python_version}-env.sh"
         test "$(command -v python)" = "#{venv}/bin/python"
+        test "$SAGE_DATA_PATH" = "#{opt_pkgshare}/python#{python_version}-data:#{testpath}/optional-data"
+        test -f "$MTXLIB/p256.zzz"
+        test -f "#{pkgshare}/python#{python_version}-data/cremona/cremona_mini.db"
+        test -f "#{pkgshare}/python#{python_version}-data/ellcurves/rank0"
+        test -f "#{pkgshare}/python#{python_version}-data/graphs/graphs.db"
+        test -f "#{pkgshare}/python#{python_version}-data/graphs/isgci_sage.xml"
+        test -f "#{pkgshare}/python#{python_version}-data/reflexive_polytopes/Full3d/zzdb.info"
         pkg-config --exists brial eclib flint gmp
         python setup.py build_ext --inplace --force
         python -c 'import native_probe; assert native_probe.version().startswith("#{deps.find { |d| d.name == "gmp" }.to_formula.version.major_minor}")'
