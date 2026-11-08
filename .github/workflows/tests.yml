@@ -52,6 +52,12 @@ jobs:
           brew tap macaulay2/tap
           brew trust --tap dimpase/gap macaulay2/tap
 
+      # readall disables API lookups while evaluating formula metadata/caveats.
+      # The Linux containers already include core; hosted macOS runners do not.
+      - name: Make core formulae available for tap validation
+        if: runner.os == 'macOS'
+        run: brew tap --force homebrew/core
+
       - name: Install patched PARI
         run: brew install dimpase/tap/pari
 
