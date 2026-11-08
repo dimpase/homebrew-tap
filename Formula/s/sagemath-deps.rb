@@ -447,7 +447,7 @@ class SagemathDeps < Formula
       export PARI_DIR="#{formula_opt_prefix("dimpase/tap/pari")}"
       export BOOST_ROOT="#{formula_opt_prefix("boost")}"
       export MTXLIB="#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
-      export SAGE_DATA_PATH="#{opt_pkgshare}/python#{python_version}-data${SAGE_DATA_PATH:+:$SAGE_DATA_PATH}"
+      export SAGE_SHARE="${SAGE_SHARE-#{HOMEBREW_PREFIX}/share}"
     SH
     if OS.linux?
       gcc = deps.find { |d| d.name == "gcc" }.to_formula
@@ -521,6 +521,10 @@ class SagemathDeps < Formula
       link_datasets(python_version, site_packages)
       write_development_environment(python_version)
     end
+
+    # These payloads are Python-independent. Use Sage's standard share layout
+    # without replacing its user/platform data roots via SAGE_DATA_PATH.
+    (share/"sagemath").install_symlink (pkgshare/"python3.14-data").children
   end
 
   def caveats
@@ -603,19 +607,32 @@ class SagemathDeps < Formula
       system "bash", "-c", <<~SH
         set -eu
         source "#{venv}/bin/activate"
+        unset SAGE_SHARE
         export SAGE_DATA_PATH="#{testpath}/optional-data"
         source "#{pkgshare}/python#{python_version}-env.sh"
         test "$(command -v python)" = "#{venv}/bin/python"
-        test "$SAGE_DATA_PATH" = "#{opt_pkgshare}/python#{python_version}-data:#{testpath}/optional-data"
+        test "$SAGE_SHARE" = "#{HOMEBREW_PREFIX}/share"
+        test "$SAGE_DATA_PATH" = "#{testpath}/optional-data"
         test -f "$MTXLIB/p256.zzz"
         test -f "#{pkgshare}/python#{python_version}-data/cremona/cremona_mini.db"
         test -f "#{pkgshare}/python#{python_version}-data/ellcurves/rank0"
         test -f "#{pkgshare}/python#{python_version}-data/graphs/graphs.db"
         test -f "#{pkgshare}/python#{python_version}-data/graphs/isgci_sage.xml"
         test -f "#{pkgshare}/python#{python_version}-data/reflexive_polytopes/Full3d/zzdb.info"
+        test -f "#{share}/sagemath/cremona/cremona_mini.db"
+        test -f "#{share}/sagemath/ellcurves/rank0"
+        test -f "#{share}/sagemath/graphs/graphs.db"
+        test -f "#{share}/sagemath/reflexive_polytopes/Full3d/zzdb.info"
         pkg-config --exists brial eclib flint gmp
         python setup.py build_ext --inplace --force
         python -c 'import native_probe; assert native_probe.version().startswith("#{deps.find { |d| d.name == "gmp" }.to_formula.version.major_minor}")'
+        export SAGE_SHARE="#{testpath}/custom-share"
+        source "#{pkgshare}/python#{python_version}-env.sh"
+        test "$SAGE_SHARE" = "#{testpath}/custom-share"
+        test "$SAGE_DATA_PATH" = "#{testpath}/optional-data"
+        unset SAGE_DATA_PATH
+        source "#{pkgshare}/python#{python_version}-env.sh"
+        test -z "${SAGE_DATA_PATH+x}"
       SH
       # Packages deliberately installed in the venv must override the baseline.
       (venv/site_packages/"sympy.py").write "VENV_OVERRIDE = True\n"
