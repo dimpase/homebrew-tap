@@ -20,6 +20,20 @@ class Rw < Formula
   end
 
   test do
-    system "true"
+    (testpath/"test.c").write <<~EOS
+      #include <rw.h>
+      int main(void) {
+        if (init_rw_dec(5)) return 1;
+        for (unsigned i = 0; i < 5; ++i)
+          adjacency_matrix[i] = (1U << ((i + 1) % 5)) | (1U << ((i + 4) % 5));
+        calculate_all();
+        unsigned width = get_rw();
+        destroy_rw();
+        /* A cycle on five vertices has rank-width two. */
+        return width != 2;
+      }
+    EOS
+    system ENV.cc, "test.c", "-I#{include}", "-L#{lib}", "-lrw", "-o", "test"
+    system "./test"
   end
 end
