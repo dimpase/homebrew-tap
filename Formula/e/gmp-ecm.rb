@@ -23,11 +23,11 @@ class GmpEcm < Formula
     # Test the ecm binary: factor 121 = 11 * 11
     assert_match "Factor found", pipe_output("#{bin}/ecm 100", "121\n")
 
-    # Test linking against libecm using the P-1 method, which is
-    # deterministic: P-1 with B1=5 finds 31 from 3937 = 31 * 127
-    # because 31-1 = 30 = 2*3*5 is 5-smooth while
-    # 127-1 = 126 = 2*3^2*7 is not.
+    # Test P-1 with fixed base 2 and B1=5: gcd(2^60 - 1, 3937) = 31,
+    # because 2 has order 5 modulo 31 and order 7 modulo 127.
+    # Random bases can return the whole composite instead.
     (testpath/"test.c").write <<~C
+      #include <stdio.h>
       #include <stdlib.h>
       #include <gmp.h>
       #include <ecm.h>
@@ -41,10 +41,14 @@ class GmpEcm < Formula
         ecm_init(q);
 
         q->method = ECM_PM1;
+        mpz_set_ui(q->x, 2);
+        mpz_set_ui(q->B2, 0); /* Disable stage 2. */
 
         int ret = ecm_factor(f, n, 5.0, q);
-        if (ret <= 0 || mpz_cmp_ui(f, 31) != 0)
+        if (ret != ECM_FACTOR_FOUND_STEP1 || mpz_cmp_ui(f, 31) != 0) {
+          gmp_fprintf(stderr, "Unexpected P-1 result: status=%d, factor=%Zd\\n", ret, f);
           return 1;
+        }
 
         ecm_clear(q);
         mpz_clear(f);
