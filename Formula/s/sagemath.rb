@@ -4,14 +4,7 @@ class Sagemath < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta6_1"
-    sha256 cellar: :any, arm64_tahoe:  "ecdeffa8c5a35e278b43063118d232aac8525c6c727ee5a14ebd06c7e71d950b"
-    sha256               arm64_linux:  "0346a711f4b5ca78b0afb253273c2b5240cf2c0ba0d3ba4b05974734e8521d4b"
-    sha256               x86_64_linux: "2d477ba7ba9dc2c2b7e553c02ece6e4c6a027b5a138e5816133597e98cbaab53"
-  end
+  revision 2
 
   depends_on "cmake" => :build
   depends_on "meson" => :build
