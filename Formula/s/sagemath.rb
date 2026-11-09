@@ -4,13 +4,7 @@ class Sagemath < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta6"
-    sha256 cellar: :any, arm64_tahoe:  "f87cc46963ac09d4ab6bd26668a62c9297b9902ed55fb98dd59e477a4afe22c9"
-    sha256               arm64_linux:  "e355093733af635884129a8cd9152c77aba6ed84d67648455f3476cffcc8e3fa"
-    sha256               x86_64_linux: "6755517e9248b715f3ce38bd5f1f93e135fa8e6d827135d98aa8dbb3af7ff37f"
-  end
+  revision 1
 
   depends_on "cmake" => :build
   depends_on "meson" => :build
@@ -80,6 +74,10 @@ class Sagemath < Formula
   end
 
   def install
+    # The probe is a three-line protocol; GAP otherwise wraps long root paths.
+    inreplace "src/sage/ext_data/gap/kernel-info.g", "KernelInfo := KERNEL_INFO();",
+              "SET_PRINT_FORMATTING_STDOUT(false);\n\nKernelInfo := KERNEL_INFO();"
+
     if OS.mac?
       inreplace "src/meson.build", "blas = dependency(blas_order)", "blas = dependency('accelerate')"
     else
@@ -146,6 +144,18 @@ class Sagemath < Formula
       import pathlib
       import subprocess
       import sys
+      from importlib.resources import files
+
+      # A long root reproduces the wrapping seen in Homebrew's temporary home.
+      gap_root = pathlib.Path("#{testpath}") / ("long-gap-root-" * 12)
+      gap_root.mkdir(exist_ok=True)
+      systemfile = files("sage").joinpath("ext_data/gap/kernel-info.g")
+      assert pathlib.Path(systemfile).resolve().is_relative_to(pathlib.Path("#{prefix}").resolve())
+      gap = subprocess.run(["gap", "-l", str(gap_root) + ";", "--systemfile", systemfile],
+                           check=True, capture_output=True, text=True)
+      gap_lines = gap.stdout.strip().splitlines()
+      assert len(gap_lines) == 3, (gap.stdout, gap.stderr)
+      assert str(gap_root) + "/" in gap_lines[2], gap_lines
 
       # Exercise the bottle's default paths without a development shell setup.
       for name in ("SAGE_DATA_PATH", "SAGE_SHARE", "SAGE_DOC", "MTXLIB", "CREMONA_MINI_DATA_DIR", "CREMONA_LARGE_DATA_DIR",
