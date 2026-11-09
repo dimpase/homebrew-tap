@@ -34,6 +34,16 @@ class SagemathDoc < Formula
 
     system python3, "-c", <<~PYTHON
       import pathlib
+      import shutil
+      import subprocess
+      from importlib.resources import files
+
+      # Sage requires exactly these three lines before initializing libgap.
+      systemfile = files("sage").joinpath("ext_data/gap/kernel-info.g")
+      gap = subprocess.run(["gap", "--systemfile", systemfile], capture_output=True, text=True)
+      assert gap.returncode == 0 and len(gap.stdout.strip().split("\\n")) == 3, (
+          shutil.which("gap"), str(systemfile), gap.returncode, gap.stdout, gap.stderr)
+
       import sage.all
       import sage.version
       import sphinx
