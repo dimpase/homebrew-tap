@@ -7,9 +7,10 @@ class Rw < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/rw-0.10"
-    sha256 cellar: :any,                 arm64_tahoe:  "51925dcc2373fbfebc68b916ed522a814cb32c70c022c3cc805a4a789125b886"
-    sha256 cellar: :any,                 sequoia:      "f2eb17bafcdfb9414c3ac6f26ab5893dbdc4642d45e50c1275a3c437fff9c385"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "9f4a593f9fa1e90ebbd725c531c5278684837faca1394ddeeda29b38d3b2a028"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "c3dbb142f8b67c13145f156cf4e3c3c379eec91d2d603e9ba2707cc581570b65"
+    sha256 cellar: :any, arm64_linux:  "d220a74e7a3101b2028aa37836f1d3d086e176ec3b2671d6328b28679b2282cc"
+    sha256 cellar: :any, x86_64_linux: "d84c7d6bd6e2b2ff50b08cf30d7ac89d9b5f41f5d018d81cdb864bb29cbf964a"
   end
 
   depends_on "libtool" => :build
