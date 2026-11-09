@@ -7,10 +7,10 @@ class Bliss < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/bliss-0.77"
-    rebuild 1
-    sha256 cellar: :any, arm64_tahoe:  "4a8b08630c023221bed4da42c97db6b737815f78bbd660e95d5f9083496ead29"
-    sha256 cellar: :any, sequoia:      "c6c2754ea2afd9926c56d927b18c30cb22635c9b6d83e5a44ec8767051bf1840"
-    sha256 cellar: :any, x86_64_linux: "10eeee767fd0545f7a6931b4591d2f04ac769439322a097c389f5ed4e39eb3c2"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:  "4be4dcfc7631ea63fd680a6b60bca4696dc663df0ece901479397733fc951f54"
+    sha256 cellar: :any, arm64_linux:  "47106389ca994844a8c0337a0e98b79e0bfe3dd5c96e1959214ca4e9bd675abe"
+    sha256 cellar: :any, x86_64_linux: "f5882c655633f770603ddc1611a4bd7b565c30989c6ee15d03c3944c9c025d70"
   end
 
   depends_on "cmake" => :build
