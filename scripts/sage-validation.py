@@ -71,6 +71,11 @@ def prepare(root, artifacts):
     # packages carried privately by another native dependency.
     for row in [deps, *rows]:
         keg = Path(row["keg"]).resolve(strict=True)
+        # Homebrew's sitecustomize redirects the interpreter's bundled
+        # pip/wheel site to the global site, exposing unrelated installations.
+        # uv and the bottled build backend do not need that interpreter site.
+        if keg == python_keg:
+            continue
         for path in [keg / "libexec/python3.14" / relative,
                      keg / relative, keg / "libexec" / relative]:
             if not path.is_dir():
