@@ -30,7 +30,7 @@ class PrimesievePortable < Formula
       #include <primesieve.hpp>
       int main() {
         primesieve::set_num_threads(1);
-        if (primesieve::count_primes(1000000) != 78498)
+        if (primesieve::count_primes(0, 1000000) != 78498)
           return 1;
         return primesieve::nth_prime(10000) == 104729 ? 0 : 2;
       }
