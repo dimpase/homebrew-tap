@@ -5,6 +5,14 @@ class Symmetrica < Formula
   sha256 "2efc4b1d047c6fe036453882a20e906ca2bedecae888356c7626447db2b10fd3"
   license :public_domain
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/symmetrica-3.1.0"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:  "f015b92135bda47fa12ccf4be8395f2519a5bdb1d05fd6ff96394a92c41a3891"
+    sha256 cellar: :any, arm64_linux:  "d5bfc505c2d0c64bc73b1f8bbfabf44fb7b9f07445b62da71e566850406180fe"
+    sha256 cellar: :any, x86_64_linux: "2414a57880a2dc1e5a50663d2a4843bb00f9ab29a214d7ba9585542160628a5a"
+  end
+
   depends_on "libtool" => :build
 
   def install
