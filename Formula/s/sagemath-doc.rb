@@ -76,8 +76,9 @@ class SagemathDoc < Formula
     # Install only rendered manuals, retaining their HTML inventories and assets.
     (share/"doc/sage").install output/"html", output/"index.html"
     html_root = share/"doc/sage/html"
-    (html_root/"_static").install formula_opt_prefix("dimpase/tap/sagemath-docbuild-deps")/
-                                  "share/sagemath-docbuild-deps/mathjax"
+    (html_root/"_static").mkpath
+    cp_r formula_opt_prefix("dimpase/tap/sagemath-docbuild-deps")/"share/sagemath-docbuild-deps/mathjax",
+         html_root/"_static"
     # One shared MathJax tree keeps all manuals usable offline without retaining
     # the documentation build dependencies or duplicating their assets.
     html_root.glob("**/_static").each do |static_dir|
