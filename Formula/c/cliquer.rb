@@ -5,6 +5,14 @@ class Cliquer < Formula
   sha256 "c1d7cc927b7efe76ff4f11e1f01bee473e37360fb54843b16b287e3ad161287b"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cliquer-1.23"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "b0130cae45cff33769c6034ef4828ebdbd1e751929735b01da1e0309d7dd1a2c"
+    sha256 cellar: :any, arm64_linux:  "37ca43cf4416e1b9ffd1d7a3a07e3228020b5c01f8d3d58352951d01f8c3e26e"
+    sha256 cellar: :any, x86_64_linux: "1858cd82387bbeabbc81168f0ca0b81906de24fde56d4cd2cea31bd08da3315e"
+  end
+
   depends_on "libtool" => :build
 
   def install
