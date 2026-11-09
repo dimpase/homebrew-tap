@@ -6,6 +6,13 @@ class PrimesievePortable < Formula
   license "BSD-2-Clause"
   compatibility_version 1
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/primesieve-portable-12.17"
+    sha256 cellar: :any, arm64_tahoe:  "3cbd3d5f7b348935c4467b096086a40e0c99254c10ff147b72be8c33c07e29b6"
+    sha256 cellar: :any, arm64_linux:  "0814ea3145931a8e42ea0f276aa8cec00a66f9ced8aee1c04f404d6ad82c3c68"
+    sha256 cellar: :any, x86_64_linux: "e67197a208f4626b798d3a6b108677962ac6304eb44edfec1b983b9eda06d4ea"
+  end
+
   keg_only "to keep Sage's portable SIMD build separate from Homebrew core"
 
   depends_on "cmake" => :build
