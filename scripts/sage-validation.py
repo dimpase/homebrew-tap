@@ -24,8 +24,9 @@ FEATURES = (
     "bliss", "brial", "coxeter3", "eclib", "libbraiding", "libhomfly",
     "mcqd", "meataxe", "rankwidth", "sirocco", "tdlib",
 )
+# Check distutils before another import can activate setuptools' import hook.
 MODULES = (
-    "Cython", "mesonpy", "memory_allocator", "jinja2", "packaging",
+    "distutils", "Cython", "mesonpy", "memory_allocator", "jinja2", "packaging",
     "cysignals", "cypari2", "gmpy2", "numpy", "scipy", "matplotlib", "PIL",
     "ppl", "cvxopt", "fpylll", "lrcalc", "primecountpy", "sympy",
     "networkx", "IPython", "ipykernel", "ipywidgets",
@@ -85,8 +86,10 @@ def prepare(root, artifacts):
             assert not (path / "sage").exists(), f"Old Sage in {path}"
             if not any(entry["path"] == str(path) for entry in sites):
                 sites.append({"path": str(path), "formula": row["name"], "keg": str(keg)})
+    # Process each private site's .pth files, including setuptools' distutils
+    # import hook, just as Python does for an ordinary installed site directory.
     (venv / relative / "bottled-sage-dependencies.pth").write_text(
-        "".join(entry["path"] + "\n" for entry in sites))
+        "".join(f"import site; site.addsitedir({entry['path']!r})\n" for entry in sites))
     write_json(artifacts / "python-sites.json", sites)
     subprocess.run([str(venv / "bin/python"), "-I", __file__, "check-before-build"], check=True)
 
@@ -114,9 +117,11 @@ def check_python(root, artifacts, built=False):
     assert sys.prefix != sys.base_prefix
     assert sys.version_info[:2] == (3, 14)
     sites = json.loads((artifacts / "python-sites.json").read_text())
-    allowed = [Path(entry["path"]) for entry in sites]
-    assert not any(path.endswith("site-packages") and Path(path) not in allowed
-                   and not Path(path).is_relative_to(venv) for path in sys.path), sys.path
+    allowed = [Path(entry["path"]).resolve(strict=True) for entry in sites]
+    # Bottled .pth bridges may use opt symlinks to these same audited sites.
+    # Resolve aliases without admitting any additional package directory.
+    assert not any(path.endswith("site-packages") and Path(path).resolve() not in allowed
+                   and not Path(path).resolve().is_relative_to(venv) for path in sys.path), sys.path
     origins = {}
     for name in MODULES:
         module = importlib.import_module(name)
