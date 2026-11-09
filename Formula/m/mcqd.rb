@@ -7,9 +7,10 @@ class Mcqd < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/mcqd-1.0.2"
-    sha256 cellar: :any, arm64_tahoe:  "42af2021aace19818fbb80968f94b083b04e14019d5b26fb5c105dccb6554a53"
-    sha256 cellar: :any, sequoia:      "a1c7b93466a3ca1d156ce82abb9c5d56ccd1b7bed130056f661505e058d9686a"
-    sha256 cellar: :any, x86_64_linux: "92cae27944d032b18e47a733c965b3959d0ba7e6c639b66cb1838f3627dd78ff"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "8a925235d73b871e29fe00c0e98530592c5aad5c175c0b394dec7058f5aab801"
+    sha256 cellar: :any, arm64_linux:  "aaf13549d605ffdcbcad9bac8c22dc6b0b9b6ad2610c3adefaec65d8910461de"
+    sha256 cellar: :any, x86_64_linux: "168e36a5f2b6e6501f1d383356c003e2be0d9258025d8e254aeb4152f4d95702"
   end
 
   depends_on "cmake" => :build
