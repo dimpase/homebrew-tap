@@ -6,6 +6,13 @@ class SagemathDeps < Formula
   license "GPL-2.0-or-later"
   revision 1
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta6_1"
+    sha256 cellar: :any, arm64_tahoe:  "e2ff54e1b0fe2785838209a944d46406d68462d9552e7ac066d71c87e9e6c3ff"
+    sha256 cellar: :any, arm64_linux:  "e95ec80f9e2537385a362ee94956f089b56d49bf24a65248e5e598e975d5c46f"
+    sha256 cellar: :any, x86_64_linux: "4fc7f3db9a9603700be6e8ca9db978122b147fe8bdc7052d9e69ca74cf8bdb9f"
+  end
+
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
   depends_on "bdw-gc"
