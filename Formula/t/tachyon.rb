@@ -54,6 +54,6 @@ class Tachyon < Formula
       END_SCENE
     INP
     assert_match "Scene contains 2 objects.",
-      shell_output("#{bin}/tachyon  #{testpath}/test.input | grep '2 objects'")
+      shell_output("#{bin}/tachyon #{testpath}/test.input")
   end
 end
