@@ -17,7 +17,7 @@ artifacts.mkpath
 raise "ARM64 runner required" if Hardware::CPU.arch != :arm64
 
 root = Formulary.factory("dimpase/tap/sagemath-deps")
-raise "Published beta6 dependencies required" if root.version.to_s != "11.0.beta6"
+raise "Published sagemath-deps 11.0.beta6_1 required" if root.pkg_version.to_s != "11.0.beta6_1"
 
 rows = []
 formulae_by_name = {}
