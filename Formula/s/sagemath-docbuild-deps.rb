@@ -4,13 +4,7 @@ class SagemathDocbuildDeps < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-docbuild-deps-11.0.beta6"
-    sha256 cellar: :any, arm64_tahoe:  "66cc0fa668294395b2a5509c911df4d850d02ef710bb80f474feabf5968646cc"
-    sha256 cellar: :any, arm64_linux:  "380cf32ad314b5e4612b7ce8e64fd18d7e84889b77a78c8013b16c2f80607d95"
-    sha256 cellar: :any, x86_64_linux: "8d2f3853477e7fee82bf7f891c5b3be25a68e1bf40db437edbdbe03bb36de972"
-  end
+  revision 1
 
   depends_on "maturin" => :build
   depends_on "rust" => :build
