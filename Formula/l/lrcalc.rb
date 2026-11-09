@@ -17,6 +17,6 @@ class Lrcalc < Formula
   end
 
   test do
-    assert_match "1  (5,4,3)", shell_output("#{bin}/lrcalc  mult -f 3,2 3 2 1 - 3 2 1 | grep '(5,4,3)$'")
+    assert_match(/^1  \(5,4,3\)$/, shell_output("#{bin}/lrcalc mult -f 3,2 3 2 1 - 3 2 1"))
   end
 end
