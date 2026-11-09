@@ -7,8 +7,10 @@ class Treedec < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/treedec-0.9.3"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "acd6a726efb5fab5c29c1b3c311b4c4a6f63a704cbbc53929640ecffce6e65f6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "6b67daa8e877a2df4775bc1dc27404a15ec1288d0f879b478639aed1efccf938"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "2b3a2fdd5d350a5eb7b4acddcf7a06894a86b7df264bacb086cd07fd3bc4e8dc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "d0c4474dd92bfd484daeb4707d88e266d775d51cf90e9b26e6eb12c33ad54d9d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "ae4e055dd942aa14bce3787fdfc33716fd08faff2811164ea319a89eeec54d00"
   end
 
   depends_on "autoconf" => :build
