@@ -22,6 +22,12 @@ class GmpEcm < Formula
   end
 
   def install
+    if OS.linux?
+      primesieve = Formula["dimpase/tap/primesieve-portable"]
+      ENV.prepend "CPPFLAGS", "-I#{primesieve.opt_include}"
+      ENV.prepend "LDFLAGS", "-L#{primesieve.opt_lib} -Wl,-rpath,#{primesieve.opt_lib}"
+    end
+
     system "autoreconf", "--force", "--install"
     system "./configure", "--enable-openmp", "--enable-shared", "--disable-silent-rules", *std_configure_args
     system "make", "install"
