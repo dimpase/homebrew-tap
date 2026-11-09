@@ -52,6 +52,11 @@ class SagemathDoc < Formula
       assert pathlib.Path(sphinx.__file__).resolve().is_relative_to(pathlib.Path("#{docdeps}").resolve())
     PYTHON
 
+    # Meson generates the bibliography before building its inventory.
+    references = buildpath/"src/doc/en/reference/references"
+    system python3, "src/sage_docbuild/generate-references.py",
+           "src/doc/reference-database.rst", references/"index.rst.in", references/"index.rst"
+
     output = buildpath/"doc-output"
     command = [python3, "src/build-docs.py", "--no-pdf-links", "--no-prune-empty-dirs",
                "--source=#{buildpath}/src/doc", "--output=#{output}"]
@@ -99,6 +104,7 @@ class SagemathDoc < Formula
       assert_equal "# Sphinx inventory version 2\n", (share/"doc/sage/html/en"/manual/"objects.inv").open(&:readline)
     end
     assert_path_exists share/"doc/sage/html/fr/tutorial/index.html"
+    assert_match 'id="lee2011"', (share/"doc/sage/html/en/reference/references/index.html").read
     system (formula_opt_libexec("python@3.14")/"bin/python").to_s, "-c", <<~PYTHON
       import os
       from html.parser import HTMLParser
