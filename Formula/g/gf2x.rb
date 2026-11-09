@@ -7,9 +7,10 @@ class Gf2x < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/gf2x-1.3.0"
-    sha256 cellar: :any,                 arm64_tahoe:  "696aad4c9c47bd19e8d5982a597fdd732e58e478ad3bf4a85f596ee177824fa7"
-    sha256 cellar: :any,                 sequoia:      "2eb39149190c319efc1d5f073aa70dffe51c797ef1fec0695a51c6171cc832e8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "ad0dbb6ededf80c191d0f38771dbb31b96297ac69248395eec7d15f816e8741a"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "7e05b35b7f2a05de7703663ad5c515fcf7dddfcf51263465f78caa6931744266"
+    sha256 cellar: :any, arm64_linux:  "fc95d5e627fad863023b3d7946325773db25461344dc3ef62eb74cdcfcff7cf7"
+    sha256 cellar: :any, x86_64_linux: "8e8ab5337ae67914b1428895dff52cb40d48064db2869461aa3f0a69c2a07a46"
   end
 
   depends_on "autoconf" => :build
