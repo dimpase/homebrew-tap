@@ -5,6 +5,14 @@ class Iml < Formula
   sha256 "1dad666850895a5709b00b97422e2273f293cfadea7697a9f90b90953e847c2a"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/iml-1.0.5"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:  "01dbcc4f58ac82813e36294dca99bc7f2b2eaa5ad6967e90e7100764ee2f5d50"
+    sha256 cellar: :any, arm64_linux:  "8faad36401a1c0042156f6e61a6412a51e9f57ffb5ce8d851d7226cdc3ac702c"
+    sha256 cellar: :any, x86_64_linux: "2444bd3940b56a25abb7fd306ccf833fd01f38242d1b466d71f2efd5d3cf9ae4"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
