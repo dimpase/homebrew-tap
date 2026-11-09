@@ -7,9 +7,10 @@ class Libbraiding < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/libbraiding-1.3.2"
-    sha256 cellar: :any,                 arm64_tahoe:  "f4cf402e6c3265ec811aa69257b94b5bd564abfa0b42e94bba77664edca8c74e"
-    sha256 cellar: :any,                 sequoia:      "5de11848b89141cd2d64f715da095b00e7fedf735d2adefe4c9d2527cdcb0730"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "da900cf54554e15c85083805819841e5f2912e7f67bda725636d53f9282ab912"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "f9d1ae07cf7756e0265e2976f8c11e98c37807dfaae4e35385db354deba8aafa"
+    sha256 cellar: :any, arm64_linux:  "4eef3fe5ef2ecafa4057cfd342f7f83bf50727999c301a09f58bb8adebf1590f"
+    sha256 cellar: :any, x86_64_linux: "c99a86219d823764e9a0c69cabaa2c1c1467529e6bcd836dce292f2cfceb18d3"
   end
 
   depends_on "autoconf" => :build
