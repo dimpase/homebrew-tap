@@ -28,12 +28,17 @@ class SagemathDoc < Formula
     # Sphinx resolves this below each manual's _static directory.
     ENV["MATHJAX_DIR"] = "mathjax"
 
+    # Preserve errors from the CLI help subprocess in Homebrew's build log.
+    inreplace "src/sage_docbuild/__main__.py",
+              "capture_output=capture)", "stdout=subprocess.PIPE if capture else None)"
+
     system python3, "-c", <<~PYTHON
       import pathlib
+      import sage.all
       import sage.version
       import sphinx
       assert sage.version.version == "#{version}", sage.version.version
-      assert pathlib.Path(sage.version.__file__).resolve().is_relative_to(pathlib.Path("#{runtime_site}").resolve())
+      assert pathlib.Path(sage.all.__file__).resolve().is_relative_to(pathlib.Path("#{runtime_site}").resolve())
       assert pathlib.Path(sphinx.__file__).resolve().is_relative_to(pathlib.Path("#{docdeps}").resolve())
     PYTHON
 
