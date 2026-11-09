@@ -4,14 +4,7 @@ class SagemathDeps < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta6_1"
-    sha256 cellar: :any, arm64_tahoe:  "e2ff54e1b0fe2785838209a944d46406d68462d9552e7ac066d71c87e9e6c3ff"
-    sha256 cellar: :any, arm64_linux:  "e95ec80f9e2537385a362ee94956f089b56d49bf24a65248e5e598e975d5c46f"
-    sha256 cellar: :any, x86_64_linux: "4fc7f3db9a9603700be6e8ca9db978122b147fe8bdc7052d9e69ca74cf8bdb9f"
-  end
+  revision 2
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -86,7 +79,6 @@ class SagemathDeps < Formula
   depends_on "pillow" => :no_linkage
   depends_on "pkgconf"
   depends_on "ppl"
-  depends_on "primecount"
   depends_on "pybind11"
   depends_on "python@3.14"
   depends_on "qhull"
@@ -101,6 +93,7 @@ class SagemathDeps < Formula
     depends_on "dimpase/tap/pillow-python313" => :no_linkage
     depends_on "dimpase/tap/scipy-accelerate"
     depends_on macos: :sonoma
+    depends_on "primecount"
     depends_on "python@3.13"
 
     resource "appnope" do
@@ -111,6 +104,7 @@ class SagemathDeps < Formula
 
   on_linux do
     depends_on "binutils"
+    depends_on "dimpase/tap/primecount-portable"
     depends_on "numpy"
     depends_on "openblas"
     depends_on "patchelf"
@@ -582,7 +576,7 @@ class SagemathDeps < Formula
         import lrcalc
         assert lrcalc.lrcoef([3, 2, 1], [2, 1], [2, 1]) == 2
         from primecountpy import prime_pi
-        assert prime_pi(100) == 25
+        assert prime_pi(1_000_000) == 78498
         import ppl
         x = ppl.Variable(0)
         poly = ppl.C_Polyhedron(ppl.Constraint_System([x >= 0, x <= 1]))

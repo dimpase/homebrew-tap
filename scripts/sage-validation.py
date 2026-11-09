@@ -157,7 +157,7 @@ def check_python(root, artifacts, built=False):
     from primecountpy import prime_pi
 
     assert Pari()(101).isprime()
-    assert prime_pi(100) == 25
+    assert prime_pi(1_000_000) == 78498
     write_json(artifacts / ("python-after-build.json" if built else "python-before-build.json"), {
         "python": sys.version, "prefix": sys.prefix, "sys_path": sys.path,
         "origins": origins,
