@@ -7,8 +7,10 @@ class Libhomfly < Formula
 
   bottle do
     root_url "https://github.com/dimpase/homebrew-tap/releases/download/libhomfly-1.04"
-    sha256 cellar: :any,                 arm64_tahoe:  "5b7cfc49e9afe3aec917afbe8ea6e04a4f7f04c9c4c5dc8e13b175df9d5c5515"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "f2c9fcd14bdd28baa7de2f0a0f0352ef963717aed7a0a8b8a3199898c3193038"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe:  "d43efb40385aa4d17131a8ac98f290b76afd7fc50b8d2f9744a8c64f1e5a6ccf"
+    sha256 cellar: :any, arm64_linux:  "155d88e9ea08d43fd695aa97c7ffbdfbd264d4e8892b5a4f481019b6307a2efe"
+    sha256 cellar: :any, x86_64_linux: "272a7fee0daec8f05ad39245c0dec757eb41972b6f30b663f7d91bdef703a4a1"
   end
 
   depends_on "autoconf" => :build
