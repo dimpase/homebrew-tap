@@ -5,6 +5,13 @@ class PrimecountPortable < Formula
   sha256 "0fcc2083a476708f5cf1728dc8a64be60d8f7ca1dc623039889e67f70da048eb"
   license "BSD-2-Clause"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/primecount-portable-9.0"
+    sha256 cellar: :any, arm64_tahoe:  "a5bc73739ab6ab6d21209a00e1a31ecc33838962481ca01cbe5228b3d8063e7d"
+    sha256 cellar: :any, arm64_linux:  "f51e57256e03e9a7346960effd8727a262e3669eb2403d0163f3c61bd3b0065e"
+    sha256 cellar: :any, x86_64_linux: "35dadb4ec1e2982d831c0d1d1f28de4d381e368d7506003c0bfce99d73100760"
+  end
+
   keg_only "to use Sage's portable primesieve without replacing Homebrew core"
 
   depends_on "cmake" => :build
