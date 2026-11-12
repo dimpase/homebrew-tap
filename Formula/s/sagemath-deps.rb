@@ -4,14 +4,7 @@ class SagemathDeps < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-  revision 2
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta6_2"
-    sha256 cellar: :any, arm64_tahoe:  "ed0a760cdd9d0b96cbf91cd308c547687abde5b7a01e39762116b4f9ad5d112e"
-    sha256 cellar: :any, arm64_linux:  "3ec342aff2a4d46c1bd789edb27e83f5e803c98e2092f97fe781aa43c35db97f"
-    sha256 cellar: :any, x86_64_linux: "77ac7fc0adc609eb0bb03b55f0ab2e1170030a54dc66f6769ec7058e099f57dd"
-  end
+  revision 3
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -455,6 +448,12 @@ class SagemathDeps < Formula
   def write_python_paths(python_version, site_packages)
     private_site = opt_libexec/"python#{python_version}"/site_packages
     global_site = HOMEBREW_PREFIX/site_packages
+    # Meson's dedicated site is pure Python but may use another Python minor.
+    # Resolve its opt prefix at startup so Meson upgrades keep working, while
+    # packages installed in the development venv retain precedence.
+    (libexec/"python#{python_version}"/site_packages/"homebrew-meson.pth").write <<~EOS
+      import glob, sys; sys.path.extend(p for p in glob.glob('#{formula_opt_prefix("meson")}/lib/python*/site-packages') if p not in sys.path)
+    EOS
     # Prefer these resources to Homebrew's other Python packages, while allowing
     # a development venv to override them with its own installed packages.
     # Linux Python also supplies packages (including wheel) in its own keg.
@@ -568,6 +567,28 @@ class SagemathDeps < Formula
             assert pathlib.Path(dist.locate_file("")).resolve() == root, (name, dist.locate_file(""))
         assert not list(root.glob("sagemath-[0-9]*.dist-info")), "sagelib must be installed separately"
         import Cython, mesonpy, memory_allocator, jinja2, packaging
+        import mesonbuild.coredata
+        import subprocess
+        from packaging.requirements import Requirement
+        from packaging.specifiers import SpecifierSet
+
+        # Use the real, compatible Meson bottle, including its metadata.
+        meson = importlib.metadata.distribution("meson")
+        meson_root = pathlib.Path("#{formula_opt_prefix("meson")}").resolve()
+        meson_site = pathlib.Path(meson.locate_file("")).resolve()
+        assert meson_site.is_relative_to(meson_root)
+        assert list((meson_root / "lib").glob("python*/site-packages")) == [meson_site]
+        assert pathlib.Path(mesonbuild.coredata.__file__).resolve().parent.parent == meson_site
+        meson_cli_version = subprocess.check_output([str(meson_root / "bin/meson"), "--version"], text=True).strip()
+        assert meson.version == mesonbuild.coredata.version == meson_cli_version
+        assert meson.metadata["Requires-Python"]
+        assert SpecifierSet(meson.metadata["Requires-Python"]).contains(".".join(map(str, sys.version_info[:3])))
+        assert "Root-Is-Purelib: true" in meson.read_text("WHEEL")
+        assert {p.name for p in meson_site.iterdir()} == {"mesonbuild", f"meson-{meson.version}.dist-info"}
+        for raw in importlib.metadata.requires("meson-python"):
+            requirement = Requirement(raw)
+            if requirement.name == "meson" and (requirement.marker is None or requirement.marker.evaluate()):
+                assert requirement.specifier.contains(meson.version)
         import cysignals, gmpy2, numpy, scipy, matplotlib, PIL, ipykernel, ipywidgets
         import networkx, requests
         import elliptic_curve_databases, graph_databases, polytope_databases
@@ -627,6 +648,8 @@ class SagemathDeps < Formula
       # Packages deliberately installed in the venv must override the baseline.
       (venv/site_packages/"sympy.py").write "VENV_OVERRIDE = True\n"
       system venv/"bin/python", "-c", "import sympy; assert sympy.VENV_OVERRIDE"
+      (venv/site_packages/"mesonbuild.py").write "VENV_OVERRIDE = True\n"
+      system venv/"bin/python", "-c", "import mesonbuild; assert mesonbuild.VENV_OVERRIDE"
     end
   end
 end
