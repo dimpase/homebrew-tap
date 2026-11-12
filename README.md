@@ -30,6 +30,16 @@ corresponding core formulae. If Homebrew reports a conflict, use `brew unlink nu
 or `brew unlink scipy` for the named core formula, then retry the Sage installation.
 Unlinking leaves the core package installed in the Cellar.
 
+If an installation or upgrade reports `gmp-ecm is already installed from homebrew/core`,
+replace that core keg with the tap's bottled formula, then retry the original install:
+
+```sh
+brew reinstall --force-bottle dimpase/tap/gmp-ecm
+brew link dimpase/tap/gmp-ecm
+```
+
+The link command restores links removed by a previous failed dependency upgrade.
+
 `sagemath-deps` provides the native libraries, Python dependencies, data packages
 and build tools needed to build sagelib separately. To install these dependencies:
 
@@ -85,9 +95,10 @@ bottle releases.
 
 ### SageMath and Python packages
 
-* [sagemath](Formula/s/sagemath.rb) [11.0.beta1_2](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-11.0.beta1_2) — Sagelib, the Sage command and Jupyter kernel.
-* [sagemath-deps](Formula/s/sagemath-deps.rb) [11.0.beta1](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-deps-11.0.beta1) — Native and Python dependencies for Sage and development venvs.
-* [sagemath-docbuild-deps](Formula/s/sagemath-docbuild-deps.rb) — Additional dependencies for building Sage HTML documentation, including themes and offline MathJax.
+* [sagemath](Formula/s/sagemath.rb) [11.0.beta6_2](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-11.0.beta6_2) — Sagelib, the Sage command and Jupyter kernel.
+* [sagemath-deps](Formula/s/sagemath-deps.rb) [11.0.beta6_3](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-deps-11.0.beta6_3) — Native and Python dependencies for Sage and development venvs.
+* [sagemath-docbuild-deps](Formula/s/sagemath-docbuild-deps.rb) [11.0.beta6_1](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-docbuild-deps-11.0.beta6_1) — Additional dependencies for building Sage HTML documentation, including themes and offline MathJax.
+* [sagemath-doc](Formula/s/sagemath-doc.rb) [11.0.beta6](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-doc-11.0.beta6) — Prebuilt Sage HTML documentation.
 * [cvxopt](Formula/c/cvxopt.rb) [1.3.3](https://github.com/dimpase/homebrew-tap/releases/tag/cvxopt-1.3.3) — Convex optimization.
 * [cypari2](Formula/c/cypari2.rb) [2.2.6](https://github.com/dimpase/homebrew-tap/releases/tag/cypari2-2.2.6) — Python interface to PARI/GP.
 * [cysignals](Formula/c/cysignals.rb) [1.13.1](https://github.com/dimpase/homebrew-tap/releases/tag/cysignals-1.13.1) — Signal handling for Cython.
@@ -114,7 +125,7 @@ bottle releases.
 * [coxeter3](Formula/c/coxeter3.rb) [3.1](https://github.com/dimpase/homebrew-tap/releases/tag/coxeter3-3.1) — Coxeter groups.
 * [eclib](Formula/e/eclib.rb) [20250627_2](https://github.com/dimpase/homebrew-tap/releases/tag/eclib-20250627_2) — Elliptic curves over Q; mwrank/libec.
 * [gf2x](Formula/g/gf2x.rb) [1.3.0](https://github.com/dimpase/homebrew-tap/releases/tag/gf2x-1.3.0) — Polynomial arithmetic over GF(2).
-* [gmp-ecm](Formula/e/gmp-ecm.rb) [7.0.7](https://github.com/dimpase/homebrew-tap/releases/tag/gmp-ecm-7.0.7) — Elliptic curve factorization, with OpenMP.
+* [gmp-ecm](Formula/e/gmp-ecm.rb) [7.0.7_1](https://github.com/dimpase/homebrew-tap/releases/tag/gmp-ecm-7.0.7_1) — Elliptic curve factorization, with OpenMP.
 * [iml](Formula/i/iml.rb) [1.0.5](https://github.com/dimpase/homebrew-tap/releases/tag/iml-1.0.5) — Exact integer linear algebra.
 * [kenzo](Formula/k/kenzo.rb) [1.1.10](https://github.com/dimpase/homebrew-tap/releases/tag/kenzo-1.1.10) — Topology and homology, as an ECL module.
 * [lcalc](Formula/l/lcalc.rb) [2.2.2_1](https://github.com/dimpase/homebrew-tap/releases/tag/lcalc-2.2.2_1) — L-functions.
