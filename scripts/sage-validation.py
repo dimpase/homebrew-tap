@@ -26,7 +26,7 @@ FEATURES = (
 )
 # Check distutils before another import can activate setuptools' import hook.
 MODULES = (
-    "distutils", "Cython", "mesonpy", "memory_allocator", "jinja2", "packaging",
+    "distutils", "Cython", "mesonpy", "mesonbuild.coredata", "memory_allocator", "jinja2", "packaging",
     "cysignals", "cypari2", "gmpy2", "numpy", "scipy", "matplotlib", "PIL",
     "ppl", "cvxopt", "fpylll", "lrcalc", "primecountpy", "sympy",
     "networkx", "IPython", "ipykernel", "ipywidgets",
@@ -64,6 +64,13 @@ def prepare(root, artifacts):
     assert not venv.exists(), "Validation requires a fresh environment"
     subprocess.run([uv, "venv", "--no-project", "--no-config", "--offline",
                     "--python", sys.executable, str(venv)], check=True)
+    # Seed pip offline from the bottled Python's bundled wheel. Its check runs
+    # inside Python and sees the private sites exposed by executable .pth hooks.
+    # uv's static package inventory does not follow those hooks.
+    seeded = subprocess.run([str(venv / "bin/python"), "-I", "-B", "-m", "ensurepip", "--default-pip"],
+                            check=False, text=True, capture_output=True)
+    (artifacts / "ensurepip.log").write_text(seeded.stdout + seeded.stderr)
+    seeded.check_returncode()
 
     sites = []
     relative = Path("lib/python3.14/site-packages")
@@ -75,7 +82,7 @@ def prepare(root, artifacts):
         # Homebrew's sitecustomize redirects the interpreter's bundled
         # pip/wheel site to the global site, exposing unrelated installations.
         # uv and the bottled build backend do not need that interpreter site.
-        if keg == python_keg:
+        if keg == python_keg or row["name"] == "meson":
             continue
         for path in [keg / "libexec/python3.14" / relative,
                      keg / relative, keg / "libexec" / relative]:
@@ -86,10 +93,32 @@ def prepare(root, artifacts):
             assert not (path / "sage").exists(), f"Old Sage in {path}"
             if not any(entry["path"] == str(path) for entry in sites):
                 sites.append({"path": str(path), "formula": row["name"], "keg": str(keg)})
+    # Meson's dedicated pure-Python site can use a different Python minor.
+    # Audit only that bottle's site; the sagemath-deps private .pth must expose
+    # it itself, without processing any .pth files inside the Meson bottle.
+    meson = by_name["meson"]
+    meson_keg = Path(meson["keg"]).resolve(strict=True)
+    assert meson["receipt"]["source"]["tap"] == "homebrew/core", meson
+    meson_sites = list((meson_keg / "lib").glob("python*/site-packages"))
+    assert len(meson_sites) == 1, meson_sites
+    meson_site = meson_sites[0].resolve(strict=True)
+    assert meson_site.is_relative_to(meson_keg)
+    metadata_dirs = list(meson_site.glob("meson-*.dist-info"))
+    assert len(metadata_dirs) == 1, metadata_dirs
+    assert metadata_dirs[0].resolve(strict=True).is_relative_to(meson_keg)
+    assert (meson_site / "mesonbuild").resolve(strict=True).is_relative_to(meson_keg)
+    assert {p.name for p in meson_site.iterdir()} == {"mesonbuild", metadata_dirs[0].name}
+    dist = importlib.metadata.Distribution.at(metadata_dirs[0])
+    assert dist.metadata["Name"] == "meson"
+    assert "Root-Is-Purelib: true" in dist.read_text("WHEEL")
+    assert "Tag: py3-none-any" in dist.read_text("WHEEL")
+    sites.append({"path": str(meson_site), "formula": "meson", "keg": str(meson_keg),
+                  "append_only": True})
     # Process each private site's .pth files, including setuptools' distutils
     # import hook, just as Python does for an ordinary installed site directory.
     (venv / relative / "bottled-sage-dependencies.pth").write_text(
-        "".join(f"import site; site.addsitedir({entry['path']!r})\n" for entry in sites))
+        "".join(f"import site; site.addsitedir({entry['path']!r})\n"
+                for entry in sites if not entry.get("append_only")))
     write_json(artifacts / "python-sites.json", sites)
     subprocess.run([str(venv / "bin/python"), "-I", __file__, "check-before-build"], check=True)
 
@@ -128,6 +157,18 @@ def check_python(root, artifacts, built=False):
         path = Path(module.__file__).resolve()
         assert any(path.is_relative_to(site) for site in allowed), (name, path)
         origins[name] = str(path)
+    meson = importlib.metadata.distribution("meson")
+    meson_site = next(Path(entry["path"]).resolve() for entry in sites if entry["formula"] == "meson")
+    assert Path(meson.locate_file("")).resolve() == meson_site
+    assert Path(origins["mesonbuild.coredata"]).parent.parent == meson_site
+    from mesonbuild import coredata
+    from packaging.specifiers import SpecifierSet
+
+    assert meson.version == coredata.version
+    assert SpecifierSet(meson.metadata["Requires-Python"]).contains(".".join(map(str, sys.version_info[:3])))
+    meson_keg = next(Path(entry["keg"]) for entry in sites if entry["formula"] == "meson")
+    meson_cli = subprocess.check_output([str(meson_keg / "bin/meson"), "--version"], text=True).strip()
+    assert meson_cli == meson.version
     if built:
         import sage.all
         import sage.version
@@ -164,6 +205,13 @@ def check_python(root, artifacts, built=False):
         "distributions": sorted((d.metadata["Name"], d.version, str(d.locate_file("")))
                                 for d in importlib.metadata.distributions()),
     })
+    pip = importlib.metadata.distribution("pip")
+    assert Path(pip.locate_file("")).resolve().is_relative_to(venv)
+    result = subprocess.run([sys.executable, "-I", "-B", "-m", "pip", "check"],
+                            check=False, text=True, capture_output=True)
+    suffix = "after" if built else "before"
+    (artifacts / f"pip-check-{suffix}.log").write_text(result.stdout + result.stderr)
+    result.check_returncode()
     print("Python and native-feature provenance checks passed" if built else "Isolated bottle imports passed")
 
 
