@@ -71,7 +71,7 @@ jobs:
           elif [[ "$SKIP_DEPENDENTS" == true ]]; then
             brew test-bot --only-formulae --skip-dependents
           else
-            brew test-bot --only-formulae
+            brew test-bot --only-formulae --verbose
           fi
         shell: bash
         env:
