@@ -5,6 +5,13 @@ class SagemathDoc < Formula
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-doc-11.0.beta6"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "5c51a2eb5c54095488d25bab1a4f83f745ae889121fa03c39fadfd35183ce606"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "d92c3ce5581dd32b96087c0a40776ec51c9a1bfc544cf780fb52becb3cb655d1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "1dd4aeaee2c7a05cb94ea506317e90359fd6d3cb7957980bc7a776d2fec69d2d"
+  end
+
   depends_on "dimpase/tap/sagemath-docbuild-deps" => :build
   depends_on "python@3.14" => :build
   depends_on "dimpase/tap/sagemath"
