@@ -18,8 +18,8 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 VERSION = "11.0.beta6"
-COMMIT = "026e931e47064f0a7fc095580119365518bfe7c0"
-ARCHIVE_SHA256 = "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
+COMMIT = "0fb03f8fab7ec91f3db5fefbc56f5d758cde072b"
+ARCHIVE_SHA256 = "e8bcfaf1d165dac986a38deb695c39d326094d01a05e5dca5e27fcd70a05efc4"
 FEATURES = (
     "bliss", "brial", "coxeter3", "eclib", "libbraiding", "libhomfly",
     "mcqd", "meataxe", "rankwidth", "sirocco", "tdlib",
@@ -123,7 +123,7 @@ def prepare(root, artifacts):
     subprocess.run([str(venv / "bin/python"), "-I", __file__, "check-before-build"], check=True)
 
     archive = root / f"sage-{VERSION}.tar.gz"
-    url = f"https://github.com/sagemath/sage/archive/refs/tags/{VERSION}.tar.gz"
+    url = f"https://github.com/dimpase/sage/archive/{COMMIT}.tar.gz"
     with urllib.request.urlopen(url) as response, archive.open("wb") as output:
         shutil.copyfileobj(response, output)
     with archive.open("rb") as archive_file:
@@ -133,6 +133,7 @@ def prepare(root, artifacts):
     assert not source.exists(), "Validation requires fresh source"
     with tarfile.open(archive) as bundle:
         bundle.extractall(root, filter="data")
+    (root / f"sage-{COMMIT}").rename(source)
     assert (source / "VERSION.txt").read_text().strip() == VERSION
     write_json(artifacts / "source.json", {
         "version": VERSION, "tag_commit": COMMIT, "archive_url": url, "sha256": digest,
