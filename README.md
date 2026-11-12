@@ -96,7 +96,7 @@ bottle releases.
 ### SageMath and Python packages
 
 * [sagemath](Formula/s/sagemath.rb) [11.0.beta6_2](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-11.0.beta6_2) — Sagelib, the Sage command and Jupyter kernel.
-* [sagemath-deps](Formula/s/sagemath-deps.rb) [11.0.beta6_2](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-deps-11.0.beta6_2) — Native and Python dependencies for Sage and development venvs.
+* [sagemath-deps](Formula/s/sagemath-deps.rb) [11.0.beta6_3](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-deps-11.0.beta6_3) — Native and Python dependencies for Sage and development venvs.
 * [sagemath-docbuild-deps](Formula/s/sagemath-docbuild-deps.rb) [11.0.beta6_1](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-docbuild-deps-11.0.beta6_1) — Additional dependencies for building Sage HTML documentation, including themes and offline MathJax.
 * [sagemath-doc](Formula/s/sagemath-doc.rb) [11.0.beta6](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-doc-11.0.beta6) — Prebuilt Sage HTML documentation.
 * [cvxopt](Formula/c/cvxopt.rb) [1.3.3](https://github.com/dimpase/homebrew-tap/releases/tag/cvxopt-1.3.3) — Convex optimization.
