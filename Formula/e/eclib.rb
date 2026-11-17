@@ -6,6 +6,13 @@ class Eclib < Formula
   license "GPL-2.0-or-later"
   revision 3
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/eclib-20250627_3"
+    sha256 cellar: :any, arm64_tahoe:  "e0412e7d7fdcd528aa7d66a96a084881279ca3bd3647377b23612b0ba3c0c0d6"
+    sha256 cellar: :any, arm64_linux:  "0cf1fd6690e881e55fdacb12bdf77b41c33e6b4cf3f3037134b8193d71c11595"
+    sha256 cellar: :any, x86_64_linux: "b869eade8eea4435806b4aa7d24d015bed0111e00898cbc5b74230446c433204"
+  end
+
   depends_on "libtool" => :build
   depends_on "flint"
   depends_on "gf2x"
