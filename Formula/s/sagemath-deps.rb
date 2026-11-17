@@ -38,7 +38,6 @@ class SagemathDeps < Formula
   depends_on "dimpase/tap/maxima-ecl"
   depends_on "dimpase/tap/mcqd"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
   depends_on "dimpase/tap/pari-elldata"
   depends_on "dimpase/tap/pari-galdata"
   depends_on "dimpase/tap/pari-galpol"
@@ -83,6 +82,7 @@ class SagemathDeps < Formula
   depends_on "nauty"
   depends_on "ninja"
   depends_on "ntl"
+  depends_on "pari"
   depends_on "pillow" => :no_linkage
   depends_on "pkgconf"
   depends_on "ppl"
