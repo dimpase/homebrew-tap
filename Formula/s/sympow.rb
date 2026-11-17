@@ -14,7 +14,7 @@ class Sympow < Formula
   end
 
   depends_on "help2man" => :build
-  depends_on "dimpase/tap/pari"
+  depends_on "pari"
 
   patch :DATA
 
