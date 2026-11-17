@@ -39,11 +39,6 @@ class SagemathDeps < Formula
   depends_on "dimpase/tap/maxima-ecl"
   depends_on "dimpase/tap/mcqd"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
-  depends_on "dimpase/tap/pari-elldata"
-  depends_on "dimpase/tap/pari-galdata"
-  depends_on "dimpase/tap/pari-galpol"
-  depends_on "dimpase/tap/pari-seadata"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/pplpy"
   depends_on "dimpase/tap/rw"
@@ -83,6 +78,11 @@ class SagemathDeps < Formula
   depends_on "nauty"
   depends_on "ninja"
   depends_on "ntl"
+  depends_on "pari"
+  depends_on "pari-elldata"
+  depends_on "pari-galdata"
+  depends_on "pari-galpol"
+  depends_on "pari-seadata"
   depends_on "pillow" => :no_linkage
   depends_on "pkgconf"
   depends_on "ppl"
@@ -424,7 +424,7 @@ class SagemathDeps < Formula
     ENV["FREETYPE_DIR"] = formula_opt_prefix("freetype")
     ENV["QHULL_DIR"] = formula_opt_prefix("qhull")
     ENV["ZMQ_PREFIX"] = formula_opt_prefix("zeromq")
-    ENV["PARI_DIR"] = formula_opt_prefix("dimpase/tap/pari")
+    ENV["PARI_DIR"] = formula_opt_prefix("pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
     pythons.each do |python3|
@@ -490,7 +490,7 @@ class SagemathDeps < Formula
         script += "export #{name}=\"#{venv}#{entries.join(":")}${#{name}:+:$#{name}}\"\n"
       end
       script += <<~SH
-        export PARI_DIR="#{formula_opt_prefix("dimpase/tap/pari")}"
+        export PARI_DIR="#{formula_opt_prefix("pari")}"
         export BOOST_ROOT="#{formula_opt_prefix("boost")}"
         export MTXLIB="#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
         export SAGE_SHARE="${SAGE_SHARE-#{HOMEBREW_PREFIX}/share}"

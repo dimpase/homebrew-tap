@@ -34,7 +34,6 @@ class Sagemath < Formula
   depends_on "dimpase/tap/libbraiding"
   depends_on "dimpase/tap/libhomfly"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sagemath-deps"
@@ -58,6 +57,7 @@ class Sagemath < Formula
   depends_on "mpfi"
   depends_on "mpfr"
   depends_on "ntl"
+  depends_on "pari"
   depends_on "python@3.14"
   depends_on "singular"
 
@@ -94,7 +94,7 @@ class Sagemath < Formula
       ENV.append "CFLAGS", "-B#{formula_opt_bin("binutils")}/"
       ENV.append "CXXFLAGS", "-B#{formula_opt_bin("binutils")}/"
     end
-    ENV["PARI_DIR"] = formula_opt_prefix("dimpase/tap/pari")
+    ENV["PARI_DIR"] = formula_opt_prefix("pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
     setup_args = ["-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]

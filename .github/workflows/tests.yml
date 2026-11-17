@@ -58,9 +58,6 @@ jobs:
         if: runner.os == 'macOS'
         run: brew tap --force homebrew/core
 
-      - name: Install patched PARI
-        run: brew install dimpase/tap/pari
-
       - run: brew test-bot --only-tap-syntax
       # Publish dependency migrations before rebuilding Sage with their bottles.
       - run: |
