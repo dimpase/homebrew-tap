@@ -4,17 +4,10 @@ class Sympow < Formula
   url "https://gitlab.com/rezozer/forks/sympow/-/archive/v2.023.7/sympow-v2.023.7.tar.bz2"
   sha256 "47990ce571ab4f6dabf4b64344bc7df77cf39a3c94f2d36323e43b79800f90b5"
   license "BSD-3-clause"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sympow-2.023.7_1"
-    sha256 arm64_tahoe:  "ef9fb369dcdc788d4567cc2ec92ca59797e68340e39cb4517c662e4e924e39b8"
-    sha256 arm64_linux:  "728d5fc263c5a3877a025eb0534eb45532d986784715fd250126c580cae39ec1"
-    sha256 x86_64_linux: "81bfde147958dbdc2a04f983fc0d0a61d989bf79a5f328a3c0bb39dbc8cf6d01"
-  end
+  revision 2
 
   depends_on "help2man" => :build
-  depends_on "dimpase/tap/pari"
+  depends_on "pari"
 
   patch :DATA
 

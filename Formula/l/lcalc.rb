@@ -4,20 +4,13 @@ class Lcalc < Formula
   url "https://gitlab.com/-/project/12934202/uploads/79611ba9b2a4ca214df935f43978e2de/lcalc-2.2.2.tar.xz"
   sha256 "27a58d6862ccc2bed3dd487dc7284f6a688bc37639980e085baf1675a1f83980"
   license "GPL-2.0-only"
-  revision 1
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/lcalc-2.2.2_1"
-    sha256 cellar: :any, arm64_tahoe:  "82522f10feda34f861ecf785d8d2c8efdbf607815397159fafb53a970397caf0"
-    sha256 cellar: :any, arm64_linux:  "d5cebdadbca546200099aa0f492f8bdad1235a5e766cb72986703b5559131172"
-    sha256 cellar: :any, x86_64_linux: "34a39969a3d094c9def773de57afcf7b95c35ba405c6c8c1f04b5919181c43f9"
-  end
+  revision 2
 
   depends_on "gengetopt" => :build
   depends_on "libtool" => :build
-  depends_on "dimpase/tap/pari"
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
+  depends_on "pari"
 
   def install
     system "./configure", "--enable-openmp", "--enable-precision=double", "--with-pari",
