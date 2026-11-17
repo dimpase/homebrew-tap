@@ -4,14 +4,7 @@ class Sagemath < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-  revision 2
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-11.0.beta6_2"
-    sha256 cellar: :any, arm64_tahoe:  "2aadc0493d20e205b7342530a6a7b7c4011449959c12f5362575ab3a8a570f63"
-    sha256               arm64_linux:  "65dafbef31efc1a6090e9a606b26ebc1161ee817cddbcaea754da0314c7615de"
-    sha256               x86_64_linux: "c145df0d3d963caf04cfe895c3d7e8777fffb2fefaddbc7f75d4c4f65f817376"
-  end
+  revision 3
 
   depends_on "cmake" => :build
   depends_on "meson" => :build
@@ -34,7 +27,6 @@ class Sagemath < Formula
   depends_on "dimpase/tap/libbraiding"
   depends_on "dimpase/tap/libhomfly"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sagemath-deps"
@@ -58,6 +50,7 @@ class Sagemath < Formula
   depends_on "mpfi"
   depends_on "mpfr"
   depends_on "ntl"
+  depends_on "pari"
   depends_on "python@3.14"
   depends_on "singular"
 
@@ -94,7 +87,7 @@ class Sagemath < Formula
       ENV.append "CFLAGS", "-B#{formula_opt_bin("binutils")}/"
       ENV.append "CXXFLAGS", "-B#{formula_opt_bin("binutils")}/"
     end
-    ENV["PARI_DIR"] = formula_opt_prefix("dimpase/tap/pari")
+    ENV["PARI_DIR"] = formula_opt_prefix("pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
     setup_args = ["-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]
