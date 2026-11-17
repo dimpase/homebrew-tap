@@ -58,11 +58,7 @@ jobs:
         if: runner.os == 'macOS'
         run: brew tap --force homebrew/core
 
-      # Restore the default style check when sagemath-deps is rebuilt.
-      - run: |
-          brew test-bot --only-tap-syntax --stable
-          brew style --except-cops=FormulaAuditStrict,Homebrew/SingleUseMethod dimpase/tap
-          brew audit --except=installed --tap=dimpase/tap
+      - run: brew test-bot --only-tap-syntax
       # Publish dependency migrations before rebuilding Sage with their bottles.
       - run: |
           if [[ "$DEPS_ONLY" == true ]]; then
@@ -77,7 +73,7 @@ jobs:
         shell: bash
         env:
           DEPS_ONLY: ${{ github.head_ref == 'feat/sagemath-deps' }}
-          SKIP_DEPENDENTS: ${{ github.head_ref == 'small' || github.head_ref == 'cyparifix' || github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' || github.head_ref == 'fix/sagemath-cvxopt' || github.head_ref == 'fix/pari-darwin-signal-mask' || github.head_ref == 'fix/pplpy-shared-libraries' || github.head_ref == 'fix/brial-core-m4ri' || github.head_ref == 'fix/maxima-optional-plotting' }}
+          SKIP_DEPENDENTS: ${{ github.head_ref == 'cyparifix' || github.head_ref == 'fix/pari-consumer-dependencies' || github.head_ref == 'fix/pillow-python313' || github.head_ref == 'fix/sagemath-cvxopt' || github.head_ref == 'fix/pari-darwin-signal-mask' || github.head_ref == 'fix/pplpy-shared-libraries' || github.head_ref == 'fix/brial-core-m4ri' || github.head_ref == 'fix/maxima-optional-plotting' }}
         if: github.event_name == 'pull_request'
 
       # test-bot skips formulae whose dependencies have no compatible bottles.
