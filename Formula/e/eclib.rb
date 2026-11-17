@@ -14,12 +14,12 @@ class Eclib < Formula
   end
 
   depends_on "libtool" => :build
-  depends_on "dimpase/tap/pari"
   depends_on "flint"
   depends_on "gf2x"
   depends_on "gmp"
   depends_on "mpfr"
   depends_on "ntl"
+  depends_on "pari"
   depends_on "pkgconf"
 
   def install
