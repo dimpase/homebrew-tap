@@ -6,16 +6,10 @@ class Cypari2 < Formula
   version "2.2.6"
   sha256 "cffe0c4c54f3b1cd97cceb8f91bb6c3ac2afe5a872193d40cdbc9a0f318ea91e"
   license "GPL-2.0-or-later"
+  revision 1
 
   livecheck do
     skip "Pinned unreleased snapshot for PARI 2.19 compatibility"
-  end
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cypari2-2.2.6"
-    sha256 cellar: :any, arm64_tahoe:  "7662bc67498aa0dc87b297f6bb5f6949b141d4def542aed29616d94184433946"
-    sha256 cellar: :any, arm64_linux:  "d1718d2715d53237cac32e5cfcb17f6decbedf4c3f3a7b1d7672b28941267976"
-    sha256 cellar: :any, x86_64_linux: "42119e30548b2f7a8eaf16ed0f35a6ce89f8af680dc9b258e4bd7de80daefc08"
   end
 
   depends_on "meson" => :build
@@ -24,8 +18,8 @@ class Cypari2 < Formula
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "dimpase/tap/cysignals"
-  depends_on "dimpase/tap/pari"
   depends_on "gmp"
+  depends_on "pari"
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/0d/6d/b4752b044bf94cb802d88a888dc7d288baaf77d7910b7dedda74b5ceea0c/setuptools-79.0.1-py3-none-any.whl", using: :nounzip
@@ -80,8 +74,10 @@ class Cypari2 < Formula
           end
         end
       end
+      # PARI 2.19.1 headers use POSIX sigjmp_buf.
       system python3, "-m", "pip", "install", *std_pip_args,
-             "-Csetup-args=-Dpari_prefix=#{formula_opt_prefix("dimpase/tap/pari")}",
+             "-Csetup-args=-Dc_std=gnu17",
+             "-Csetup-args=-Dpari_prefix=#{formula_opt_prefix("pari")}",
              "-Ccompile-args=-j#{ENV.make_jobs}",
              "."
     end
