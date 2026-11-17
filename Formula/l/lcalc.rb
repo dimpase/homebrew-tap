@@ -15,9 +15,9 @@ class Lcalc < Formula
 
   depends_on "gengetopt" => :build
   depends_on "libtool" => :build
-  depends_on "dimpase/tap/pari"
   depends_on "libomp" if OS.mac?
   depends_on "libpng"
+  depends_on "pari"
 
   def install
     system "./configure", "--enable-openmp", "--enable-precision=double", "--with-pari",
