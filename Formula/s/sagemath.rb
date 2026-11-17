@@ -33,7 +33,6 @@ class Sagemath < Formula
   depends_on "dimpase/tap/libbraiding"
   depends_on "dimpase/tap/libhomfly"
   depends_on "dimpase/tap/meataxe"
-  depends_on "dimpase/tap/pari"
   depends_on "dimpase/tap/planarity"
   depends_on "dimpase/tap/rw"
   depends_on "dimpase/tap/sagemath-deps"
@@ -58,6 +57,7 @@ class Sagemath < Formula
   depends_on "mpfi"
   depends_on "mpfr"
   depends_on "ntl"
+  depends_on "pari"
   depends_on "python@3.14"
   depends_on "singular"
 
