@@ -6,6 +6,13 @@ class Lcalc < Formula
   license "GPL-2.0-only"
   revision 2
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/lcalc-2.2.2_2"
+    sha256 cellar: :any, arm64_tahoe:  "3385c573a977690495d6646adb204a74c66346269a4e2ed7e41c1fd91946e492"
+    sha256 cellar: :any, arm64_linux:  "2465ff7cc9232e93ca9103e29b7badae2518a0f5f6dca36a141167f576278fd2"
+    sha256 cellar: :any, x86_64_linux: "856ce7a31d4cebc54daec4bdf683de9643dc1142117824c9136b51b7754bfc24"
+  end
+
   depends_on "gengetopt" => :build
   depends_on "libtool" => :build
   depends_on "libomp" if OS.mac?
