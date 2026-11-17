@@ -415,75 +415,6 @@ class SagemathDeps < Formula
         .map { |f| (f.opt_libexec/"bin/python").to_s }
   end
 
-  def write_development_environment(python_version)
-    # A pip build outside Homebrew does not get superenv's native search paths.
-    native_prefixes = deps.reject { |d| d.name.start_with?("python@") }
-                          .map { |d| formula_opt_prefix(d.name) }
-    paths = {
-      "PATH"              => native_prefixes.map { |p| p/"bin" },
-      "CPATH"             => native_prefixes.map { |p| p/"include" },
-      "LIBRARY_PATH"      => native_prefixes.map { |p| p/"lib" },
-      "PKG_CONFIG_PATH"   => native_prefixes.flat_map { |p| [p/"lib/pkgconfig", p/"share/pkgconfig"] },
-      "CMAKE_PREFIX_PATH" => native_prefixes,
-    }
-    paths.transform_values! { |entries| entries.select(&:directory?) }
-    paths["PATH"].unshift(opt_libexec/"python#{python_version}/bin")
-    script = "# Source after activating a Homebrew Python #{python_version} virtual environment.\n"
-    paths.each do |name, entries|
-      # Keep packages installed in the development venv ahead of bundled tools.
-      venv = (name == "PATH") ? "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin:}" : ""
-      script += "export #{name}=\"#{venv}#{entries.join(":")}${#{name}:+:$#{name}}\"\n"
-    end
-    script += <<~SH
-      export PARI_DIR="#{formula_opt_prefix("dimpase/tap/pari")}"
-      export BOOST_ROOT="#{formula_opt_prefix("boost")}"
-      export MTXLIB="#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
-      export SAGE_SHARE="${SAGE_SHARE-#{HOMEBREW_PREFIX}/share}"
-    SH
-    if OS.linux?
-      gcc = deps.find { |d| d.name == "gcc" }.to_formula
-      script += <<~SH
-        export CC="${CC:-#{gcc.opt_bin}/gcc-#{gcc.version.major}}"
-        export CXX="${CXX:-#{gcc.opt_bin}/g++-#{gcc.version.major}}"
-        export CFLAGS="-B#{formula_opt_bin("binutils")}/${CFLAGS:+ $CFLAGS}"
-        export CXXFLAGS="-B#{formula_opt_bin("binutils")}/${CXXFLAGS:+ $CXXFLAGS}"
-      SH
-    end
-    (pkgshare/"python#{python_version}-env.sh").write script
-  end
-
-  def write_python_paths(python_version, site_packages)
-    private_site = opt_libexec/"python#{python_version}"/site_packages
-    global_site = HOMEBREW_PREFIX/site_packages
-    # Meson's dedicated site is pure Python but may use another Python minor.
-    # Resolve its opt prefix at startup so Meson upgrades keep working, while
-    # packages installed in the development venv retain precedence.
-    (libexec/"python#{python_version}"/site_packages/"homebrew-meson.pth").write <<~EOS
-      import glob, sys; sys.path.extend(p for p in glob.glob('#{formula_opt_prefix("meson")}/lib/python*/site-packages') if p not in sys.path)
-    EOS
-    # Prefer these resources to Homebrew's other Python packages, while allowing
-    # a development venv to override them with its own installed packages.
-    # Linux Python also supplies packages (including wheel) in its own keg.
-    (prefix/site_packages/"sagemath-deps.pth").write <<~EOS
-      import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
-    EOS
-  end
-
-  def link_datasets(python_version, site_packages)
-    # Sage 11.0.beta6 searches filesystem data directories. Expose the PyPI
-    # payloads without patching Sage to import unreleased dataset features.
-    private_site = libexec/"python#{python_version}"/site_packages
-    data_root = pkgshare/"python#{python_version}-data"
-    {
-      "cremona"             => "elliptic_curve_databases/data/cremona",
-      "ellcurves"           => "elliptic_curve_databases/data/ellcurves",
-      "graphs"              => "graph_databases/data",
-      "reflexive_polytopes" => "polytope_databases/data",
-    }.each do |name, directory|
-      data_root.install_symlink private_site/directory => name
-    end
-  end
-
   def install
     if OS.linux?
       # Select the assembler that understands Homebrew GCC's ARM64 directives.
@@ -514,9 +445,66 @@ class SagemathDeps < Formula
         end
       end
 
-      write_python_paths(python_version, site_packages)
-      link_datasets(python_version, site_packages)
-      write_development_environment(python_version)
+      private_site = opt_libexec/"python#{python_version}"/site_packages
+      global_site = HOMEBREW_PREFIX/site_packages
+      # Meson's dedicated site is pure Python but may use another Python minor.
+      # Resolve its opt prefix at startup so Meson upgrades keep working, while
+      # packages installed in the development venv retain precedence.
+      (libexec/"python#{python_version}"/site_packages/"homebrew-meson.pth").write <<~EOS
+        import glob, sys; sys.path.extend(p for p in glob.glob('#{formula_opt_prefix("meson")}/lib/python*/site-packages') if p not in sys.path)
+      EOS
+      # Prefer these resources to Homebrew's other Python packages, while allowing
+      # a development venv to override them with its own installed packages.
+      # Linux Python also supplies packages (including wheel) in its own keg.
+      (prefix/site_packages/"sagemath-deps.pth").write <<~EOS
+        import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
+      EOS
+      # Sage 11.0.beta6 searches filesystem data directories. Expose the PyPI
+      # payloads without patching Sage to import unreleased dataset features.
+      private_site = libexec/"python#{python_version}"/site_packages
+      data_root = pkgshare/"python#{python_version}-data"
+      data_dbs = {
+        "cremona"             => "elliptic_curve_databases/data/cremona",
+        "ellcurves"           => "elliptic_curve_databases/data/ellcurves",
+        "graphs"              => "graph_databases/data",
+        "reflexive_polytopes" => "polytope_databases/data",
+      }
+      data_dbs.each do |name, directory|
+        data_root.install_symlink private_site/directory => name
+      end
+      native_prefixes = deps.reject { |d| d.name.start_with?("python@") }
+                            .map { |d| formula_opt_prefix(d.name) }
+      paths = {
+        "PATH"              => native_prefixes.map { |p| p/"bin" },
+        "CPATH"             => native_prefixes.map { |p| p/"include" },
+        "LIBRARY_PATH"      => native_prefixes.map { |p| p/"lib" },
+        "PKG_CONFIG_PATH"   => native_prefixes.flat_map { |p| [p/"lib/pkgconfig", p/"share/pkgconfig"] },
+        "CMAKE_PREFIX_PATH" => native_prefixes,
+      }
+      paths.transform_values! { |entries| entries.select(&:directory?) }
+      paths["PATH"].unshift(opt_libexec/"python#{python_version}/bin")
+      script = "# Source after activating a Homebrew Python #{python_version} virtual environment.\n"
+      paths.each do |name, entries|
+        # Keep packages installed in the development venv ahead of bundled tools.
+        venv = (name == "PATH") ? "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin:}" : ""
+        script += "export #{name}=\"#{venv}#{entries.join(":")}${#{name}:+:$#{name}}\"\n"
+      end
+      script += <<~SH
+        export PARI_DIR="#{formula_opt_prefix("dimpase/tap/pari")}"
+        export BOOST_ROOT="#{formula_opt_prefix("boost")}"
+        export MTXLIB="#{formula_opt_prefix("dimpase/tap/meataxe")}/share/meataxe"
+        export SAGE_SHARE="${SAGE_SHARE-#{HOMEBREW_PREFIX}/share}"
+      SH
+      if OS.linux?
+        gcc = deps.find { |d| d.name == "gcc" }.to_formula
+        script += <<~SH
+          export CC="${CC:-#{gcc.opt_bin}/gcc-#{gcc.version.major}}"
+          export CXX="${CXX:-#{gcc.opt_bin}/g++-#{gcc.version.major}}"
+          export CFLAGS="-B#{formula_opt_bin("binutils")}/${CFLAGS:+ $CFLAGS}"
+          export CXXFLAGS="-B#{formula_opt_bin("binutils")}/${CXXFLAGS:+ $CXXFLAGS}"
+        SH
+      end
+      (pkgshare/"python#{python_version}-env.sh").write script
     end
 
     # These payloads are Python-independent. Use Sage's standard share layout

@@ -24,8 +24,8 @@ class Cypari2 < Formula
   depends_on "python@3.13" => [:build, :test]
   depends_on "python@3.14" => [:build, :test]
   depends_on "dimpase/tap/cysignals"
-  depends_on "dimpase/tap/pari"
   depends_on "gmp"
+  depends_on "pari"
 
   resource "setuptools" do
     url "https://files.pythonhosted.org/packages/0d/6d/b4752b044bf94cb802d88a888dc7d288baaf77d7910b7dedda74b5ceea0c/setuptools-79.0.1-py3-none-any.whl", using: :nounzip
@@ -81,7 +81,7 @@ class Cypari2 < Formula
         end
       end
       system python3, "-m", "pip", "install", *std_pip_args,
-             "-Csetup-args=-Dpari_prefix=#{formula_opt_prefix("dimpase/tap/pari")}",
+             "-Csetup-args=-Dpari_prefix=#{formula_opt_prefix("pari")}",
              "-Ccompile-args=-j#{ENV.make_jobs}",
              "."
     end
