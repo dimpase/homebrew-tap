@@ -4,14 +4,7 @@ class SagemathDeps < Formula
   url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
   sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
   license "GPL-2.0-or-later"
-  revision 4
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta6_4"
-    sha256 cellar: :any, arm64_tahoe:  "eb12d7c222134f700a4e0279d001e66567d87c1287d09434cb6a9092d3936c3e"
-    sha256 cellar: :any, arm64_linux:  "33e7485fba85889a3e8080b935898bc155195ca12faa9b62c4ff352e0aa225d4"
-    sha256 cellar: :any, x86_64_linux: "9c17c77375b632e458ddebdfe41b2c789ecb57fa6650eb1d98c9d38e41ed0022"
-  end
+  revision 5
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -28,7 +21,6 @@ class SagemathDeps < Formula
   depends_on "dimpase/tap/cypari2"
   depends_on "dimpase/tap/cysignals"
   depends_on "dimpase/tap/eclib"
-  depends_on "dimpase/tap/gmp-ecm"
   depends_on "dimpase/tap/gmpy2"
   depends_on "dimpase/tap/iml"
   depends_on "dimpase/tap/lcalc"
@@ -55,6 +47,7 @@ class SagemathDeps < Formula
   depends_on "gd"
   depends_on "glpk"
   depends_on "gmp"
+  depends_on "gmp-ecm"
   depends_on "gsl"
   depends_on "highs"
   depends_on "jpeg-turbo"

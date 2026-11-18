@@ -30,16 +30,6 @@ corresponding core formulae. If Homebrew reports a conflict, use `brew unlink nu
 or `brew unlink scipy` for the named core formula, then retry the Sage installation.
 Unlinking leaves the core package installed in the Cellar.
 
-If an installation or upgrade reports `gmp-ecm is already installed from homebrew/core`,
-replace that core keg with the tap's bottled formula, then retry the original install:
-
-```sh
-brew reinstall --force-bottle dimpase/tap/gmp-ecm
-brew link dimpase/tap/gmp-ecm
-```
-
-The link command restores links removed by a previous failed dependency upgrade.
-
 `sagemath-deps` provides the native libraries, Python dependencies, data packages
 and build tools needed to build sagelib separately. To install these dependencies:
 
