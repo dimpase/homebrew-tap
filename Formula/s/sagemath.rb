@@ -90,7 +90,8 @@ class Sagemath < Formula
     ENV["PARI_DIR"] = formula_opt_prefix("pari")
     ENV["BOOST_ROOT"] = formula_opt_prefix("boost")
 
-    setup_args = ["-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]
+    # Core PARI headers require POSIX sigjmp_buf in the Meson version probe.
+    setup_args = ["-Dc_std=gnu17", "-Dbuild-docs=false", "-Ddefer_feature_checks=true", "--wrap-mode=nofallback"]
     %w[bliss brial coxeter3 eclib libbraiding libhomfly mcqd meataxe rankwidth sirocco tdlib].each do |feature|
       setup_args << "-D#{feature}=enabled"
     end
