@@ -5,6 +5,13 @@ class Libhomfly < Formula
   sha256 "371390bd4a18510e34829fcc3e8cebf916e52647515a5088dccffa56f8494919"
   license :public_domain
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/libhomfly-1.05"
+    sha256 cellar: :any, arm64_tahoe:  "0a53f06dec55695693692c59aa0b754f6f488c7871ece0c0c38b9d30e4427fb0"
+    sha256 cellar: :any, arm64_linux:  "c08c068d06ab6b9dabf6f1ac70497351361f45d76f9e6f677deb99b324fa2589"
+    sha256 cellar: :any, x86_64_linux: "1dde7d8b8cf616a832d3fa1ed0273d25408d180839b61d3a60d5dd51f7659887"
+  end
+
   depends_on "pkgconf" => :build
   depends_on "bdw-gc"
 
