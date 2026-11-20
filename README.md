@@ -120,7 +120,7 @@ bottle releases.
 * [kenzo](Formula/k/kenzo.rb) [1.1.10](https://github.com/dimpase/homebrew-tap/releases/tag/kenzo-1.1.10) — Topology and homology, as an ECL module.
 * [lcalc](Formula/l/lcalc.rb) [2.2.2_1](https://github.com/dimpase/homebrew-tap/releases/tag/lcalc-2.2.2_1) — L-functions.
 * [libbraiding](Formula/l/libbraiding.rb) [1.3.2](https://github.com/dimpase/homebrew-tap/releases/tag/libbraiding-1.3.2) — Braid computations.
-* [libhomfly](Formula/l/libhomfly.rb) [1.04](https://github.com/dimpase/homebrew-tap/releases/tag/libhomfly-1.04) — HOMFLY polynomials of knots and links.
+* [libhomfly](Formula/l/libhomfly.rb) [1.05](https://github.com/dimpase/homebrew-tap/releases/tag/libhomfly-1.05) — HOMFLY polynomials of knots and links.
 * [lrcalc](Formula/l/lrcalc.rb) [2.1](https://github.com/dimpase/homebrew-tap/releases/tag/lrcalc-2.1) — Littlewood–Richardson coefficients.
 * [m4ri](Formula/m/m4ri.rb) [20260122](https://github.com/dimpase/homebrew-tap/releases/tag/m4ri-20260122) — Dense matrices over GF(2), with OpenMP.
 * [m4rie](Formula/m/m4rie.rb) [20250128](https://github.com/dimpase/homebrew-tap/releases/tag/m4rie-20250128) — Dense matrices over GF(2^e), using the tap’s M4RI.
