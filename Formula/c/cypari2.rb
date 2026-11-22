@@ -5,6 +5,13 @@ class Cypari2 < Formula
   sha256 "92f5af711fc070fec84fde8a425167005a83e0ea07686c36c4d2ac8cafe089cf"
   license "GPL-2.0-or-later"
 
+  bottle do
+    root_url "https://github.com/dimpase/homebrew-tap/releases/download/cypari2-2.2.9"
+    sha256 cellar: :any, arm64_tahoe:  "50ef021b582000bb5d50b118f8a48f3f26e6b06d51631190b2b43645c76fa811"
+    sha256 cellar: :any, arm64_linux:  "928d2712e0331b3296dc589a20b8f38e9902648201ae5f15784b07d4a4cb716c"
+    sha256 cellar: :any, x86_64_linux: "117a5e62574da61dd04feadcb3c8c3f71014de6900afd804fc66bf16a6de8b82"
+  end
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkgconf" => :build
