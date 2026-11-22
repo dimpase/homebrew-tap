@@ -90,7 +90,7 @@ bottle releases.
 * [sagemath-docbuild-deps](Formula/s/sagemath-docbuild-deps.rb) [11.0.beta6_1](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-docbuild-deps-11.0.beta6_1) — Additional dependencies for building Sage HTML documentation, including themes and offline MathJax.
 * [sagemath-doc](Formula/s/sagemath-doc.rb) [11.0.beta6](https://github.com/dimpase/homebrew-tap/releases/tag/sagemath-doc-11.0.beta6) — Prebuilt Sage HTML documentation.
 * [cvxopt](Formula/c/cvxopt.rb) [1.3.3](https://github.com/dimpase/homebrew-tap/releases/tag/cvxopt-1.3.3) — Convex optimization.
-* [cypari2](Formula/c/cypari2.rb) [2.2.6](https://github.com/dimpase/homebrew-tap/releases/tag/cypari2-2.2.6) — Python interface to PARI/GP.
+* [cypari2](Formula/c/cypari2.rb) [2.2.9](https://github.com/dimpase/homebrew-tap/releases/tag/cypari2-2.2.9) — Python interface to PARI/GP.
 * [cysignals](Formula/c/cysignals.rb) [1.13.1](https://github.com/dimpase/homebrew-tap/releases/tag/cysignals-1.13.1) — Signal handling for Cython.
 * [gmpy2](Formula/g/gmpy2.rb) [2.3.1](https://github.com/dimpase/homebrew-tap/releases/tag/gmpy2-2.3.1) — Python interface to GMP, MPFR and MPC.
 * [matplotlib-accelerate](Formula/m/matplotlib-accelerate.rb) [3.11.2_2](https://github.com/dimpase/homebrew-tap/releases/tag/matplotlib-accelerate-3.11.2_2) — Matplotlib with Accelerate on macOS and OpenBLAS on Linux.
