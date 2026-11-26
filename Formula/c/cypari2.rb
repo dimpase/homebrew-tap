@@ -62,7 +62,9 @@ class Cypari2 < Formula
       python3 = python.opt_libexec/"bin/python"
       site_packages = Language::Python.site_packages(python3)
       build_prefix = buildpath/"build-python#{python.version.major_minor}"
-      ENV["PYTHONPATH"] = "#{build_prefix/site_packages}:#{prefix/site_packages}"
+      build_site = build_prefix/site_packages
+      install_site = prefix/site_packages
+      ENV["PYTHONPATH"] = "#{build_site}:#{install_site}"
       ENV.prepend_path "PATH", build_prefix/"bin"
       resources.each do |r|
         r.stage do

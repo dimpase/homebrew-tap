@@ -251,9 +251,10 @@ class SagemathDocbuildDeps < Formula
       end
 
       private_site = opt_libexec/"python#{python_version}"/site_packages
+      global_site = HOMEBREW_PREFIX/site_packages
       # Preserve packages installed in a development venv ahead of this baseline.
       (prefix/site_packages/"sagemath-docbuild-deps.pth").write <<~EOS
-        import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{HOMEBREW_PREFIX/site_packages}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
+        import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
       EOS
       (pkgshare/"python#{python_version}-env.sh").write <<~SH
         # Source after activating a Homebrew Python #{python_version} virtual environment.
