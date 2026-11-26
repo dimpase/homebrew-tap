@@ -21,7 +21,8 @@ class SagemathDoc < Formula
     site_packages = Language::Python.site_packages(python3)
     docdeps = formula_opt_libexec("dimpase/tap/sagemath-docbuild-deps")/"python3.14"
     runtime_site = formula_opt_prefix("dimpase/tap/sagemath")/site_packages
-    ENV["PYTHONPATH"] = "#{docdeps/site_packages}:#{runtime_site}"
+    docdeps_site = docdeps/site_packages
+    ENV["PYTHONPATH"] = "#{docdeps_site}:#{runtime_site}"
     ENV["PYTHONNOUSERSITE"] = "1"
     ENV.prepend_path "PATH", docdeps/"bin"
     ENV.prepend_path "JUPYTER_PATH", formula_opt_prefix("dimpase/tap/sagemath")/"share/jupyter"

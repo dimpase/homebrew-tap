@@ -86,7 +86,9 @@ class MatplotlibAccelerate < Formula
       site_packages = Language::Python.site_packages(python3)
       python_version = Language::Python.major_minor_version(python3)
       private_prefix = libexec/"python#{python_version}"
-      ENV["PYTHONPATH"] = "#{private_prefix/site_packages}:#{prefix/site_packages}"
+      build_site = private_prefix/site_packages
+      install_site = prefix/site_packages
+      ENV["PYTHONPATH"] = "#{build_site}:#{install_site}"
 
       resources.each do |r|
         r.stage do
@@ -97,8 +99,9 @@ class MatplotlibAccelerate < Formula
       system python3, "-m", "pip", "install", *std_pip_args(build_isolation: true),
              "-Csetup-args=-Dsystem-freetype=true", "-Csetup-args=-Dsystem-qhull=true", "."
 
+      private_site = opt_libexec/"python#{python_version}"/site_packages
       (prefix/site_packages/"dimpase-matplotlib-dependencies.pth").write <<~EOS
-        import site; site.addsitedir('#{opt_libexec/"python#{python_version}"/site_packages}')
+        import site; site.addsitedir('#{private_site}')
       EOS
     end
   end

@@ -423,7 +423,9 @@ class SagemathDeps < Formula
       python_version = Language::Python.major_minor_version(python3)
       private_prefix = libexec/"python#{python_version}"
       site_packages = Language::Python.site_packages(python3)
-      ENV["PYTHONPATH"] = "#{private_prefix/site_packages}:#{prefix/site_packages}"
+      build_site = private_prefix/site_packages
+      install_site = prefix/site_packages
+      ENV["PYTHONPATH"] = "#{build_site}:#{install_site}"
       ENV.prepend_path "PATH", private_prefix/"bin"
 
       resources.each do |r|
@@ -478,7 +480,11 @@ class SagemathDeps < Formula
       script = "# Source after activating a Homebrew Python #{python_version} virtual environment.\n"
       paths.each do |name, entries|
         # Keep packages installed in the development venv ahead of bundled tools.
-        venv = (name == "PATH") ? "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin:}" : ""
+        venv = if name == "PATH"
+          "${VIRTUAL_ENV:+$VIRTUAL_ENV/bin:}"
+        else
+          ""
+        end
         script += "export #{name}=\"#{venv}#{entries.join(":")}${#{name}:+:$#{name}}\"\n"
       end
       script += <<~SH
@@ -519,6 +525,8 @@ class SagemathDeps < Formula
   end
 
   test do
+    packages = resources.map(&:name)
+    gmp_version = deps.find { |d| d.name == "gmp" }.to_formula.version.major_minor
     refute_path_exists bin/"sage"
     (testpath/"native_probe.pyx").write <<~PYX
       cdef extern from "gmp.h":
@@ -549,7 +557,7 @@ class SagemathDeps < Formula
         # Verify that all resources come from this formula, even when an older
         # unsplit Sage installation is also present on the machine.
         root = pathlib.Path("#{private_site}").resolve()
-        for name in #{resources.map(&:name).to_json}:
+        for name in #{packages.to_json}:
             dist = importlib.metadata.distribution(name)
             assert pathlib.Path(dist.locate_file("")).resolve() == root, (name, dist.locate_file(""))
         assert not list(root.glob("sagemath-[0-9]*.dist-info")), "sagelib must be installed separately"
@@ -623,7 +631,7 @@ class SagemathDeps < Formula
         test -f "#{share}/sagemath/reflexive_polytopes/Full3d/zzdb.info"
         pkg-config --exists brial eclib flint gmp
         python setup.py build_ext --inplace --force
-        python -c 'import native_probe; assert native_probe.version().startswith("#{deps.find { |d| d.name == "gmp" }.to_formula.version.major_minor}")'
+        python -c 'import native_probe; assert native_probe.version().startswith("#{gmp_version}")'
         export SAGE_SHARE="#{testpath}/custom-share"
         source "#{pkgshare}/python#{python_version}-env.sh"
         test "$SAGE_SHARE" = "#{testpath}/custom-share"
