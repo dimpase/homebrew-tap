@@ -1,17 +1,9 @@
 class SagemathDeps < Formula
   desc "Native and Python dependencies for building and running SageMath"
   homepage "https://www.sagemath.org"
-  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta6.tar.gz"
-  sha256 "bb767ddc886d29f036ba56b8a92e238e316b37baa5b3f96fc6d2f9108a1827e1"
+  url "https://github.com/sagemath/sage/archive/refs/tags/11.0.beta8.tar.gz"
+  sha256 "3a54aa173c2acffaf7609295337d589b281f771f3a952101e3239cbcd4a0687e"
   license "GPL-2.0-or-later"
-  revision 5
-
-  bottle do
-    root_url "https://github.com/dimpase/homebrew-tap/releases/download/sagemath-deps-11.0.beta6_5"
-    sha256 cellar: :any, arm64_tahoe:  "ef7a9b99bac00f66c9504da5c704aa6fbf2e691b0bc4d693c6db3f6dae1d0240"
-    sha256 cellar: :any, arm64_linux:  "6b489ca67d47432f19cc81a505053cef18e8cf339b8016d542714c4bfe0d59ef"
-    sha256 cellar: :any, x86_64_linux: "c1326c1f9527b756ce3c90e0d6c483ee40a067cc8411f89b45040d78875b09c6"
-  end
 
   # Keep build tools installed when this dependency environment is bottled.
   # They are also needed to build sagelib separately from a checkout.
@@ -160,8 +152,8 @@ class SagemathDeps < Formula
   end
 
   resource "memory-allocator" do
-    url "https://files.pythonhosted.org/packages/09/a9/2a966afb82df71f759e0c46cef0dc46d1f535897c6b341fafb2bd5e08b29/memory_allocator-0.2.0.tar.gz"
-    sha256 "675d3c91019db98c97441de73d5c648821e5ae813f3f54cd09863d474b48fe26"
+    url "https://files.pythonhosted.org/packages/59/f4/6ed48268464c280b933d3d7fd70488262b58b044965d6cadcebc0609d4d5/memory_allocator-0.2.1.tar.gz"
+    sha256 "8c1a0432c2689b52bf3f5cb89f3d9da3cfa5fdf4cd50d18c1238740861adb8bc"
   end
 
   resource "asttokens" do
@@ -461,7 +453,7 @@ class SagemathDeps < Formula
       (prefix/site_packages/"sagemath-deps.pth").write <<~EOS
         import site, sys; site.addsitedir('#{private_site}'); sys.path.remove('#{private_site}'); sys.path.insert(min((sys.path.index(p) for p in ['#{global_site}', *site.getsitepackages([sys.base_prefix, sys.base_exec_prefix])] if p in sys.path), default=len(sys.path)), '#{private_site}')
       EOS
-      # Sage 11.0.beta6 searches filesystem data directories. Expose the PyPI
+      # Sage searches filesystem data directories. Expose the PyPI
       # payloads without patching Sage to import unreleased dataset features.
       private_site = libexec/"python#{python_version}"/site_packages
       data_root = pkgshare/"python#{python_version}-data"
