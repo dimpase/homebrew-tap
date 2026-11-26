@@ -109,7 +109,9 @@ class Sagemath < Formula
       python_version = Language::Python.major_minor_version(python3)
       private_prefix = formula_opt_libexec("dimpase/tap/sagemath-deps")/"python#{python_version}"
       site_packages = Language::Python.site_packages(python3)
-      ENV["PYTHONPATH"] = "#{private_prefix/site_packages}:#{prefix/site_packages}"
+      build_site = private_prefix/site_packages
+      install_site = prefix/site_packages
+      ENV["PYTHONPATH"] = "#{build_site}:#{install_site}"
       ENV.prepend_path "PATH", private_prefix/"bin"
 
       # Record bottle defaults in Sage's generated configuration. Explicit

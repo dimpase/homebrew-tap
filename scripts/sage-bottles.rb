@@ -93,7 +93,8 @@ report[:phase] = "pouring"
 save_report.call
 
 formulae.zip(rows).each do |formula, row|
-  puts "Pouring #{row[:name]} #{row[:version]} (#{row[:bottle][:tag]})"
+  tag = row[:bottle][:tag]
+  puts "Pouring #{row[:name]} #{row[:version]} (#{tag})"
   $stdout.flush
   # Reinstall preinstalled formulae through Homebrew's normal replacement path,
   # preserving bootstrap libraries until their replacement is ready. All of

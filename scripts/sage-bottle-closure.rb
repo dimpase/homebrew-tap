@@ -19,7 +19,8 @@ module SageBottleClosure
       raise "No compatible published bottle: #{name}" unless node[:bottle]
 
       if active.include?(name)
-        raise "Bottle dependency cycle: #{(active + [name]).join(" -> ")}"
+        cycle = (active + [name]).join(" -> ")
+        raise "Bottle dependency cycle: #{cycle}"
       end
 
       active << name
